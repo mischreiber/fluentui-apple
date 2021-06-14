@@ -43,7 +43,7 @@ open class SideTabBar: UIView {
         }
         didSet {
             if let avatar = avatar {
-                let avatarState = avatar.state
+                let avatarState: MSFAvatarState = avatar.state
                 avatarState.size = .medium
                 avatarState.accessibilityLabel = "Accessibility.LargeTitle.ProfileView".localized
 

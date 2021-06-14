@@ -159,8 +159,8 @@ public class AvatarState: NSObject, ObservableObject, MSFAvatarState {
 public struct AvatarView: View {
     @Environment(\.theme) var theme: FluentUIStyle
     @Environment(\.windowProvider) var windowProvider: FluentUIWindowProvider?
-    @ObservedObject var tokens: MSFAvatarTokens
-    @ObservedObject var state: AvatarState
+    @ObservedObject private var tokens: MSFAvatarTokens
+    @ObservedObject private var state: AvatarState
 
     public init(_ avatarState: AvatarState) {
         state = avatarState

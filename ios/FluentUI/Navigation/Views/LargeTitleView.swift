@@ -173,7 +173,7 @@ class LargeTitleView: UIView {
         let preferredFallbackImageStyle: MSFAvatarStyle = style == .light ? .default : .accent
         let avatar = MSFAvatar(style: preferredFallbackImageStyle,
                                size: Constants.avatarSize)
-        let avatarState = avatar.state
+        let avatarState: MSFAvatarState = avatar.state
         avatarState.primaryText = avatarData?.primaryText
         avatarState.secondaryText = avatarData?.secondaryText
         avatarState.image = avatarData?.image

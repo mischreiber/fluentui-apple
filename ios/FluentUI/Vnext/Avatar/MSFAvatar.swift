@@ -13,9 +13,7 @@ import SwiftUI
         return hostingController.view
     }
 
-    @objc open var state: MSFAvatarState {
-        return self.avatarview.state
-    }
+    @objc open var state: MSFAvatarState!
 
     @objc public convenience init(style: MSFAvatarStyle = .default,
                                   size: MSFAvatarSize = .large) {
@@ -29,10 +27,12 @@ import SwiftUI
                       theme: FluentUIStyle? = nil) {
         super.init()
 
-        let state = AvatarState(style: style,
-                                       size: size)
+        let avatarState = AvatarState(style: style,
+                                      size: size)
 
-        avatarview = AvatarView(state)
+        let avatarview = AvatarView(avatarState)
+
+        state = avatarState
         hostingController = UIHostingController(rootView: AnyView(avatarview
                                                                     .windowProvider(self)
                                                                     .modifyIf(theme != nil, { avatarview in

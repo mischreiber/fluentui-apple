@@ -138,13 +138,13 @@ open class ContactView: UIControl {
 
     private func setupAvatarView(with title: String, and subtitle: String) {
         let identifier = title + " " + subtitle
-        let avatarState = avatar.state
+        let avatarState: MSFAvatarState = avatar.state
         avatarState.primaryText = identifier
         avatarState.image = avatarImage
     }
 
     private func setupAvatarView(with identifier: String) {
-        let avatarState = avatar.state
+        let avatarState: MSFAvatarState = avatar.state
         avatarState.primaryText = identifier
         avatarState.image = avatarImage
     }
