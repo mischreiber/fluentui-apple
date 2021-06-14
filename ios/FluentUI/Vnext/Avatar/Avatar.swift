@@ -110,36 +110,38 @@ import SwiftUI
 }
 
 /// Properties available to customize the state of the avatar
-class MSFAvatarStateImpl: NSObject, ObservableObject, MSFAvatarState {
-    @Published var backgroundColor: UIColor?
-    @Published var foregroundColor: UIColor?
-    @Published var hasPointerInteraction: Bool = false
-    @Published var hasRingInnerGap: Bool = true
-    @Published var image: UIImage?
-    @Published var imageBasedRingColor: UIImage?
-    @Published var isOutOfOffice: Bool = false
-    @Published var isRingVisible: Bool = false
-    @Published var isTransparent: Bool = true
-    @Published var presence: MSFAvatarPresence = .none
-    @Published var primaryText: String?
-    @Published var ringColor: UIColor?
-    @Published var secondaryText: String?
+public class AvatarState: NSObject, ObservableObject, MSFAvatarState {
+    @Published public var backgroundColor: UIColor?
+    @Published public var foregroundColor: UIColor?
+    @Published public var hasPointerInteraction: Bool = false
+    @Published public var hasRingInnerGap: Bool = true
+    @Published public var image: UIImage?
+    @Published public var imageBasedRingColor: UIImage?
+    @Published public var isOutOfOffice: Bool = false
+    @Published public var isRingVisible: Bool = false
+    @Published public var isTransparent: Bool = true
+    @Published public var presence: MSFAvatarPresence = .none
+    @Published public var primaryText: String?
+    @Published public var ringColor: UIColor?
+    @Published public var secondaryText: String?
 
-    var size: MSFAvatarSize {
+    public var size: MSFAvatarSize {
         get {
             return tokens.size
         }
         set {
             tokens.size = newValue
+            objectWillChange.send()
         }
     }
 
-    var style: MSFAvatarStyle {
+    public var style: MSFAvatarStyle {
         get {
             return tokens.style
         }
         set {
             tokens.style = newValue
+            objectWillChange.send()
         }
     }
 
@@ -158,14 +160,11 @@ public struct AvatarView: View {
     @Environment(\.theme) var theme: FluentUIStyle
     @Environment(\.windowProvider) var windowProvider: FluentUIWindowProvider?
     @ObservedObject var tokens: MSFAvatarTokens
-    @ObservedObject var state: MSFAvatarStateImpl
+    @ObservedObject var state: AvatarState
 
-    public init(style: MSFAvatarStyle,
-                size: MSFAvatarSize) {
-        let state = MSFAvatarStateImpl(style: style,
-                                       size: size)
-        self.state = state
-        self.tokens = state.tokens
+    public init(_ avatarState: AvatarState) {
+        state = avatarState
+        tokens = avatarState.tokens
     }
 
     public var body: some View {
@@ -380,47 +379,4 @@ public struct AvatarView: View {
             return cutoutFrame
         }
     }
-}
-
-/// UIKit wrapper that exposes the SwiftUI Avatar implementation
-@objc open class MSFAvatar: NSObject, FluentUIWindowProvider {
-
-    @objc open var view: UIView {
-        return hostingController.view
-    }
-
-    @objc open var state: MSFAvatarState {
-        return self.avatarview.state
-    }
-
-    @objc public convenience init(style: MSFAvatarStyle = .default,
-                                  size: MSFAvatarSize = .large) {
-        self.init(style: style,
-                  size: size,
-                  theme: nil)
-    }
-
-    @objc public init(style: MSFAvatarStyle = .default,
-                      size: MSFAvatarSize = .large,
-                      theme: FluentUIStyle? = nil) {
-        super.init()
-
-        avatarview = AvatarView(style: style,
-                                size: size)
-        hostingController = UIHostingController(rootView: AnyView(avatarview
-                                                                    .windowProvider(self)
-                                                                    .modifyIf(theme != nil, { avatarview in
-                                                                        avatarview.customTheme(theme!)
-                                                                    })))
-        hostingController.disableSafeAreaInsets()
-        view.backgroundColor = UIColor.clear
-    }
-
-    var window: UIWindow? {
-        return self.view.window
-    }
-
-    private var hostingController: UIHostingController<AnyView>!
-
-    private var avatarview: AvatarView!
 }

@@ -221,6 +221,8 @@
 		8AF03E1E24B6BDFB00E6E2A2 /* ContactCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF03E1D24B6BDFB00E6E2A2 /* ContactCollectionViewLayout.swift */; };
 		8FA3CB5B246B19EA0049E431 /* ColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA3CB5A246B19EA0049E431 /* ColorTests.swift */; };
 		8FD01188228A82A600D25925 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CEC16C20D98EE70016922A /* Colors.swift */; };
+		92C13ED126780B3A0038C8A2 /* MSFAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C13ED026780B3A0038C8A2 /* MSFAvatar.swift */; };
+		92C13ED226780B3A0038C8A2 /* MSFAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C13ED026780B3A0038C8A2 /* MSFAvatar.swift */; };
 		A257F82A251D98DD002CAA6E /* FluentUI-apple.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A257F829251D98DD002CAA6E /* FluentUI-apple.xcassets */; };
 		A257F82C251D98F3002CAA6E /* FluentUI-ios.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A257F82B251D98F3002CAA6E /* FluentUI-ios.xcassets */; };
 		A5237ACB21DED7030040BF27 /* ResizingHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5237ACA21DED7030040BF27 /* ResizingHandleView.swift */; };
@@ -436,6 +438,7 @@
 		8AF03E1D24B6BDFB00E6E2A2 /* ContactCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCollectionViewLayout.swift; sourceTree = "<group>"; };
 		8FA3CB5A246B19EA0049E431 /* ColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTests.swift; sourceTree = "<group>"; };
 		8FD01166228A820600D25925 /* libFluentUI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFluentUI.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C13ED026780B3A0038C8A2 /* MSFAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSFAvatar.swift; sourceTree = "<group>"; };
 		A257F829251D98DD002CAA6E /* FluentUI-apple.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "FluentUI-apple.xcassets"; path = "../apple/Resources/FluentUI-apple.xcassets"; sourceTree = "<group>"; };
 		A257F82B251D98F3002CAA6E /* FluentUI-ios.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "FluentUI-ios.xcassets"; path = "FluentUI/Resources/FluentUI-ios.xcassets"; sourceTree = "<group>"; };
 		A5237ACA21DED7030040BF27 /* ResizingHandleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizingHandleView.swift; sourceTree = "<group>"; };
@@ -855,6 +858,7 @@
 			children = (
 				536AEF3D25F1EC0300A36206 /* Avatar.swift */,
 				536AEF3E25F1EC0300A36206 /* AvatarTokens.swift */,
+				92C13ED026780B3A0038C8A2 /* MSFAvatar.swift */,
 				536AEF3C25F1EC0300A36206 /* MSFAvatarTokens.generated.swift */,
 			);
 			path = Avatar;
@@ -1705,6 +1709,7 @@
 				536AEF4C25F1EC0300A36206 /* FluentUIStyle.generated.swift in Sources */,
 				5314E03125F00DDD0099271A /* CardView.swift in Sources */,
 				5314E11525F015EA0099271A /* Presence.swift in Sources */,
+				92C13ED226780B3A0038C8A2 /* MSFAvatar.swift in Sources */,
 				5314E08925F00F2D0099271A /* CommandBarButtonGroupView.swift in Sources */,
 				5314E08C25F00F2D0099271A /* CommandBarButton.swift in Sources */,
 				5314E18F25F0195C0099271A /* ShimmerAppearance.swift in Sources */,
@@ -1878,6 +1883,7 @@
 				536AEF4B25F1EC0300A36206 /* FluentUIStyle.generated.swift in Sources */,
 				FDF41ED92141A02200EC527C /* CalendarConfiguration.swift in Sources */,
 				FD77753021A490BA00033D58 /* DateTimePicker.swift in Sources */,
+				92C13ED126780B3A0038C8A2 /* MSFAvatar.swift in Sources */,
 				22010B702523CB2D00FF1F10 /* ActivityViewAnimating.swift in Sources */,
 				FD7254E92147059D002F4069 /* Calendar+Extensions.swift in Sources */,
 				A559BB7E212B6D100055E107 /* String+Extension.swift in Sources */,
