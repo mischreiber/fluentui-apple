@@ -43,89 +43,92 @@ public class ButtonTokens: ControlTokens {
     /// Creates an instance of `ButtonTokens` with optional token value overrides.
     convenience public init(style: MSFButtonStyle,
                             size: MSFButtonSize,
-                            borderRadius: CGFloat? = nil,
-                            borderSize: CGFloat? = nil,
-                            iconSize: CGFloat? = nil,
-                            interspace: CGFloat? = nil,
-                            padding: CGFloat? = nil,
-                            textFont: FontInfo? = nil,
-                            textMinimumHeight: CGFloat? = nil,
-                            textAdditionalHorizontalPadding: CGFloat? = nil,
-                            textColor: ButtonDynamicColors? = nil,
-                            borderColor: ButtonDynamicColors? = nil,
-                            backgroundColor: ButtonDynamicColors? = nil,
-                            iconColor: ButtonDynamicColors? = nil,
-                            restShadow: ShadowInfo? = nil,
-                            pressedShadow: ShadowInfo? = nil) {
+                            borderRadius: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            borderSize: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            iconSize: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            interspace: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            padding: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            textFont: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> FontInfo)? = nil,
+                            textMinimumHeight: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            textAdditionalHorizontalPadding: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)? = nil,
+                            textColor: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)? = nil,
+                            borderColor: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)? = nil,
+                            backgroundColor: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)? = nil,
+                            iconColor: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)? = nil,
+                            restShadow: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ShadowInfo)? = nil,
+                            pressedShadow: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ShadowInfo)? = nil) {
         self.init(style: style, size: size)
 
         // Optional overrides
         if let borderRadius = borderRadius {
-            self.borderRadius = borderRadius
+            self.borderRadiusOverride = borderRadius
         }
         if let borderSize = borderSize {
-            self.borderSize = borderSize
+            self.borderSizeOverride = borderSize
         }
         if let iconSize = iconSize {
-            self.iconSize = iconSize
+            self.iconSizeOverride = iconSize
         }
         if let interspace = interspace {
-            self.interspace = interspace
+            self.interspaceOverride = interspace
         }
         if let padding = padding {
-            self.padding = padding
+            self.paddingOverride = padding
         }
         if let textFont = textFont {
-            self.textFont = textFont
+            self.textFontOverride = textFont
         }
         if let textMinimumHeight = textMinimumHeight {
-            self.textMinimumHeight = textMinimumHeight
+            self.textMinimumHeightOverride = textMinimumHeight
         }
         if let textAdditionalHorizontalPadding = textAdditionalHorizontalPadding {
-            self.textAdditionalHorizontalPadding = textAdditionalHorizontalPadding
+            self.textAdditionalHorizontalPaddingOverride = textAdditionalHorizontalPadding
         }
         if let textColor = textColor {
-            self.textColor = textColor
+            self.textColorOverride = textColor
         }
         if let borderColor = borderColor {
-            self.borderColor = borderColor
+            self.borderColorOverride = borderColor
         }
         if let backgroundColor = backgroundColor {
-            self.backgroundColor = backgroundColor
+            self.backgroundColorOverride = backgroundColor
         }
         if let iconColor = iconColor {
-            self.iconColor = iconColor
+            self.iconColorOverride = iconColor
         }
         if let restShadow = restShadow {
-            self.restShadow = restShadow
+            self.restShadowOverride = restShadow
         }
         if let pressedShadow = pressedShadow {
-            self.pressedShadow = pressedShadow
+            self.pressedShadowOverride = pressedShadow
         }
     }
 
     let style: MSFButtonStyle
     let size: MSFButtonSize
 
-    lazy var borderRadius: CGFloat = {
+    var borderRadiusOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var borderRadius: CGFloat { borderRadiusOverride?(style, size) ?? {
         switch size {
         case .small, .medium:
             return globalTokens.borderRadius[.large]
         case .large:
             return globalTokens.borderRadius[.xLarge]
         }
-    }()
+    }()}
 
-    lazy var borderSize: CGFloat = {
+    var borderSizeOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var borderSize: CGFloat { borderSizeOverride?(style, size) ?? {
         switch style {
         case .primary, .ghost, .accentFloating, .subtleFloating:
             return globalTokens.borderSize[.none]
         case .secondary:
             return globalTokens.borderSize[.thin]
         }
-    }()
+    }()}
 
-    lazy var iconSize: CGFloat = {
+    var iconSizeOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var iconSize: CGFloat { iconSizeOverride?(style, size) ?? {
         switch style {
         case .primary, .secondary, .ghost:
             switch size {
@@ -138,9 +141,10 @@ public class ButtonTokens: ControlTokens {
         case .accentFloating, .subtleFloating:
             return globalTokens.iconSize[.medium]
         }
-    }()
+    }()}
 
-    lazy var interspace: CGFloat = {
+    var interspaceOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var interspace: CGFloat { interspaceOverride?(style, size) ?? {
         switch style {
         case .primary, .secondary, .ghost:
             switch size {
@@ -152,9 +156,10 @@ public class ButtonTokens: ControlTokens {
         case .accentFloating, .subtleFloating:
             return globalTokens.spacing[.xSmall]
         }
-    }()
+    }()}
 
-    lazy var padding: CGFloat = {
+    var paddingOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var padding: CGFloat { paddingOverride?(style, size) ?? {
         switch style {
         case .primary, .secondary, .ghost:
             switch size {
@@ -180,9 +185,10 @@ public class ButtonTokens: ControlTokens {
                 return globalTokens.spacing[.medium]
             }
         }
-    }()
+    }()}
 
-    lazy var textFont: FontInfo = {
+    var textFontOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> FontInfo)?
+    var textFont: FontInfo { textFontOverride?(style, size) ?? {
         switch style {
         case .primary, .secondary, .ghost:
             switch size {
@@ -206,20 +212,23 @@ public class ButtonTokens: ControlTokens {
                 return aliasTokens.typography[.body1Strong]
             }
         }
-    }()
+    }()}
 
-    lazy var textMinimumHeight: CGFloat = globalTokens.iconSize[.medium]
+    var textMinimumHeightOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var textMinimumHeight: CGFloat { textMinimumHeightOverride?(style, size) ?? globalTokens.iconSize[.medium] }
 
-    lazy var textAdditionalHorizontalPadding: CGFloat = {
+    var textAdditionalHorizontalPaddingOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> CGFloat)?
+    var textAdditionalHorizontalPadding: CGFloat { textAdditionalHorizontalPaddingOverride?(style, size) ?? {
         switch size {
         case .small, .medium:
             return globalTokens.spacing[.xSmall]
         case .large:
             return globalTokens.spacing[.xxSmall]
         }
-    }()
+    }()}
 
-    lazy var textColor: ButtonDynamicColors = {
+    var textColorOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)?
+    var textColor: ButtonDynamicColors { textColorOverride?(style, size) ?? {
         switch style {
         case .primary, .accentFloating:
             return .init(
@@ -246,9 +255,10 @@ public class ButtonTokens: ControlTokens {
                 disabled: aliasTokens.foregroundColors[.brandDisabled]
             )
         }
-    }()
+    }()}
 
-    lazy var borderColor: ButtonDynamicColors = {
+    var borderColorOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)?
+    var borderColor: ButtonDynamicColors { borderColorOverride?(style, size) ?? {
         switch style {
         case .primary:
             return .init(
@@ -275,9 +285,10 @@ public class ButtonTokens: ControlTokens {
                 disabled: DynamicColor(light: ColorValue.clear)
             )
         }
-    }()
+    }()}
 
-    lazy var backgroundColor: ButtonDynamicColors = {
+    var backgroundColorOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)?
+    var backgroundColor: ButtonDynamicColors { backgroundColorOverride?(style, size) ?? {
         switch style {
         case .primary, .accentFloating:
             return .init(
@@ -304,9 +315,10 @@ public class ButtonTokens: ControlTokens {
                 disabled: aliasTokens.backgroundColors[.neutral1]
             )
         }
-    }()
+    }()}
 
-    lazy var iconColor: ButtonDynamicColors = {
+    var iconColorOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ButtonDynamicColors)?
+    var iconColor: ButtonDynamicColors { iconColorOverride?(style, size) ?? {
         switch style {
         case .primary, .accentFloating:
             return .init(
@@ -333,9 +345,11 @@ public class ButtonTokens: ControlTokens {
                 disabled: aliasTokens.foregroundColors[.neutralDisabled]
             )
         }
-    }()
+    }()}
 
-    lazy var restShadow: ShadowInfo = aliasTokens.elevation[.interactiveElevation1Rest]
+    var restShadowOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ShadowInfo)?
+    var restShadow: ShadowInfo { restShadowOverride?(style, size) ?? aliasTokens.elevation[.interactiveElevation1Rest] }
 
-    lazy var pressedShadow: ShadowInfo = aliasTokens.elevation[.interactiveElevation1Pressed]
+    var pressedShadowOverride: ((_ style: MSFButtonStyle, _ size: MSFButtonSize) -> ShadowInfo)?
+    var pressedShadow: ShadowInfo { pressedShadowOverride?(style, size) ?? aliasTokens.elevation[.interactiveElevation1Pressed] }
 }
