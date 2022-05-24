@@ -190,6 +190,37 @@ open class TabBarView: UIView, TokenizedControlInternal {
         }
     }
 
+    private class CustomTabBarItemTokens: TabBarItemTokens {
+        var tabBarTokens: TabBarTokens
+
+        @available(*, unavailable)
+        required init() {
+            preconditionFailure("init() has not been implemented")
+        }
+
+        init (tabBarTokens: TabBarTokens) {
+            self.tabBarTokens = tabBarTokens
+            super.init()
+        }
+
+        override var selectedColor: DynamicColor {
+            tabBarTokens.tabBarItemSelectedColor ?? super.selectedColor
+        }
+
+        override var unselectedColor: DynamicColor {
+            tabBarTokens.tabBarItemUnselectedColor ?? super.unselectedColor
+        }
+
+        override var titleLabelFontPortrait: FontInfo {
+            tabBarTokens.tabBarItemTitleLabelFontPortrait ?? super.titleLabelFontPortrait
+        }
+
+        override var titleLabelFontLandscape: FontInfo {
+            tabBarTokens.tabBarItemTitleLabelFontLandscape ?? super.titleLabelFontLandscape
+        }
+
+    }
+
     private func updateTabBarTokens() {
         let arrangedSubviews = stackView.arrangedSubviews
         for subview in arrangedSubviews {
@@ -197,6 +228,7 @@ open class TabBarView: UIView, TokenizedControlInternal {
                 tabBarItemView.defaultTokens = defaultTokens
                 tabBarItemView.themeTokens = themeTokens
                 tabBarItemView.overrideTokens = overrideTokens
+tabBarItemView.overrideTokens = CustomTabBarItemTokens.init(tabBarTokens: tokens)
             }
         }
     }

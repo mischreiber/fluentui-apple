@@ -6,21 +6,22 @@
 import UIKit
 
 class TabBarItemView: UIControl, TokenizedControlInternal {
-    public func overrideTokens(_ tokens: TabBarTokens?) -> Self {
+    public func overrideTokens(_ tokens: TabBarItemTokens?) -> Self {
         overrideTokens = tokens
         return self
     }
+
     let item: TabBarItem
 
-    var defaultTokens: TabBarTokens = .init()
-    var themeTokens: TabBarTokens? {
+    var defaultTokens: TabBarItemTokens = .init()
+    var themeTokens: TabBarItemTokens? {
         didSet {
             updateColors()
             updateBadgeView()
             updateLayout()
         }
     }
-    var overrideTokens: TabBarTokens? {
+    var overrideTokens: TabBarItemTokens? {
         didSet {
             updateColors()
             updateBadgeView()
@@ -256,7 +257,7 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
         if isInPortraitMode {
             container.axis = .vertical
             container.spacing = tokenValue(\.spacingVertical)
-            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelPortrait), shouldScale: false)
+            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelFontPortrait), shouldScale: false)
 
             if canResizeImage {
                 suggestImageSize = titleLabel.isHidden ? tokenValue(\.portraitImageSize) : tokenValue(\.portraitImageWithLabelSize)
@@ -264,7 +265,7 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
         } else {
             container.axis = .horizontal
             container.spacing = tokenValue(\.spacingHorizontal)
-            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelLandscape), shouldScale: false)
+            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelFontLandscape), shouldScale: false)
             if canResizeImage {
                  suggestImageSize = tokenValue(\.landscapeImageSize)
             }
