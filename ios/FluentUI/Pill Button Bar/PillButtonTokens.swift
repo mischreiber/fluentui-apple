@@ -6,7 +6,7 @@
 import UIKit
 
 /// Represents the set of `DynamicColor` values for the various states of a `PillButton`
-public struct PillButtonDynamicColors {
+public struct PillButtonDynamicColors: Equatable {
     public init (rest: DynamicColor,
                  selected: DynamicColor,
                  disabled: DynamicColor,

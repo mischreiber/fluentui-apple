@@ -96,7 +96,7 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                 let proposedWidth = proposedSize.width
                 let calculatedNotificationWidth: CGFloat = {
                     let isHalfLength = state.style.isToast && horizontalSizeClass == .regular
-                    return isHalfLength ? proposedWidth / 2 : proposedWidth - (2 * tokens.presentationOffset)
+                    return isHalfLength ? proposedWidth / 2 : proposedWidth - (2 * tokenValue(\.presentationOffset))
                 }()
 
                 notification
@@ -108,9 +108,9 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                             dismissAnimated()
                         }
                     })
-                    .padding(.bottom, tokens.bottomPresentationPadding)
+                    .padding(.bottom, tokenValue(\.bottomPresentationPadding))
                     .onSizeChange { newSize in
-                        bottomOffsetForDismissedState = newSize.height + (tokens.ambientShadowOffsetY / 2)
+                        bottomOffsetForDismissedState = newSize.height + (tokenValue(\.ambientShadowOffsetY) / 2)
                         // Bottom offset is only updated when the notification isn't presented to account for the new notification height (if presented, offset doesn't need to be updated since it grows upward vertically)
                         if !isPresented {
                             bottomOffset = bottomOffsetForDismissedState
@@ -125,30 +125,28 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFNotificationStateImpl
     let defaultTokens: NotificationTokens = .init()
-    var tokens: NotificationTokens {
-        let tokens = resolvedTokens
-        tokens.style = state.style
-        return tokens
+    func configureTokens(_ tokens: NotificationTokens?) {
+        tokens?.style = state.style
     }
 
     @ViewBuilder
     private var notification: some View {
         innerContents
             .background(
-                RoundedRectangle(cornerRadius: tokens.cornerRadius)
-                    .strokeBorder(Color(dynamicColor: tokens.outlineColor), lineWidth: tokens.outlineWidth)
+                RoundedRectangle(cornerRadius: tokenValue(\.cornerRadius))
+                    .strokeBorder(Color(dynamicColor: tokenValue(\.outlineColor)), lineWidth: tokenValue(\.outlineWidth))
                     .background(
-                        RoundedRectangle(cornerRadius: tokens.cornerRadius)
-                            .fill(Color(dynamicColor: tokens.backgroundColor))
+                        RoundedRectangle(cornerRadius: tokenValue(\.cornerRadius))
+                            .fill(Color(dynamicColor: tokenValue(\.backgroundColor)))
                     )
-                    .shadow(color: Color(dynamicColor: tokens.ambientShadowColor),
-                            radius: tokens.ambientShadowBlur,
-                            x: tokens.ambientShadowOffsetX,
-                            y: tokens.ambientShadowOffsetY)
-                    .shadow(color: Color(dynamicColor: tokens.perimeterShadowColor),
-                            radius: tokens.perimeterShadowBlur,
-                            x: tokens.perimeterShadowOffsetX,
-                            y: tokens.perimeterShadowOffsetY)
+                    .shadow(color: Color(dynamicColor: tokenValue(\.ambientShadowColor)),
+                            radius: tokenValue(\.ambientShadowBlur),
+                            x: tokenValue(\.ambientShadowOffsetX),
+                            y: tokenValue(\.ambientShadowOffsetY))
+                    .shadow(color: Color(dynamicColor: tokenValue(\.perimeterShadowColor)),
+                            radius: tokenValue(\.perimeterShadowBlur),
+                            x: tokenValue(\.perimeterShadowOffsetX),
+                            y: tokenValue(\.perimeterShadowOffsetY))
             )
             .onTapGesture {
                 if let messageAction = state.messageButtonAction {
@@ -168,9 +166,9 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                     .frame(width: imageSize.width,
                            height: imageSize.height,
                            alignment: .center)
-                    .foregroundColor(Color(dynamicColor: tokens.foregroundColor))
-                    .padding(.vertical, tokens.verticalPadding)
-                    .padding(.leading, tokens.horizontalPadding)
+                    .foregroundColor(Color(dynamicColor: tokenValue(\.foregroundColor)))
+                    .padding(.vertical, tokenValue(\.verticalPadding))
+                    .padding(.leading, tokenValue(\.horizontalPadding))
             }
         }
     }
@@ -183,8 +181,8 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                     .fixedSize(horizontal: false, vertical: true)
             } else if let title = state.title {
                 Text(title)
-                    .font(.fluent(tokens.boldTextFont))
-                    .foregroundColor(Color(dynamicColor: tokens.foregroundColor))
+                    .font(.fluent(tokenValue(\.boldTextFont)))
+                    .foregroundColor(Color(dynamicColor: tokenValue(\.foregroundColor)))
             }
         }
     }
@@ -195,10 +193,10 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
             AttributedText(attributedMessage)
                 .fixedSize(horizontal: false, vertical: true)
         } else if let message = state.message {
-            let messageFont = hasSecondTextRow ? tokens.footnoteTextFont : (state.style.isToast ? tokens.boldTextFont : tokens.regularTextFont)
+            let messageFont = hasSecondTextRow ? tokenValue(\.footnoteTextFont) : (state.style.isToast ? tokenValue(\.boldTextFont) : tokenValue(\.regularTextFont)
             Text(message)
                 .font(.fluent(messageFont))
-                .foregroundColor(Color(dynamicColor: tokens.foregroundColor))
+                .foregroundColor(Color(dynamicColor: tokenValue(\.foregroundColor)))
         }
     }
 
@@ -210,16 +208,16 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
             }
             messageLabel
         }
-        .padding(.horizontal, !hasImage ? tokens.horizontalPadding : 0)
-        .padding(.vertical, hasSecondTextRow ? tokens.verticalPadding : tokens.verticalPaddingForOneLine)
+        .padding(.horizontal, !hasImage ? tokenValue(\.horizontalPadding) : 0)
+        .padding(.vertical, hasSecondTextRow ? tokenValue(\.verticalPadding) : tokenValue(\.verticalPaddingForOneLine))
     }
 
     @ViewBuilder
     private var button: some View {
         if let buttonAction = state.actionButtonAction, let actionTitle = state.actionButtonTitle {
-            let foregroundColor = tokens.foregroundColor
-            let horizontalPadding = tokens.horizontalPadding
-            let verticalPadding = tokens.verticalPadding
+            let foregroundColor = tokenValue(\.foregroundColor)
+            let horizontalPadding = tokenValue(\.horizontalPadding)
+            let verticalPadding = tokenValue(\.verticalPadding)
 
             if actionTitle.isEmpty {
                 SwiftUI.Button(action: {
@@ -241,7 +239,7 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                 .foregroundColor(Color(dynamicColor: foregroundColor))
                 .padding(.horizontal, horizontalPadding)
                 .padding(.vertical, verticalPadding)
-                .font(.fluent(tokens.boldTextFont))
+                .font(.fluent(tokenValue(\.boldTextFont)))
             }
         }
     }
@@ -254,16 +252,16 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
                 textContainer
                 Spacer()
             }
-            .frame(minHeight: tokens.minimumHeight)
+            .frame(minHeight: tokenValue(\.minimumHeight))
         } else {
-            HStack(spacing: tokens.horizontalSpacing) {
+            HStack(spacing: tokenValue(\.horizontalSpacing)) {
                 image
                 textContainer
-                Spacer(minLength: tokens.horizontalPadding)
+                Spacer(minLength: tokenValue(\.horizontalPadding))
                 button
                     .layoutPriority(1)
             }
-            .frame(minHeight: tokens.minimumHeight)
+            .frame(minHeight: tokenValue(\.minimumHeight))
             .clipped()
         }
     }
@@ -285,15 +283,15 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
     }
 
     private func presentAnimated() {
-        withAnimation(.spring(response: tokens.style.animationDurationForShow,
-                              dampingFraction: tokens.style.animationDampingRatio,
+        withAnimation(.spring(response: tokenValue(\.style).animationDurationForShow,
+                              dampingFraction: tokenValue(\.style).animationDampingRatio,
                               blendDuration: 0)) {
             bottomOffset = 0
         }
     }
 
     private func dismissAnimated() {
-        withAnimation(.linear(duration: tokens.style.animationDurationForHide)) {
+        withAnimation(.linear(duration: tokenValue(\.style).animationDurationForHide)) {
             bottomOffset = bottomOffsetForDismissedState
         }
     }

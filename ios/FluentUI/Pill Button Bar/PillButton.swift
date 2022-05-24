@@ -14,7 +14,6 @@ open class PillButton: UIButton, TokenizedControlInternal {
     open override func didMoveToWindow() {
         super.didMoveToWindow()
 
-        updatePillButtonTokens()
         updateAppearance()
     }
 
@@ -75,10 +74,8 @@ open class PillButton: UIButton, TokenizedControlInternal {
     @objc public let style: PillButtonStyle
 
     let defaultTokens: PillButtonTokens = .init()
-    var tokens: PillButtonTokens = .init()
     var overrideTokens: PillButtonTokens? {
         didSet {
-            updatePillButtonTokens()
             updateAppearance()
         }
     }
@@ -87,7 +84,7 @@ open class PillButton: UIButton, TokenizedControlInternal {
 
     private func setupView() {
         setTitle(pillBarItem.title, for: .normal)
-        titleLabel?.font = UIFont.fluent(tokens.font, shouldScale: false)
+        titleLabel?.font = UIFont.fluent(tokenValue(\.font), shouldScale: false)
         layer.cornerRadius = PillButton.cornerRadius
         clipsToBounds = true
 
@@ -95,10 +92,10 @@ open class PillButton: UIButton, TokenizedControlInternal {
         largeContentTitle = titleLabel?.text
         showsLargeContentViewer = true
 
-        contentEdgeInsets = UIEdgeInsets(top: tokens.topInset,
-                                         left: tokens.horizontalInset,
-                                         bottom: tokens.bottomInset,
-                                         right: tokens.horizontalInset)
+        contentEdgeInsets = UIEdgeInsets(top: tokenValue(\.topInset),
+                                         left: tokenValue(\.horizontalInset),
+                                         bottom: tokenValue(\.bottomInset),
+                                         right: tokenValue(\.horizontalInset))
 
     }
 
@@ -119,8 +116,8 @@ open class PillButton: UIButton, TokenizedControlInternal {
     private func initUnreadDotLayer() -> CALayer {
         let unreadDotLayer = CALayer()
 
-        unreadDotLayer.bounds.size = CGSize(width: tokens.unreadDotSize, height: tokens.unreadDotSize)
-        unreadDotLayer.cornerRadius = tokens.unreadDotSize / 2
+        unreadDotLayer.bounds.size = CGSize(width: tokenValue(\.unreadDotSize), height: tokenValue(\.unreadDotSize))
+        unreadDotLayer.cornerRadius = tokenValue(\.unreadDotSize) / 2
 
         return unreadDotLayer
     }
@@ -136,11 +133,11 @@ open class PillButton: UIButton, TokenizedControlInternal {
             let anchor = self.titleLabel?.frame ?? .zero
             let xPos: CGFloat
             if effectiveUserInterfaceLayoutDirection == .leftToRight {
-                xPos = round(anchor.maxX + tokens.unreadDotOffsetX)
+                xPos = round(anchor.maxX + tokenValue(\.unreadDotOffsetX))
             } else {
-                xPos = round(anchor.minX - tokens.unreadDotOffsetX - tokens.unreadDotSize)
+                xPos = round(anchor.minX - tokenValue(\.unreadDotOffsetX) - tokenValue(\.unreadDotSize))
             }
-            unreadDotLayer.frame.origin = CGPoint(x: xPos, y: anchor.minY + tokens.unreadDotOffsetY)
+            unreadDotLayer.frame.origin = CGPoint(x: xPos, y: anchor.minY + tokenValue(\.unreadDotOffsetY))
             unreadDotLayer.backgroundColor = unreadDotColor.cgColor
         }
     }
@@ -148,35 +145,33 @@ open class PillButton: UIButton, TokenizedControlInternal {
     private func updateAppearance() {
         if isSelected {
             if isEnabled {
-                backgroundColor = UIColor(dynamicColor: tokens.backgroundColor.selected)
-                setTitleColor(UIColor(dynamicColor: tokens.titleColor.selected), for: .normal)
+                backgroundColor = UIColor(dynamicColor: tokenValue(\.backgroundColor).selected)
+                setTitleColor(UIColor(dynamicColor: tokenValue(\.titleColor).selected), for: .normal)
             } else {
-                backgroundColor = UIColor(dynamicColor: tokens.backgroundColor.selectedDisabled)
-                setTitleColor(UIColor(dynamicColor: tokens.titleColor.selectedDisabled), for: .normal)
+                backgroundColor = UIColor(dynamicColor: tokenValue(\.backgroundColor).selectedDisabled)
+                setTitleColor(UIColor(dynamicColor: tokenValue(\.titleColor).selectedDisabled), for: .normal)
             }
         } else {
             backgroundColor = isEnabled
-            ? UIColor(dynamicColor: tokens.backgroundColor.rest)
-            : UIColor(dynamicColor: tokens.backgroundColor.disabled)
+            ? UIColor(dynamicColor: tokenValue(\.backgroundColor).rest)
+            : UIColor(dynamicColor: tokenValue(\.backgroundColor).disabled)
 
             if isEnabled {
-                setTitleColor(UIColor(dynamicColor: tokens.titleColor.rest), for: .normal)
+                setTitleColor(UIColor(dynamicColor: tokenValue(\.titleColor).rest), for: .normal)
             } else {
-                setTitleColor(UIColor(dynamicColor: tokens.titleColor.disabled), for: .disabled)
+                setTitleColor(UIColor(dynamicColor: tokenValue(\.titleColor).disabled), for: .disabled)
             }
 
             unreadDotColor = isEnabled
-            ? UIColor(dynamicColor: tokens.enabledUnreadDotColor)
-            : UIColor(dynamicColor: tokens.disabledUnreadDotColor)
+            ? UIColor(dynamicColor: tokenValue(\.enabledUnreadDotColor))
+            : UIColor(dynamicColor: tokenValue(\.disabledUnreadDotColor))
         }
 
-        titleLabel?.font = UIFont.fluent(tokens.font, shouldScale: false)
+        titleLabel?.font = UIFont.fluent(tokenValue(\.font), shouldScale: false)
     }
 
-    private func updatePillButtonTokens() {
-        let tokens = resolvedTokens
-        tokens.style = style
-        self.tokens = tokens
+    func configureTokens(_ tokens: PillButtonTokens?) {
+        tokens?.style = style
     }
 
     private lazy var unreadDotLayer: CALayer = initUnreadDotLayer()

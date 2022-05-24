@@ -27,15 +27,49 @@ protocol TokenizedControlInternal: TokenizedControl {
 
     /// Fetches the current token override.
     var overrideTokens: TokenType? { get }
+
+    /// Configures token sets with any additional information needed to render (e.g. `style`, `size`).
+    func configureTokens(_ tokens: TokenType?)
 }
 
 // MARK: - Extensions
 
 extension TokenizedControlInternal {
-    /// Returns the correct token set for a given tokenizable control.
-    var resolvedTokens: TokenType {
-        let tokens = overrideTokens ?? fluentTheme.tokens(for: self) ?? defaultTokens
-        tokens.fluentTheme = fluentTheme
-        return tokens
+
+    /// Theme-provided class-wide override tokens.
+    var themeTokens: TokenType? { fluentTheme.tokens(for: self) }
+
+    /// Configures token sets with any additional information needed to render (e.g. `style`, `size`).
+    ///
+    /// Individual TokenizedControlInternal classes should provide alternate implementations of this method to configure tokens as needed.
+    func configureTokens(_ tokens: TokenType?) {
+        // No-op by default
     }
+
+    /// Returns the appropriate token value for a given key path on this control's token set.
+    ///
+    /// This method looks for the first value that does not match the default value provided by `defaultTokens`.
+    /// Priority order for tokens are `overrideTokens`, `themeTokens`, then finally `defaultTokens`.
+    func tokenValue<ValueType: Equatable>(_ keyPath: KeyPath<TokenType, ValueType>) -> ValueType {
+        // Begin by ensuring that all tokens are properly configured with the current fluentTheme.
+        prepareTokens()
+
+        let defaultValue = defaultTokens[keyPath: keyPath]
+        if let overrideValue = overrideTokens?[keyPath: keyPath], overrideValue != defaultValue {
+            return overrideValue
+        } else if let themeValue = themeTokens?[keyPath: keyPath], themeValue != defaultValue {
+            return themeValue
+        } else {
+            return defaultValue
+        }
+    }
+
+    private func prepareTokens() {
+        let tokenSets: [TokenType?] = [overrideTokens, themeTokens, defaultTokens]
+        tokenSets.forEach { tokens in
+            tokens?.fluentTheme = fluentTheme
+            configureTokens(tokens)
+        }
+    }
+
 }

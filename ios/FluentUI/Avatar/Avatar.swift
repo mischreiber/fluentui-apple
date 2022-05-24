@@ -96,12 +96,12 @@ public struct Avatar: View, ConfigurableTokenizedControl {
     }
 
     public var body: some View {
-        let style = tokens.style
+        let style = tokenValue(\.style)
         let presence = state.presence
         let shouldDisplayPresence = presence != .none
         let isRingVisible = state.isRingVisible
         let hasRingInnerGap = state.hasRingInnerGap
-        let ringThicknessToken: CGFloat = tokens.ringThickness
+        let ringThicknessToken: CGFloat = tokenValue(\.ringThickness)
         let isTransparent = state.isTransparent
         let isOutOfOffice = state.isOutOfOffice
         let initialsString: String = ((style == .overflow) ? state.primaryText ?? "" : Avatar.initialsText(fromPrimaryText: state.primaryText,
@@ -111,15 +111,15 @@ public struct Avatar: View, ConfigurableTokenizedControl {
         // Adding ringInnerGapOffset to ringInnerGap & ringThickness to accommodate for a small space between
         // the ring and avatar when the ring is visible and there is no inner ring gap
         let ringInnerGapOffset = 0.5
-        let ringInnerGap: CGFloat = isRingVisible ? (hasRingInnerGap ? tokens.ringInnerGap : -ringInnerGapOffset) : 0
+        let ringInnerGap: CGFloat = isRingVisible ? (hasRingInnerGap ? tokenValue(\.ringInnerGap) : -ringInnerGapOffset) : 0
         let ringThickness: CGFloat = isRingVisible ? (hasRingInnerGap ? ringThicknessToken : ringThicknessToken + ringInnerGapOffset) : 0
-        let ringOuterGap: CGFloat = isRingVisible ? tokens.ringOuterGap : 0
-        let avatarImageSize: CGFloat = tokens.avatarSize
+        let ringOuterGap: CGFloat = isRingVisible ? tokenValue(\.ringOuterGap) : 0
+        let avatarImageSize: CGFloat = tokenValue(\.avatarSize)
         let ringInnerGapSize: CGFloat = avatarImageSize + (ringInnerGap * 2)
         let ringSize: CGFloat = ringInnerGapSize + (ringThickness * 2)
         let ringOuterGapSize: CGFloat = ringSize + (ringOuterGap * 2)
-        let presenceIconSize: CGFloat = tokens.presenceIconSize
-        let presenceIconOutlineSize: CGFloat = presenceIconSize + (tokens.presenceIconOutlineThickness * 2)
+        let presenceIconSize: CGFloat = tokenValue(\.presenceIconSize)
+        let presenceIconOutlineSize: CGFloat = presenceIconSize + (tokenValue(\.presenceIconOutlineThickness) * 2)
 
         // Calculates the positioning of the presence icon ensuring its center is always on top of the avatar circle's edge
         let ringInnerGapRadius: CGFloat = (ringInnerGapSize / 2)
@@ -139,19 +139,19 @@ public struct Avatar: View, ConfigurableTokenizedControl {
         let overallFrameSide = max(ringOuterGapSize, presenceIconFrameSideRelativeToOuterRing)
 
         let foregroundColor = state.foregroundColor?.dynamicColor ?? ( !shouldUseCalculatedColors ?
-                                                                       tokens.foregroundDefaultColor :
+                                                                       tokenValue(\.foregroundDefaultColor) :
                                                                         initialsCalculatedColor(fromPrimaryText: state.primaryText,
                                                                                                 secondaryText: state.secondaryText,
-                                                                                                colorOptions: tokens.foregroundCalculatedColorOptions))
+                                                                                                colorOptions: tokenValue(\.foregroundCalculatedColorOptions)))
         let backgroundColor = state.backgroundColor?.dynamicColor ?? ( !shouldUseCalculatedColors ?
-                                                                       tokens.backgroundDefaultColor :
+                                                                       tokenValue(\.backgroundDefaultColor) :
                                                                         initialsCalculatedColor(fromPrimaryText: state.primaryText,
                                                                                                 secondaryText: state.secondaryText,
-                                                                                                colorOptions: tokens.backgroundCalculatedColorOptions))
-        let ringGapColor = Color(dynamicColor: tokens.ringGapColor).opacity(isTransparent ? 0 : 1)
+                                                                                                colorOptions: tokenValue(\.backgroundCalculatedColorOptions)))
+        let ringGapColor = Color(dynamicColor: tokenValue(\.ringGapColor)).opacity(isTransparent ? 0 : 1)
         let ringColor = !isRingVisible ? Color.clear :
         Color(dynamicColor: state.ringColor?.dynamicColor ?? ( !shouldUseCalculatedColors ?
-                                                               tokens.ringDefaultColor :
+                                                               tokenValue(\.ringDefaultColor) :
                                                                 backgroundColor))
 
         let shouldUseDefaultImage = (state.image == nil && initialsString.isEmpty && style != .overflow)
@@ -186,7 +186,7 @@ public struct Avatar: View, ConfigurableTokenizedControl {
             } else {
                 Text(initialsString)
                     .foregroundColor(Color(dynamicColor: foregroundColor))
-                    .font(.fluent(tokens.textFont, shouldScale: false))
+                    .font(.fluent(tokenValue(\.textFont), shouldScale: false))
             }
         }
 
@@ -197,7 +197,7 @@ public struct Avatar: View, ConfigurableTokenizedControl {
             if let imageBasedRingColor = state.imageBasedRingColor {
                 // The potentially maximum size of the ring view must be used in order to avoid abrupt
                 // transitions during the animation as the ImagePaint scale value is not animatable.
-                let ringMaxSize = avatarImageSize + (tokens.ringInnerGap + ringThicknessToken) * 2
+                let ringMaxSize = avatarImageSize + (tokenValue(\.ringInnerGap) + ringThicknessToken) * 2
                 let scaleFactor = ringMaxSize / imageBasedRingColor.size.width
 
                 // ImagePaint is being used as creating a Color struct from a UIColor created with
@@ -216,14 +216,14 @@ public struct Avatar: View, ConfigurableTokenizedControl {
 
         @ViewBuilder
         var avatarBody: some View {
-            if tokens.style == .group {
+            if tokenValue(\.style) == .group {
                 avatarContent
                     .background(Rectangle()
-                                    .frame(width: tokens.avatarSize, height: tokens.avatarSize, alignment: .center)
+                                    .frame(width: tokenValue(\.avatarSize), height: tokenValue(\.avatarSize), alignment: .center)
                                     .foregroundColor(Color(dynamicColor: backgroundColor)))
-                    .frame(width: tokens.avatarSize, height: tokens.avatarSize, alignment: .center)
-                    .contentShape(RoundedRectangle(cornerRadius: tokens.borderRadius))
-                    .clipShape(RoundedRectangle(cornerRadius: tokens.borderRadius))
+                    .frame(width: tokenValue(\.avatarSize), height: tokenValue(\.avatarSize), alignment: .center)
+                    .contentShape(RoundedRectangle(cornerRadius: tokenValue(\.borderRadius)))
+                    .clipShape(RoundedRectangle(cornerRadius: tokenValue(\.borderRadius)))
             } else {
                 Circle()
                     .foregroundColor(ringGapColor)
@@ -251,7 +251,7 @@ public struct Avatar: View, ConfigurableTokenizedControl {
                                                     cutoutSize: presenceIconOutlineSize),
                                        style: FillStyle(eoFill: true))
                             .overlay(Circle()
-                                        .foregroundColor(Color(dynamicColor: tokens.ringGapColor).opacity(isTransparent ? 0 : 1))
+                                        .foregroundColor(Color(dynamicColor: tokenValue(\.ringGapColor)).opacity(isTransparent ? 0 : 1))
                                         .frame(width: presenceIconOutlineSize, height: presenceIconOutlineSize, alignment: .center)
                                         .overlay(presence.image(isOutOfOffice: isOutOfOffice)
                                                     .interpolation(.high)
@@ -286,29 +286,27 @@ public struct Avatar: View, ConfigurableTokenizedControl {
 
     /// Calculates the size of the avatar, including ring spacing
     var totalSize: CGFloat {
-        let avatarImageSize: CGFloat = tokens.avatarSize
-        let ringOuterGap: CGFloat = tokens.ringOuterGap
+        let avatarImageSize: CGFloat = tokenValue(\.avatarSize)
+        let ringOuterGap: CGFloat = tokenValue(\.ringOuterGap)
         if !state.isRingVisible {
             return avatarImageSize + (ringOuterGap * 2)
         } else {
-            let ringThickness: CGFloat = tokens.ringThickness
-            let ringInnerGap: CGFloat = state.hasRingInnerGap ? tokens.ringInnerGap : 0
+            let ringThickness: CGFloat = tokenValue(\.ringThickness)
+            let ringInnerGap: CGFloat = state.hasRingInnerGap ? tokenValue(\.ringInnerGap) : 0
             return ((ringInnerGap + ringThickness + ringOuterGap) * 2 + avatarImageSize)
         }
     }
 
     var contentSize: CGFloat {
-        return tokens.avatarSize
+        return tokenValue(\.avatarSize)
     }
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @Environment(\.layoutDirection) var layoutDirection: LayoutDirection
     let defaultTokens: AvatarTokens = .init()
-    var tokens: AvatarTokens {
-        let tokens = resolvedTokens
-        tokens.size = state.size
-        tokens.style = state.style
-        return tokens
+    func configureTokens(_ tokens: AvatarTokens?) {
+        tokens?.size = state.size
+        tokens?.style = state.style
     }
     @ObservedObject var state: MSFAvatarStateImpl
 

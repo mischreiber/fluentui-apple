@@ -28,9 +28,9 @@ public struct IndeterminateProgressBar: View, ConfigurableTokenizedControl {
     }
 
     public var body: some View {
-        let height = tokens.height
-        let gradientColor = Color(dynamicColor: tokens.gradientColor)
-        let backgroundColor = Color(dynamicColor: tokens.backgroundColor)
+        let height = tokenValue(\.height)
+        let gradientColor = Color(dynamicColor: tokenValue(\.gradientColor))
+        let backgroundColor = Color(dynamicColor: tokenValue(\.backgroundColor))
 
         Rectangle()
             .fill(LinearGradient(gradient: Gradient(colors: [backgroundColor, gradientColor, backgroundColor]),
@@ -60,9 +60,6 @@ public struct IndeterminateProgressBar: View, ConfigurableTokenizedControl {
     }
 
     let defaultTokens: IndeterminateProgressBarTokens = .init()
-    var tokens: IndeterminateProgressBarTokens {
-        return resolvedTokens
-    }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @Environment(\.layoutDirection) var layoutDirection: LayoutDirection
     @ObservedObject var state: MSFIndeterminateProgressBarStateImpl

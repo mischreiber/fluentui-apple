@@ -32,7 +32,7 @@ open class AvatarTokens: ControlTokens {
     open var borderRadius: CGFloat {
         switch style {
         case .default, .accent, .outlined, .outlinedPrimary, .overflow:
-            return globalTokens.spacing[.none]
+            return globalTokens.borderRadius[.none]
         case .group:
             switch size {
             case .xsmall:

@@ -37,10 +37,10 @@ class DrawerPresentationController: UIPresentationController {
          source: UIViewController,
          presentationDirection: DrawerPresentationDirection,
          adjustHeightForKeyboard: Bool,
-         drawerTokens: DrawerTokens) {
+         drawerController: DrawerController) {
         sourceViewController = source
         self.presentationDirection = presentationDirection
-        self.drawerTokens = drawerTokens
+        self.drawerController = drawerController
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
         if adjustHeightForKeyboard {
@@ -83,12 +83,12 @@ class DrawerPresentationController: UIPresentationController {
     // Shadow behind presented view (cannot be done on presented view itself because it's masked)
     private lazy var shadowView: DrawerShadowView = {
         // Uses function initializer to workaround a Swift compiler bug in Xcode 10.1
-        return DrawerShadowView(shadowDirection: actualPresentationOffset == 0 ? presentationDirection : nil, tokens: drawerTokens)
+        return DrawerShadowView(shadowDirection: actualPresentationOffset == 0 ? presentationDirection : nil, drawerController: drawerController)
     }()
     // Imitates the bottom shadow of navigation bar or top shadow of toolbar because original ones are hidden by presented view
     private lazy var divider = MSFDivider()
-    // Tokens for drawer stylesheet
-    private var drawerTokens: DrawerTokens
+    // Reference to drawer controller that can resolve tokens for us
+    private unowned var drawerController: DrawerController
 
     // MARK: Presentation
 
@@ -290,7 +290,7 @@ class DrawerPresentationController: UIPresentationController {
 
     func updateApperance() {
         shadowView.updateApperance()
-        dimmingView.dimmedBlackColor = UIColor(dynamicColor: drawerTokens.backgroundDimmedColor)
+        dimmingView.dimmedBlackColor = UIColor(dynamicColor: drawerController.tokenValue(\.backgroundDimmedColor))
         backgroundView.backgroundColor = dimmingView.dimmedClearColor
     }
 
@@ -438,18 +438,18 @@ class DrawerPresentationController: UIPresentationController {
         switch presentationDirection {
         case .down:
             margins.top = presentationOffsetMargin
-            margins.bottom = max(drawerTokens.minVerticalMargin, containerView.safeAreaInsets.bottom)
+            margins.bottom = max(drawerController.tokenValue(\.minVerticalMargin), containerView.safeAreaInsets.bottom)
         case .up:
-            margins.top = max(drawerTokens.minVerticalMargin, containerView.safeAreaInsets.top)
+            margins.top = max(drawerController.tokenValue(\.minVerticalMargin), containerView.safeAreaInsets.top)
             margins.bottom = presentationOffsetMargin
             if actualPresentationOffset == 0 && keyboardHeight > 0 {
                 margins.bottom += safeAreaPresentationOffset
             }
         case .fromLeading:
             margins.left = presentationOffsetMargin
-            margins.right = max(drawerTokens.minHorizontalMargin, containerView.safeAreaInsets.right)
+            margins.right = max(drawerController.tokenValue(\.minHorizontalMargin), containerView.safeAreaInsets.right)
         case .fromTrailing:
-            margins.left = max(drawerTokens.minHorizontalMargin, containerView.safeAreaInsets.left)
+            margins.left = max(drawerController.tokenValue(\.minHorizontalMargin), containerView.safeAreaInsets.left)
             margins.right = presentationOffsetMargin
         }
         return margins
@@ -503,7 +503,7 @@ class DrawerPresentationController: UIPresentationController {
 
         presentedView?.layer.masksToBounds = true
         presentedView?.layer.maskedCorners = maskedCorners
-        presentedView?.layer.cornerRadius = drawerTokens.cornerRadius
+        presentedView?.layer.cornerRadius = drawerController.tokenValue(\.cornerRadius)
     }
 
     private func removePresentedViewMask() {

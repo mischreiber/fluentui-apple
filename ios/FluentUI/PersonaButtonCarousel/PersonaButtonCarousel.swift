@@ -104,15 +104,12 @@ public struct PersonaButtonCarousel: View, ConfigurableTokenizedControl {
                 }
             }
         }
-        .background(Color(dynamicColor: tokens.backgroundColor))
+        .background(Color(dynamicColor: tokenValue(\.backgroundColor)))
     }
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFPersonaButtonCarouselStateImpl
     let defaultTokens: PersonaButtonCarouselTokens = .init()
-    var tokens: PersonaButtonCarouselTokens {
-        return resolvedTokens
-    }
 }
 
 /// Properties that make up PersonaButtonCarousel content

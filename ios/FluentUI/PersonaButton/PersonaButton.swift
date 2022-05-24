@@ -72,21 +72,19 @@ public struct PersonaButton: View, ConfigurableTokenizedControl {
             VStack(spacing: 0) {
                 avatarView
                 personaText
-                Spacer(minLength: tokens.verticalPadding)
+                Spacer(minLength: tokenValue(\.verticalPadding))
             }
         }
         .frame(minWidth: adjustedWidth, maxWidth: adjustedWidth, minHeight: 0, maxHeight: .infinity)
-        .background(Color(dynamicColor: tokens.backgroundColor))
+        .background(Color(dynamicColor: tokenValue(\.backgroundColor)))
     }
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @Environment(\.sizeCategory) var sizeCategory: ContentSizeCategory
     @ObservedObject var state: MSFPersonaButtonStateImpl
     let defaultTokens: PersonaButtonTokens = .init()
-    var tokens: PersonaButtonTokens {
-        let tokens = resolvedTokens
-        tokens.size = state.buttonSize
-        return tokens
+    func configureTokens(_ tokens: PersonaButtonTokens?) {
+        tokens?.size = state.buttonSize
     }
 
     init(state: MSFPersonaButtonStateImpl, action: (() -> Void)?) {
@@ -100,17 +98,17 @@ public struct PersonaButton: View, ConfigurableTokenizedControl {
             Text(state.primaryText ?? "")
                 .lineLimit(1)
                 .frame(alignment: .center)
-                .font(.fluent(tokens.labelFont))
-                .foregroundColor(Color(dynamicColor: tokens.labelColor))
+                .font(.fluent(tokenValue(\.labelFont)))
+                .foregroundColor(Color(dynamicColor: tokenValue(\.labelColor)))
             if state.buttonSize.shouldShowSubtitle {
                 Text(state.secondaryText ?? "")
                     .lineLimit(1)
                     .frame(alignment: .center)
-                    .font(.fluent(tokens.sublabelFont))
-                    .foregroundColor(Color(dynamicColor: tokens.sublabelColor))
+                    .font(.fluent(tokenValue(\.sublabelFont)))
+                    .foregroundColor(Color(dynamicColor: tokenValue(\.sublabelColor)))
             }
         }
-        .padding(.horizontal, tokens.horizontalTextPadding)
+        .padding(.horizontal, tokenValue(\.horizontalTextPadding))
     }
 
     private var avatar: Avatar {
@@ -120,8 +118,8 @@ public struct PersonaButton: View, ConfigurableTokenizedControl {
     @ViewBuilder
     private var avatarView: some View {
         avatar
-            .padding(.top, tokens.verticalPadding)
-            .padding(.bottom, tokens.avatarInterspace)
+            .padding(.top, tokenValue(\.verticalPadding))
+            .padding(.bottom, tokenValue(\.avatarInterspace))
     }
 
     /// Width of the button is conditional on the current size category
@@ -134,7 +132,7 @@ public struct PersonaButton: View, ConfigurableTokenizedControl {
             .accessibilityExtraExtraExtraLarge: [ .large: 80, .small: 68 ]
         ]
 
-        return avatar.contentSize + (2 * tokens.horizontalAvatarPadding) + (accessibilityAdjustments[sizeCategory]?[state.buttonSize] ?? 0)
+        return avatar.contentSize + (2 * tokenValue(\.horizontalAvatarPadding)) + (accessibilityAdjustments[sizeCategory]?[state.buttonSize] ?? 0)
     }
 }
 

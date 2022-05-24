@@ -147,13 +147,13 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
         let selectedTabColor: DynamicColor
         let selectedLabelColor: DynamicColor
         if isEnabled {
-            tabColor = tokens.restTabColor
-            selectedTabColor = tokens.selectedTabColor
-            selectedLabelColor = tokens.selectedLabelColor
+            tabColor = tokenValue(\.restTabColor)
+            selectedTabColor = tokenValue(\.selectedTabColor)
+            selectedLabelColor = tokenValue(\.selectedLabelColor)
         } else {
-            tabColor = tokens.disabledTabColor
-            selectedTabColor = tokens.disabledSelectedTabColor
-            selectedLabelColor = tokens.disabledSelectedLabelColor
+            tabColor = tokenValue(\.disabledTabColor)
+            selectedTabColor = tokenValue(\.disabledSelectedTabColor)
+            selectedLabelColor = tokenValue(\.disabledSelectedLabelColor)
         }
         backgroundView.backgroundColor = UIColor(dynamicColor: tabColor)
         pillMaskedLabelsContainerView.backgroundColor = UIColor(dynamicColor: selectedTabColor)
@@ -340,7 +340,6 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
 
     open override func didMoveToWindow() {
         super.didMoveToWindow()
-        updateSegmentedControlTokens()
         updateColors()
         updateButtons()
     }
@@ -359,10 +358,8 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
     }
 
     var defaultTokens: SegmentedControlTokens = .init()
-    var tokens: SegmentedControlTokens = .init()
     var overrideTokens: SegmentedControlTokens? {
         didSet {
-            updateSegmentedControlTokens()
             updateColors()
             updateButtons()
         }
@@ -370,16 +367,14 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
 
     var selectionChangeAnimationDuration: TimeInterval { return 0.2 }
 
-    private func updateSegmentedControlTokens() {
-        let tokens = resolvedTokens
-        tokens.style = style
-        self.tokens = tokens
+    func configureTokens(_ tokens: SegmentedControlTokens?) {
+        tokens?.style = style
     }
 
     private func updateButtons() {
         for (index, button) in buttons.enumerated() {
-            button.tokens = tokens
-            let labelColor = isEnabled ? tokens.restLabelColor : tokens.disabledLabelColor
+            button.updateTokenizedValues()
+            let labelColor = isEnabled ? tokenValue(\.restLabelColor) : tokenValue(\.disabledLabelColor)
             button.setTitleColor(UIColor(dynamicColor: labelColor), for: .normal)
             pillMaskedLabels[index].font = button.titleLabel?.font
         }
@@ -398,7 +393,7 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
     }
 
     private func createPillButton(withItem item: SegmentItem) -> SegmentPillButton {
-        let button = SegmentPillButton(withItem: item, tokens: tokens)
+        let button = SegmentPillButton(withItem: item, segmentedControl: self)
         button.addTarget(self, action: #selector(handleButtonTap(_:)), for: .touchUpInside)
         return button
     }
@@ -479,7 +474,6 @@ open class SegmentedControl: UIControl, TokenizedControlInternal {
         guard let window = window, window.isEqual(notification.object) else {
             return
         }
-        updateSegmentedControlTokens()
         updateColors()
         updateButtons()
     }

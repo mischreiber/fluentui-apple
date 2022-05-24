@@ -149,7 +149,7 @@ open class TabBarView: UIView, TokenizedControlInternal {
         return UIVisualEffectView(effect: UIBlurEffect(style: style))
     }()
 
-    private lazy var heightConstraint: NSLayoutConstraint = stackView.heightAnchor.constraint(equalToConstant: traitCollection.userInterfaceIdiom == .phone ? tokens.phonePortraitHeight : tokens.padHeight)
+    private lazy var heightConstraint: NSLayoutConstraint = stackView.heightAnchor.constraint(equalToConstant: traitCollection.userInterfaceIdiom == .phone ? tokenValue(\.phonePortraitHeight) : tokenValue(\.padHeight))
 
     private let showsItemTitles: Bool
 
@@ -166,7 +166,7 @@ open class TabBarView: UIView, TokenizedControlInternal {
     private func updateHeight() {
         if traitCollection.userInterfaceIdiom == .phone {
             let isPortrait = traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular
-            heightConstraint.constant = isPortrait ? tokens.phonePortraitHeight : tokens.phoneLandscapeHeight
+            heightConstraint.constant = isPortrait ? tokenValue(\.phonePortraitHeight) : tokenValue(\.phoneLandscapeHeight)
         }
     }
 
@@ -183,7 +183,6 @@ open class TabBarView: UIView, TokenizedControlInternal {
     }
 
     var defaultTokens: TabBarTokens = .init()
-    var tokens: TabBarTokens = .init()
     var overrideTokens: TabBarTokens? {
         didSet {
             updateTabBarTokens()
@@ -192,12 +191,12 @@ open class TabBarView: UIView, TokenizedControlInternal {
     }
 
     private func updateTabBarTokens() {
-        tokens = resolvedTokens
-
         let arrangedSubviews = stackView.arrangedSubviews
         for subview in arrangedSubviews {
             if let tabBarItemView = subview as? TabBarItemView {
-                tabBarItemView.overrideTokens = tokens
+                tabBarItemView.defaultTokens = defaultTokens
+                tabBarItemView.themeTokens = themeTokens
+                tabBarItemView.overrideTokens = overrideTokens
             }
         }
     }

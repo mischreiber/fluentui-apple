@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import CoreGraphics // for CGFloat
 
 /// Base class for all Fluent control tokenization.
 open class ControlTokens: NSObject {
@@ -12,5 +13,5 @@ open class ControlTokens: NSObject {
     public var globalTokens: GlobalTokens { fluentTheme.globalTokens }
     public var aliasTokens: AliasTokens { fluentTheme.aliasTokens }
 
-    lazy var fluentTheme: FluentTheme = FluentTheme.shared
+    unowned var fluentTheme: FluentTheme = FluentTheme.shared
 }

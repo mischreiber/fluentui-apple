@@ -246,7 +246,7 @@ public class CommandBar: UIView, TokenizedControlInternal {
     }
 
     private func button(forItem item: CommandBarItem, isPersistSelection: Bool = true) -> CommandBarButton {
-        let button = CommandBarButton(item: item, isPersistSelection: isPersistSelection, commandBarTokens: tokens)
+        let button = CommandBarButton(item: item, isPersistSelection: isPersistSelection, commandBar: self)
         button.addTarget(self, action: #selector(handleCommandButtonTapped(_:)), for: .touchUpInside)
 
         return button
@@ -271,9 +271,8 @@ public class CommandBar: UIView, TokenizedControlInternal {
     }
 
     private func updateButtonTokens() {
-        self.tokens = resolvedTokens
         for button in itemsToButtonsMap.values {
-            button.commandBarTokens = tokens
+            button.updateStyle()
         }
     }
 

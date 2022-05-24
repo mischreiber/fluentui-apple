@@ -14,7 +14,7 @@ struct Header: View, ConfigurableTokenizedControl {
     var body: some View {
         let backgroundColor: Color = {
             guard let stateBackgroundColor = state.backgroundColor else {
-                return Color(dynamicColor: tokens.backgroundColor)
+                return Color(dynamicColor: tokenValue(\.backgroundColor))
             }
             return Color(stateBackgroundColor)
         }()
@@ -22,23 +22,20 @@ struct Header: View, ConfigurableTokenizedControl {
         HStack(spacing: 0) {
             if let title = state.title, !title.isEmpty {
                 Text(title)
-                    .font(.fluent(tokens.textFont))
-                    .foregroundColor(Color(dynamicColor: tokens.textColor))
+                    .font(.fluent(tokenValue(\.textFont)))
+                    .foregroundColor(Color(dynamicColor: tokenValue(\.textColor)))
             }
             Spacer()
         }
-        .padding(EdgeInsets(top: tokens.topPadding,
-                            leading: tokens.leadingPadding,
-                            bottom: tokens.bottomPadding,
-                            trailing: tokens.trailingPadding))
-        .frame(minHeight: tokens.headerHeight)
+        .padding(EdgeInsets(top: tokenValue(\.topPadding),
+                            leading: tokenValue(\.leadingPadding),
+                            bottom: tokenValue(\.bottomPadding),
+                            trailing: tokenValue(\.trailingPadding)))
+        .frame(minHeight: tokenValue(\.headerHeight))
         .background(backgroundColor)
     }
 
     let defaultTokens: HeaderTokens = .init()
-    var tokens: HeaderTokens {
-        return resolvedTokens
-    }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFListSectionStateImpl
 }

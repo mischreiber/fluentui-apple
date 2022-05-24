@@ -26,26 +26,21 @@ class SegmentPillButton: UIButton {
         }
     }
 
-    var tokens: SegmentedControlTokens {
-        didSet {
-            updateTokenizedValues()
-            updateUnreadDot()
-        }
-    }
+    unowned var segmentedControl: SegmentedControl
 
-    private func updateTokenizedValues() {
-        titleLabel?.font = UIFont.fluent(tokens.font, shouldScale: false)
-        let verticalInset = tokens.verticalInset
-        let horizontalInset = tokens.horizontalInset
+    func updateTokenizedValues() {
+        titleLabel?.font = UIFont.fluent(segmentedControl.tokenValue(\.font), shouldScale: false)
+        let verticalInset = segmentedControl.tokenValue(\.verticalInset)
+        let horizontalInset = segmentedControl.tokenValue(\.horizontalInset)
         contentEdgeInsets = UIEdgeInsets(top: verticalInset,
                                          left: horizontalInset,
                                          bottom: verticalInset,
                                          right: horizontalInset)
     }
 
-    init(withItem item: SegmentItem, tokens: SegmentedControlTokens) {
+    init(withItem item: SegmentItem, segmentedControl: SegmentedControl) {
         self.item = item
-        self.tokens = tokens
+        self.segmentedControl = segmentedControl
         super.init(frame: .zero)
 
         let title = item.title
@@ -75,7 +70,7 @@ class SegmentPillButton: UIButton {
 
     private lazy var unreadDotLayer: CALayer = {
         let unreadDotLayer = CALayer()
-        let unreadDotSize = tokens.unreadDotSize
+        let unreadDotSize = segmentedControl.tokenValue(\.unreadDotSize)
         unreadDotLayer.bounds.size = CGSize(width: unreadDotSize, height: unreadDotSize)
         unreadDotLayer.cornerRadius = unreadDotSize / 2
         return unreadDotLayer
@@ -92,12 +87,12 @@ class SegmentPillButton: UIButton {
             let anchor = self.titleLabel?.frame ?? .zero
             let xPos: CGFloat
             if effectiveUserInterfaceLayoutDirection == .leftToRight {
-                xPos = anchor.maxX + tokens.unreadDotOffsetX
+                xPos = anchor.maxX + segmentedControl.tokenValue(\.unreadDotOffsetX)
             } else {
-                xPos = anchor.minX - tokens.unreadDotOffsetX - tokens.unreadDotSize
+                xPos = anchor.minX - segmentedControl.tokenValue(\.unreadDotOffsetX) - segmentedControl.tokenValue(\.unreadDotSize)
             }
-            unreadDotLayer.frame.origin = CGPoint(x: xPos, y: anchor.minY + tokens.unreadDotOffsetY)
-            let unreadDotColor = isEnabled ? tokens.enabledUnreadDotColor : tokens.disabledUnreadDotColor
+            unreadDotLayer.frame.origin = CGPoint(x: xPos, y: anchor.minY + segmentedControl.tokenValue(\.unreadDotOffsetY))
+            let unreadDotColor = isEnabled ? segmentedControl.tokenValue(\.enabledUnreadDotColor) : segmentedControl.tokenValue(\.disabledUnreadDotColor)
             unreadDotLayer.backgroundColor = UIColor(dynamicColor: unreadDotColor).cgColor
         }
     }

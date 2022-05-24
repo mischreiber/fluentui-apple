@@ -33,8 +33,8 @@ import UIKit
             return
         }
 
-        let style = notification.tokens.style
-        let presentationOffset: CGFloat! = notification.tokens.presentationOffset
+        let style = notification.tokenValue(\.style)
+        let presentationOffset = notification.tokenValue(\.presentationOffset)
         if style.isToast, let currentToast = MSFNotification.currentToast, currentToast.window != nil {
             currentToast.hide {
                 self.showNotification(in: view, completion: completion)
@@ -61,7 +61,7 @@ import UIKit
         if isHalfLength {
             constraints.append(self.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5))
         } else {
-            let padding = notification.tokens.presentationOffset
+            let padding = presentationOffset
             constraints.append(self.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -2 * padding))
         }
         NSLayoutConstraint.activate(constraints)
@@ -118,7 +118,7 @@ import UIKit
         }
         if animated && !isHiding {
             isHiding = true
-            UIView.animate(withDuration: notification.tokens.style.animationDurationForHide, animations: {
+            UIView.animate(withDuration: notification.state.style.animationDurationForHide, animations: {
                 self.constraintWhenShown.isActive = false
                 self.constraintWhenHidden.isActive = true
                 self.superview?.layoutIfNeeded()

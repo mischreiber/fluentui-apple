@@ -46,9 +46,9 @@ public struct HeadsUpDisplay: View, ConfigurableTokenizedControl {
     public var body: some View {
         let label = state.label ?? ""
         let type = state.type
-        let foregroundColor = Color(dynamicColor: tokens.foregroundColor)
-        let verticalPadding = tokens.verticalPadding
-        let horizontalPadding = tokens.horizontalPadding
+        let foregroundColor = Color(dynamicColor: tokenValue(\.foregroundColor))
+        let verticalPadding = tokenValue(\.verticalPadding)
+        let horizontalPadding = tokenValue(\.horizontalPadding)
 
         HStack(alignment: .center) {
             VStack {
@@ -56,7 +56,7 @@ public struct HeadsUpDisplay: View, ConfigurableTokenizedControl {
                 case .activity:
                     ActivityIndicator(size: .xLarge)
                         .isAnimating(true)
-                        .color(UIColor(dynamicColor: tokens.foregroundColor))
+                        .color(UIColor(dynamicColor: tokenValue(\.foregroundColor)))
                 case .custom, .failure, .success:
                     let image: UIImage = {
                         switch type {
@@ -90,14 +90,14 @@ public struct HeadsUpDisplay: View, ConfigurableTokenizedControl {
                             leading: horizontalPadding,
                             bottom: verticalPadding,
                             trailing: horizontalPadding))
-        .squareShaped(minSize: tokens.minSize,
-                      maxSize: tokens.maxSize)
+        .squareShaped(minSize: tokenValue(\.minSize),
+                      maxSize: tokenValue(\.maxSize))
         .background(Rectangle()
-                        .fill(Color(dynamicColor: tokens.backgroundColor))
+                        .fill(Color(dynamicColor: tokenValue(\.backgroundColor)))
                         .frame(maxWidth: .infinity,
                                maxHeight: .infinity,
                                alignment: .center)
-                        .cornerRadius(tokens.cornerRadius)
+                        .cornerRadius(tokenValue(\.cornerRadius))
         )
         .contentShape(Rectangle())
         .onChange(of: isPresented, perform: { present in
@@ -144,9 +144,6 @@ public struct HeadsUpDisplay: View, ConfigurableTokenizedControl {
     }
 
     let defaultTokens: HeadsUpDisplayTokens = .init()
-    var tokens: HeadsUpDisplayTokens {
-        return resolvedTokens
-    }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @Binding var isPresented: Bool
     @ObservedObject var state: MSFHUDStateImpl

@@ -36,11 +36,9 @@ public struct FluentButton: View, ConfigurableTokenizedControl {
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFButtonStateImpl
     let defaultTokens: ButtonTokens = .init()
-    var tokens: ButtonTokens {
-        let tokens = resolvedTokens
-        tokens.size = state.size
-        tokens.style = state.style
-        return tokens
+    func configureTokens(_ tokens: ButtonTokens?) {
+        tokens?.size = state.size
+        tokens?.style = state.style
     }
 
     /// Creates a FluentButton.
@@ -66,7 +64,9 @@ public struct FluentButton: View, ConfigurableTokenizedControl {
     public var body: some View {
         Button(action: state.action, label: {})
             .buttonStyle(FluentButtonStyle(state: state,
-                                           tokensLookup: { tokens }))
+                                           defaultTokens: defaultTokens,
+                                           themeTokens: themeTokens,
+                                           overrideTokens: overrideTokens))
             .disabled(state.disabled ?? false)
             .frame(maxWidth: .infinity)
     }
@@ -104,56 +104,60 @@ class MSFButtonStateImpl: NSObject, ObservableObject, ControlConfiguration, MSFB
 }
 
 /// Body of the button adjusted for pressed or rest state
-struct FluentButtonBody: View {
+struct FluentButtonBody: View, TokenizedControlInternal {
+    @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @Environment(\.isEnabled) var isEnabled: Bool
     @ObservedObject var state: MSFButtonStateImpl
-    var tokens: ButtonTokens { tokensLookup() }
-    let tokensLookup: (() -> ButtonTokens)
     let isPressed: Bool
+
+    let defaultTokens: ButtonTokens
+    let themeTokens: ButtonTokens?
+    let overrideTokens: ButtonTokens?
+    func overrideTokens(_ tokens: ButtonTokens?) -> FluentButtonBody { return self }
 
     var body: some View {
         let isDisabled = !isEnabled
         let isFocused = state.isFocused
-        let isFloatingStyle = tokens.style.isFloatingStyle
+        let isFloatingStyle = tokenValue(\.style).isFloatingStyle
         let shouldUsePressedShadow = isDisabled || isPressed
-        let verticalPadding = tokens.minVerticalPadding
-        let horizontalPadding = tokens.horizontalPadding
+        let verticalPadding = tokenValue(\.minVerticalPadding)
+        let horizontalPadding = tokenValue(\.horizontalPadding)
         let iconColor: DynamicColor
         let textColor: DynamicColor
         let borderColor: DynamicColor
         let backgroundColor: DynamicColor
         if isDisabled {
-            iconColor = tokens.iconColor.disabled
-            textColor = tokens.textColor.disabled
-            borderColor = tokens.borderColor.disabled
-            backgroundColor = tokens.backgroundColor.disabled
+            iconColor = tokenValue(\.iconColor).disabled
+            textColor = tokenValue(\.textColor).disabled
+            borderColor = tokenValue(\.borderColor).disabled
+            backgroundColor = tokenValue(\.backgroundColor).disabled
         } else if isPressed || isFocused {
-            iconColor = tokens.iconColor.pressed
-            textColor = tokens.textColor.pressed
-            borderColor = tokens.borderColor.pressed
-            backgroundColor = tokens.backgroundColor.pressed
+            iconColor = tokenValue(\.iconColor).pressed
+            textColor = tokenValue(\.textColor).pressed
+            borderColor = tokenValue(\.borderColor).pressed
+            backgroundColor = tokenValue(\.backgroundColor).pressed
         } else {
-            iconColor = tokens.iconColor.rest
-            textColor = tokens.textColor.rest
-            borderColor = tokens.borderColor.rest
-            backgroundColor = tokens.backgroundColor.rest
+            iconColor = tokenValue(\.iconColor).rest
+            textColor = tokenValue(\.textColor).rest
+            borderColor = tokenValue(\.borderColor).rest
+            backgroundColor = tokenValue(\.backgroundColor).rest
         }
 
         @ViewBuilder
         var buttonContent: some View {
-            HStack(spacing: tokens.interspace) {
+            HStack(spacing: tokenValue(\.interspace)) {
                 if let image = state.image {
                     Image(uiImage: image)
                         .resizable()
                         .foregroundColor(Color(dynamicColor: iconColor))
-                        .frame(width: tokens.iconSize, height: tokens.iconSize, alignment: .center)
+                        .frame(width: tokenValue(\.iconSize), height: tokenValue(\.iconSize), alignment: .center)
                 }
                 if let text = state.text {
                     Text(text)
                         .multilineTextAlignment(.center)
-                        .font(.fluent(tokens.textFont, shouldScale: !isFloatingStyle))
+                        .font(.fluent(tokenValue(\.textFont), shouldScale: !isFloatingStyle))
                         .modifyIf(isFloatingStyle, { view in
-                            view.frame(minHeight: tokens.textMinimumHeight)
+                            view.frame(minHeight: tokenValue(\.textMinimumHeight))
                         })
                 }
             }
@@ -162,28 +166,28 @@ struct FluentButtonBody: View {
                                 bottom: verticalPadding,
                                 trailing: horizontalPadding))
             .modifyIf(isFloatingStyle && !(state.text?.isEmpty ?? true), { view in
-                view.padding(.horizontal, tokens.textAdditionalHorizontalPadding )
+                view.padding(.horizontal, tokenValue(\.textAdditionalHorizontalPadding) )
             })
-            .frame(maxWidth: .infinity, minHeight: tokens.minHeight, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, minHeight: tokenValue(\.minHeight), maxHeight: .infinity)
             .foregroundColor(Color(dynamicColor: textColor))
         }
 
         @ViewBuilder
         var buttonBackground: some View {
-            if tokens.borderSize > 0 {
+            if tokenValue(\.borderSize) > 0 {
                 buttonContent.background(
-                    RoundedRectangle(cornerRadius: tokens.borderRadius)
-                        .strokeBorder(lineWidth: tokens.borderSize, antialiased: false)
+                    RoundedRectangle(cornerRadius: tokenValue(\.borderRadius))
+                        .strokeBorder(lineWidth: tokenValue(\.borderSize), antialiased: false)
                         .foregroundColor(Color(dynamicColor: borderColor))
                         .contentShape(Rectangle()))
             } else {
                 buttonContent.background(
-                    RoundedRectangle(cornerRadius: tokens.borderRadius)
+                    RoundedRectangle(cornerRadius: tokenValue(\.borderRadius))
                         .fill(Color(dynamicColor: backgroundColor)))
             }
         }
 
-        let shadowInfo = shouldUsePressedShadow ? tokens.pressedShadow : tokens.restShadow
+        let shadowInfo = shouldUsePressedShadow ? tokenValue(\.pressedShadow) : tokenValue(\.restShadow)
 
         @ViewBuilder
         var button: some View {
@@ -201,7 +205,7 @@ struct FluentButtonBody: View {
                     .contentShape(Capsule())
             } else {
                 buttonBackground
-                    .contentShape(RoundedRectangle(cornerRadius: tokens.borderRadius))
+                    .contentShape(RoundedRectangle(cornerRadius: tokenValue(\.borderRadius)))
             }
         }
 
@@ -213,11 +217,15 @@ struct FluentButtonBody: View {
 /// ButtonStyle which configures the Button View according to its state and design tokens.
 struct FluentButtonStyle: ButtonStyle {
     @ObservedObject var state: MSFButtonStateImpl
-    let tokensLookup: () -> ButtonTokens
+    let defaultTokens: ButtonTokens
+    let themeTokens: ButtonTokens?
+    let overrideTokens: ButtonTokens?
 
     func makeBody(configuration: Self.Configuration) -> some View {
         FluentButtonBody(state: state,
-                         tokensLookup: tokensLookup,
-                         isPressed: configuration.isPressed)
+                         isPressed: configuration.isPressed,
+                         defaultTokens: defaultTokens,
+                         themeTokens: themeTokens,
+                         overrideTokens: overrideTokens)
     }
 }

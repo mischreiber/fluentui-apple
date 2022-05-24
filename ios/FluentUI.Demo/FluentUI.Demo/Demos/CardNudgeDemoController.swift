@@ -260,6 +260,15 @@ extension CardNudgeDemoController: DemoAppearanceDelegate {
     // MARK: - Custom tokens
 
     private class ThemeWideOverrideCardNudgeTokens: CardNudgeTokens {
+        override var outlineWidth: CGFloat {
+            return 10.0
+        }
+
+        override var outlineColor: DynamicColor {
+            return DynamicColor(light: GlobalTokens().sharedColors[.darkRed][.tint50],
+                                dark: GlobalTokens().sharedColors[.darkRed][.shade40])
+        }
+
         override var backgroundColor: DynamicColor {
             // "Hot Pink"
             return DynamicColor(light: GlobalTokens().sharedColors[.hotPink][.tint50],

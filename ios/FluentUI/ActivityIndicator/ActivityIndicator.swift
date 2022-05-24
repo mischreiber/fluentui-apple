@@ -39,10 +39,10 @@ public struct ActivityIndicator: View, ConfigurableTokenizedControl {
     }
 
     public var body: some View {
-        let side = tokens.side
+        let side = tokenValue(\.side)
         let color: Color = {
             guard let stateUIColor = state.color else {
-                return Color(dynamicColor: tokens.defaultColor)
+                return Color(dynamicColor: tokenValue(\.defaultColor))
             }
 
             return Color(stateUIColor)
@@ -59,7 +59,7 @@ public struct ActivityIndicator: View, ConfigurableTokenizedControl {
         }()
 
         SemiRing(color: color,
-                 thickness: tokens.thickness,
+                 thickness: tokenValue(\.thickness),
                  accessibilityLabel: accessibilityLabel)
             .modifyIf(state.isAnimating, { animatedView in
                 animatedView
@@ -83,10 +83,8 @@ public struct ActivityIndicator: View, ConfigurableTokenizedControl {
     }
 
     let defaultTokens: ActivityIndicatorTokens = .init()
-    var tokens: ActivityIndicatorTokens {
-        let tokens = resolvedTokens
-        tokens.size = state.size
-        return tokens
+    func configureTokens(_ tokens: ActivityIndicatorTokens?) {
+        tokens?.size = state.size
     }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFActivityIndicatorStateImpl

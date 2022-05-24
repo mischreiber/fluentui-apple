@@ -13,25 +13,25 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     let item: TabBarItem
 
     var defaultTokens: TabBarTokens = .init()
-    var tokens: TabBarTokens = .init()
+    var themeTokens: TabBarTokens? {
+        didSet {
+            updateColors()
+            updateBadgeView()
+            updateLayout()
+        }
+    }
     var overrideTokens: TabBarTokens? {
         didSet {
-            updateTabBarItemTokens()
             updateColors()
             updateBadgeView()
             updateLayout()
         }
     }
 
-    private func updateTabBarItemTokens() {
-        self.tokens = resolvedTokens
-    }
-
     @objc private func themeDidChange(_ notification: Notification) {
         guard let window = window, window.isEqual(notification.object) else {
             return
         }
-        updateTabBarItemTokens()
         updateColors()
     }
 
@@ -57,7 +57,7 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     }
 
     /// Maximum width for the badge view where the badge value is displayed.
-    lazy var maxBadgeWidth: CGFloat = tokens.defaultBadgeMaxWidth {
+    lazy var maxBadgeWidth: CGFloat = tokenValue(\.defaultBadgeMaxWidth) {
         didSet {
             if oldValue != maxBadgeWidth {
                 updateBadgeView()
@@ -97,7 +97,6 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     init(item: TabBarItem, showsTitle: Bool, canResizeImage: Bool = true) {
         self.canResizeImage = canResizeImage
         self.item = item
-        self.suggestImageSize = tokens.portraitImageSize
         super.init(frame: .zero)
 
         container.addArrangedSubview(imageView)
@@ -194,7 +193,7 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor(dynamicColor: tokens.unselectedColor)
+        imageView.tintColor = UIColor(dynamicColor: tokenValue(\.unselectedColor))
 
         if canResizeImage {
             let sizeConstraints = (
@@ -214,14 +213,14 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
         let titleLabel = Label()
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.textAlignment = .center
-        titleLabel.textColor = UIColor(dynamicColor: tokens.unselectedColor)
+        titleLabel.textColor = UIColor(dynamicColor: tokenValue(\.unselectedColor))
 
         return titleLabel
     }()
 
     let badgeView: UILabel = BadgeLabel(frame: .zero)
 
-    private var suggestImageSize: CGFloat {
+    private lazy var suggestImageSize: CGFloat = tokenValue(\.portraitImageSize) {
         didSet {
             if canResizeImage,
                let sizeConstraints = imageViewSizeConstraints {
@@ -246,8 +245,8 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     }
 
     private func updateColors() {
-        titleLabel.highlightedTextColor = UIColor(dynamicColor: tokens.selectedColor)
-        imageView.tintColor = isSelected ? UIColor(dynamicColor: tokens.selectedColor) : UIColor(dynamicColor: tokens.unselectedColor)
+        titleLabel.highlightedTextColor = UIColor(dynamicColor: tokenValue(\.selectedColor))
+        imageView.tintColor = isSelected ? UIColor(dynamicColor: tokenValue(\.selectedColor)) : UIColor(dynamicColor: tokenValue(\.unselectedColor))
     }
 
     private func updateLayout() {
@@ -256,18 +255,18 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
 
         if isInPortraitMode {
             container.axis = .vertical
-            container.spacing = tokens.spacingVertical
-            titleLabel.font = UIFont.fluent(tokens.titleLabelPortrait, shouldScale: false)
+            container.spacing = tokenValue(\.spacingVertical)
+            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelPortrait), shouldScale: false)
 
             if canResizeImage {
-                suggestImageSize = titleLabel.isHidden ? tokens.portraitImageSize : tokens.portraitImageWithLabelSize
+                suggestImageSize = titleLabel.isHidden ? tokenValue(\.portraitImageSize) : tokenValue(\.portraitImageWithLabelSize)
             }
         } else {
             container.axis = .horizontal
-            container.spacing = tokens.spacingHorizontal
-            titleLabel.font = UIFont.fluent(tokens.titleLabelLandscape, shouldScale: false)
+            container.spacing = tokenValue(\.spacingHorizontal)
+            titleLabel.font = UIFont.fluent(tokenValue(\.titleLabelLandscape), shouldScale: false)
             if canResizeImage {
-                 suggestImageSize = tokens.landscapeImageSize
+                 suggestImageSize = tokenValue(\.landscapeImageSize)
             }
         }
 
@@ -284,34 +283,34 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
             maskLayer.fillRule = .evenOdd
 
             let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: imageView.frame.size.width, height: imageView.frame.size.height))
-            let badgeVerticalOffset = !titleLabel.isHidden && isInPortraitMode ? tokens.badgePortraitTitleVerticalOffset : tokens.badgeVerticalOffset
+            let badgeVerticalOffset = !titleLabel.isHidden && isInPortraitMode ? tokenValue(\.badgePortraitTitleVerticalOffset) : tokenValue(\.badgeVerticalOffset)
 
             if badgeView.text?.count ?? 1 > 1 {
-                let badgeWidth = min(max(badgeView.intrinsicContentSize.width + tokens.badgeHorizontalPadding, tokens.badgeMinWidth), maxBadgeWidth)
+                let badgeWidth = min(max(badgeView.intrinsicContentSize.width + tokenValue(\.badgeHorizontalPadding), tokenValue(\.badgeMinWidth)), maxBadgeWidth)
 
-                badgeView.frame = CGRect(x: badgeFrameOriginX(offset: tokens.multiDigitBadgeHorizontalOffset, frameWidth: badgeWidth),
+                badgeView.frame = CGRect(x: badgeFrameOriginX(offset: tokenValue(\.multiDigitBadgeHorizontalOffset), frameWidth: badgeWidth),
                                          y: imageView.frame.origin.y + badgeVerticalOffset,
                                          width: badgeWidth,
-                                         height: tokens.badgeHeight)
+                                         height: tokenValue(\.badgeHeight))
 
                 let layer = CAShapeLayer()
                 layer.path = UIBezierPath(roundedRect: badgeView.bounds,
                                           byRoundingCorners: .allCorners,
-                                          cornerRadii: CGSize(width: tokens.badgeCornerRadii, height: tokens.badgeCornerRadii)).cgPath
+                                          cornerRadii: CGSize(width: tokenValue(\.badgeCornerRadii), height: tokenValue(\.badgeCornerRadii))).cgPath
 
                 path.append(UIBezierPath(roundedRect: badgeBorderRect(badgeViewFrame: badgeView.frame),
                                          byRoundingCorners: .allCorners,
-                                         cornerRadii: CGSize(width: tokens.badgeCornerRadii, height: tokens.badgeCornerRadii)))
+                                         cornerRadii: CGSize(width: tokenValue(\.badgeCornerRadii), height: tokenValue(\.badgeCornerRadii))))
 
                 badgeView.layer.mask = layer
                 badgeView.layer.cornerRadius = 0
             } else {
-                let badgeWidth = max(badgeView.intrinsicContentSize.width, tokens.badgeMinWidth)
+                let badgeWidth = max(badgeView.intrinsicContentSize.width, tokenValue(\.badgeMinWidth))
 
-                badgeView.frame = CGRect(x: badgeFrameOriginX(offset: tokens.singleDigitBadgeHorizontalOffset, frameWidth: badgeWidth),
+                badgeView.frame = CGRect(x: badgeFrameOriginX(offset: tokenValue(\.singleDigitBadgeHorizontalOffset), frameWidth: badgeWidth),
                                          y: imageView.frame.origin.y + badgeVerticalOffset,
                                          width: badgeWidth,
-                                         height: tokens.badgeHeight)
+                                         height: tokenValue(\.badgeHeight))
 
                 path.append(UIBezierPath(ovalIn: badgeBorderRect(badgeViewFrame: badgeView.frame)))
 
@@ -338,10 +337,11 @@ class TabBarItemView: UIControl, TokenizedControlInternal {
     }
 
     private func badgeBorderRect(badgeViewFrame: CGRect) -> CGRect {
-        return CGRect(x: badgeViewFrame.origin.x - tokens.badgeBorderWidth - imageView.frame.origin.x,
-                      y: badgeViewFrame.origin.y - tokens.badgeBorderWidth - imageView.frame.origin.y,
-                      width: badgeViewFrame.size.width + 2 * tokens.badgeBorderWidth,
-                      height: badgeViewFrame.size.height + 2 * tokens.badgeBorderWidth)
+        let badgeBorderWidth = tokenValue(\.badgeBorderWidth)
+        return CGRect(x: badgeViewFrame.origin.x - badgeBorderWidth - imageView.frame.origin.x,
+                      y: badgeViewFrame.origin.y - badgeBorderWidth - imageView.frame.origin.y,
+                      width: badgeViewFrame.size.width + 2 * badgeBorderWidth,
+                      height: badgeViewFrame.size.height + 2 * badgeBorderWidth)
     }
 
     @objc private func badgeValueDidChange() {

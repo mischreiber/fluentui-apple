@@ -42,28 +42,26 @@ public struct FluentDivider: View, ConfigurableTokenizedControl {
 
     public var body: some View {
         let isHorizontal = state.orientation == .horizontal
-        let color = Color(dynamicColor: tokens.color)
+        let color = Color(dynamicColor: tokenValue(\.color))
 
         return Rectangle()
             .fill(color)
             .frame(width: isHorizontal ? nil : state.thickness,
                    height: isHorizontal ? state.thickness : nil)
             .padding(isHorizontal ?
-                     EdgeInsets(top: tokens.padding,
+                     EdgeInsets(top: tokenValue(\.padding),
                                 leading: 0,
-                                bottom: tokens.padding,
+                                bottom: tokenValue(\.padding),
                                 trailing: 0)
                      : EdgeInsets(top: 0,
-                                  leading: tokens.padding,
+                                  leading: tokenValue(\.padding),
                                   bottom: 0,
-                                  trailing: tokens.padding))
+                                  trailing: tokenValue(\.padding)))
     }
 
     let defaultTokens: DividerTokens = .init()
-    var tokens: DividerTokens {
-        let tokens = resolvedTokens
-        tokens.spacing = state.spacing
-        return tokens
+    func configureTokens(_ tokens: DividerTokens?) {
+        tokens?.spacing = state.spacing
     }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFDividerStateImpl

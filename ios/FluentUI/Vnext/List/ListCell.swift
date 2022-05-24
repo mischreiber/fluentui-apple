@@ -273,27 +273,27 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
         let sublabelColor: Color
         let trailingItemColor: DynamicColor
         if state.isSelected {
-            labelColor = Color(dynamicColor: tokens.labelSelectedColor)
-            sublabelColor = Color(dynamicColor: tokens.sublabelSelectedColor)
-            trailingItemColor = tokens.trailingItemSelectedForegroundColor
+            labelColor = Color(dynamicColor: tokenValue(\.labelSelectedColor))
+            sublabelColor = Color(dynamicColor: tokenValue(\.sublabelSelectedColor))
+            trailingItemColor = tokenValue(\.trailingItemSelectedForegroundColor)
         } else {
-            labelColor = Color(dynamicColor: tokens.labelColor)
-            sublabelColor = Color(dynamicColor: tokens.sublabelColor)
-            trailingItemColor = tokens.trailingItemForegroundColor
+            labelColor = Color(dynamicColor: tokenValue(\.labelColor))
+            sublabelColor = Color(dynamicColor: tokenValue(\.sublabelColor))
+            trailingItemColor = tokenValue(\.trailingItemForegroundColor)
         }
-        let horizontalCellPadding: CGFloat = tokens.horizontalCellPadding
-        let leadingViewAreaSize: CGFloat = tokens.leadingViewAreaSize
+        let horizontalCellPadding: CGFloat = tokenValue(\.horizontalCellPadding)
+        let leadingViewAreaSize: CGFloat = tokenValue(\.leadingViewAreaSize)
 
         @ViewBuilder
         var cellLabel: some View {
-            let leadingViewSize: CGFloat = tokens.leadingViewSize
+            let leadingViewSize: CGFloat = tokenValue(\.leadingViewSize)
 
             HStack(spacing: 0) {
                 let title = state.title
-                let labelAccessoryInterspace: CGFloat = tokens.labelAccessoryInterspace
-                let labelAccessorySize: CGFloat = tokens.labelAccessorySize
-                let sublabelAccessorySize: CGFloat = tokens.sublabelAccessorySize
-                let trailingItemSize: CGFloat = tokens.trailingItemSize
+                let labelAccessoryInterspace: CGFloat = tokenValue(\.labelAccessoryInterspace)
+                let labelAccessorySize: CGFloat = tokenValue(\.labelAccessorySize)
+                let sublabelAccessorySize: CGFloat = tokenValue(\.sublabelAccessorySize)
+                let trailingItemSize: CGFloat = tokenValue(\.trailingItemSize)
 
                 if let leadingView = state.leadingView {
                     HStack(alignment: .center, spacing: 0) {
@@ -314,7 +314,7 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
                         if !title.isEmpty {
                             Text(title)
                                 .animation(nil, value: title)
-                                .font(.fluent(tokens.labelFont))
+                                .font(.fluent(tokenValue(\.labelFont)))
                                 .foregroundColor(labelColor)
                                 .lineLimit(state.titleLineLimit == 0 ? nil : state.titleLineLimit)
                         }
@@ -334,7 +334,7 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
                         if !state.subtitle.isEmpty {
                             Text(state.subtitle)
                                 .font(.fluent(state.footnote.isEmpty ?
-                                                            tokens.footnoteFont : tokens.sublabelFont))
+                                                            tokenValue(\.footnoteFont) : tokenValue(\.sublabelFont)))
                                 .foregroundColor(sublabelColor)
                                 .lineLimit(state.subtitleLineLimit == 0 ? nil : state.subtitleLineLimit)
                         }
@@ -353,7 +353,7 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
                         }
                         if !state.footnote.isEmpty {
                             Text(state.footnote)
-                                .font(.fluent(tokens.footnoteFont))
+                                .font(.fluent(tokenValue(\.footnoteFont)))
                                 .foregroundColor(sublabelColor)
                                 .lineLimit(state.footnoteLineLimit == 0 ? nil : state.footnoteLineLimit)
                         }
@@ -380,14 +380,14 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
                         : state.accessoryType
                     if accessoryType != .none, let accessoryIcon = accessoryType.icon {
                         let isDisclosure = accessoryType == .disclosure
-                        let disclosureSize = tokens.disclosureSize
+                        let disclosureSize = tokenValue(\.disclosureSize)
                         Image(uiImage: accessoryIcon)
                             .resizable()
                             .foregroundColor(Color(dynamicColor: isDisclosure ?
-                                                   tokens.disclosureIconForegroundColor : trailingItemColor))
+                                                   tokenValue(\.disclosureIconForegroundColor) : trailingItemColor))
                             .frame(width: isDisclosure ? disclosureSize : trailingItemSize,
                                    height: isDisclosure ? disclosureSize : trailingItemSize)
-                            .padding(.leading, isDisclosure ? tokens.disclosureInterspace : tokens.iconInterspace)
+                            .padding(.leading, isDisclosure ? tokenValue(\.disclosureInterspace) : tokenValue(\.iconInterspace))
                     }
                 }
             }
@@ -413,7 +413,10 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
             }, label: {
                 cellLabel
             })
-            .buttonStyle(ListCellButtonStyle(tokens: tokens, state: state))
+            .buttonStyle(ListCellButtonStyle(state: state,
+                                             defaultTokens: defaultTokens,
+                                             themeTokens: themeTokens,
+                                             overrideTokens: overrideTokens))
 
             if state.hasDivider {
                 let padding = horizontalCellPadding +
@@ -440,33 +443,36 @@ struct MSFListCellView: View, ConfigurableTokenizedControl {
     }
 
     let defaultTokens: CellBaseTokens = .init()
-    var tokens: CellBaseTokens {
-        let tokens = resolvedTokens
-        tokens.cellLeadingViewSize = state.leadingViewSize
-        return tokens
+    func configureTokens(_ tokens: CellBaseTokens?) {
+        tokens?.cellLeadingViewSize = state.leadingViewSize
     }
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFListCellStateImpl
 }
 
-struct ListCellButtonStyle: ButtonStyle {
-    let tokens: CellBaseTokens
+struct ListCellButtonStyle: ButtonStyle, TokenizedControlInternal {
+    @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFListCellStateImpl
+
+    let defaultTokens: CellBaseTokens
+    let themeTokens: CellBaseTokens?
+    let overrideTokens: CellBaseTokens?
+    func overrideTokens(_ tokens: CellBaseTokens?) -> ListCellButtonStyle { return self }
 
     func makeBody(configuration: Self.Configuration) -> some View {
         let height: CGFloat
-        let horizontalCellPadding: CGFloat = tokens.horizontalCellPadding
-        let verticalCellPadding: CGFloat = tokens.verticalCellPadding
+        let horizontalCellPadding: CGFloat = tokenValue(\.horizontalCellPadding)
+        let verticalCellPadding: CGFloat = tokenValue(\.verticalCellPadding)
         switch state.layoutType {
         case .automatic:
-            height = !state.footnote.isEmpty ? tokens.cellHeightThreeLines :
-                    (!state.subtitle.isEmpty ? tokens.cellHeightTwoLines : tokens.cellHeightOneLine)
+            height = !state.footnote.isEmpty ? tokenValue(\.cellHeightThreeLines) :
+                    (!state.subtitle.isEmpty ? tokenValue(\.cellHeightTwoLines) : tokenValue(\.cellHeightOneLine))
         case .oneLine:
-            height = tokens.cellHeightOneLine
+            height = tokenValue(\.cellHeightOneLine)
         case .twoLines:
-            height = tokens.cellHeightTwoLines
+            height = tokenValue(\.cellHeightTwoLines)
         case .threeLines:
-            height = tokens.cellHeightThreeLines
+            height = tokenValue(\.cellHeightThreeLines)
         }
         return configuration.label
             .contentShape(Rectangle())
@@ -481,14 +487,14 @@ struct ListCellButtonStyle: ButtonStyle {
     private func backgroundColor(_ isPressed: Bool = false) -> Color {
         let highlightedBackgroundColor: Color = {
             guard let stateHighlightedBackgroundColor = state.highlightedBackgroundColor else {
-                return Color(dynamicColor: tokens.highlightedBackgroundColor)
+                return Color(dynamicColor: tokenValue(\.highlightedBackgroundColor))
             }
             return Color(stateHighlightedBackgroundColor)
         }()
 
         let backgroundColor: Color = {
             guard let stateBackgroundColor = state.backgroundColor else {
-                return Color(dynamicColor: tokens.backgroundColor)
+                return Color(dynamicColor: tokenValue(\.backgroundColor))
             }
             return Color(stateBackgroundColor)
         }()
