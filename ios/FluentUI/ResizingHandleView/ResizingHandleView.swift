@@ -20,13 +20,13 @@ open class ResizingHandleView: UIView, TokenizedControlInternal {
         let markLayer = CALayer()
         markLayer.bounds.size = Constants.markSize
         markLayer.cornerRadius = Constants.markCornerRadius
-        markLayer.backgroundColor = UIColor(dynamicColor: tokens.markColor).cgColor
+        markLayer.backgroundColor = UIColor(dynamicColor: tokenValue(\.markColor)).cgColor
         return markLayer
     }()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(dynamicColor: tokens.backgroundColor)
+        backgroundColor = UIColor(dynamicColor: tokenValue(\.backgroundColor))
         self.frame.size.height = ResizingHandleView.height
         autoresizingMask = .flexibleWidth
         setContentHuggingPriority(.required, for: .vertical)
@@ -70,28 +70,21 @@ open class ResizingHandleView: UIView, TokenizedControlInternal {
     }
 
     var defaultTokens: ResizingHandleTokens = .init()
-    var tokens: ResizingHandleTokens = .init()
     var overrideTokens: ResizingHandleTokens? {
         didSet {
-            updateResizingHandleTokens()
             updateColors()
         }
     }
 
-    private func updateResizingHandleTokens() {
-        self.tokens = resolvedTokens
-    }
-
     private func updateColors() {
-        markLayer.backgroundColor = UIColor(dynamicColor: tokens.markColor).cgColor
-        backgroundColor = customBackgroundColor ?? UIColor(dynamicColor: tokens.backgroundColor)
+        markLayer.backgroundColor = UIColor(dynamicColor: tokenValue(\.markColor)).cgColor
+        backgroundColor = customBackgroundColor ?? UIColor(dynamicColor: tokenValue(\.backgroundColor))
     }
 
     @objc private func themeDidChange(_ notification: Notification) {
         guard let window = window, window.isEqual(notification.object) else {
             return
         }
-        updateResizingHandleTokens()
         updateColors()
     }
 }

@@ -193,7 +193,7 @@ public struct FluentNotification: View, ConfigurableTokenizedControl {
             AttributedText(attributedMessage)
                 .fixedSize(horizontal: false, vertical: true)
         } else if let message = state.message {
-            let messageFont = hasSecondTextRow ? tokenValue(\.footnoteTextFont) : (state.style.isToast ? tokenValue(\.boldTextFont) : tokenValue(\.regularTextFont)
+            let messageFont = hasSecondTextRow ? tokenValue(\.footnoteTextFont) : (state.style.isToast ? tokenValue(\.boldTextFont) : tokenValue(\.regularTextFont))
             Text(message)
                 .font(.fluent(messageFont))
                 .foregroundColor(Color(dynamicColor: tokenValue(\.foregroundColor)))
