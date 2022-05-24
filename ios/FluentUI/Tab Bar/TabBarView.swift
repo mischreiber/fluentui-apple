@@ -191,44 +191,40 @@ open class TabBarView: UIView, TokenizedControlInternal {
     }
 
     private class CustomTabBarItemTokens: TabBarItemTokens {
-        var tabBarTokens: TabBarTokens
+        unowned var tabBar: TabBarView
 
         @available(*, unavailable)
         required init() {
             preconditionFailure("init() has not been implemented")
         }
 
-        init (tabBarTokens: TabBarTokens) {
-            self.tabBarTokens = tabBarTokens
+        init (tabBar: TabBarView) {
+            self.tabBar = tabBar
             super.init()
         }
 
         override var selectedColor: DynamicColor {
-            tabBarTokens.tabBarItemSelectedColor ?? super.selectedColor
+            tabBar.tokenValue(\.tabBarItemSelectedColor) ?? super.selectedColor
         }
 
         override var unselectedColor: DynamicColor {
-            tabBarTokens.tabBarItemUnselectedColor ?? super.unselectedColor
+            tabBar.tokenValue(\.tabBarItemUnselectedColor) ?? super.unselectedColor
         }
 
         override var titleLabelFontPortrait: FontInfo {
-            tabBarTokens.tabBarItemTitleLabelFontPortrait ?? super.titleLabelFontPortrait
+            tabBar.tokenValue(\.tabBarItemTitleLabelFontPortrait) ?? super.titleLabelFontPortrait
         }
 
         override var titleLabelFontLandscape: FontInfo {
-            tabBarTokens.tabBarItemTitleLabelFontLandscape ?? super.titleLabelFontLandscape
+            tabBar.tokenValue(\.tabBarItemTitleLabelFontLandscape) ?? super.titleLabelFontLandscape
         }
-
     }
 
     private func updateTabBarTokens() {
         let arrangedSubviews = stackView.arrangedSubviews
         for subview in arrangedSubviews {
             if let tabBarItemView = subview as? TabBarItemView {
-                tabBarItemView.defaultTokens = defaultTokens
-                tabBarItemView.themeTokens = themeTokens
-                tabBarItemView.overrideTokens = overrideTokens
-tabBarItemView.overrideTokens = CustomTabBarItemTokens.init(tabBarTokens: tokens)
+                tabBarItemView.overrideTokens = CustomTabBarItemTokens.init(tabBar: self)
             }
         }
     }
