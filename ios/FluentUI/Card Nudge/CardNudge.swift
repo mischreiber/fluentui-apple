@@ -49,8 +49,8 @@ public typealias CardNudgeButtonAction = ((_ state: MSFCardNudgeState) -> Void)
 public struct CardNudge: View, ConfigurableTokenizedControl {
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFCardNudgeStateImpl
+    @ObservedObject var tokenResolver: TokenResolver<CardNudgeTokens>
     let defaultTokens: CardNudgeTokens = .init()
-
     func configureTokens(_ tokens: CardNudgeTokens?) {
         tokens?.style = state.style
     }
@@ -162,7 +162,7 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
                     .strokeBorder(lineWidth: tokenValue(\.outlineWidth))
                     .foregroundColor(Color(dynamicColor: tokenValue(\.outlineColor)))
                     .background(
-                        Color(dynamicColor: tokenValue(\.backgroundColor))
+                        Color(dynamicColor: tokenResolver.tokenValue(\.backgroundColor))
                             .cornerRadius(tokenValue(\.cornerRadius))
                     )
             )
@@ -173,6 +173,9 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
     public init(style: MSFCardNudgeStyle, title: String) {
         let state = MSFCardNudgeStateImpl(style: style, title: title)
         self.state = state
+        self.tokenResolver = .init({ tokens in
+           tokens?.style = state.style
+       })
     }
 }
 

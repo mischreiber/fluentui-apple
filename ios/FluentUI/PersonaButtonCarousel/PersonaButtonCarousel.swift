@@ -86,8 +86,9 @@ public struct PersonaButtonCarousel: View, ConfigurableTokenizedControl {
     /// - Parameters:
     ///   - size: The MSFPersonaButtonSize value used by the `PersonaButtonCarousel`.
     public init(size: MSFPersonaButtonSize) {
-        let carouselState = MSFPersonaButtonCarouselStateImpl(size: size)
-        state = carouselState
+        let state = MSFPersonaButtonCarouselStateImpl(size: size)
+        self.state = state
+        self.tokenResolver = .init()
     }
 
     public var body: some View {
@@ -109,6 +110,7 @@ public struct PersonaButtonCarousel: View, ConfigurableTokenizedControl {
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFPersonaButtonCarouselStateImpl
+    @ObservedObject var tokenResolver: TokenResolver<PersonaButtonCarouselTokens>
     let defaultTokens: PersonaButtonCarouselTokens = .init()
 }
 

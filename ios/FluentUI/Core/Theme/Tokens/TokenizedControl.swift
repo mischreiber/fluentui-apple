@@ -28,8 +28,52 @@ protocol TokenizedControlInternal: TokenizedControl {
     /// Fetches the current token override.
     var overrideTokens: TokenType? { get }
 
+//    var tokenResolver: TokenResolver<TokenType> { get }
+
     /// Configures token sets with any additional information needed to render (e.g. `style`, `size`).
     func configureTokens(_ tokens: TokenType?)
+}
+
+class TokenResolver<TokenType: ControlTokens>: ObservableObject {
+    var defaultTokens: TokenType = .init()
+//    var themeTokens
+    var overrideTokens: TokenType?
+
+    var tokenConfig: ((TokenType?) -> Void)?
+
+    init(_ tokenConfig: ((_ tokens: TokenType?) -> Void)? = nil) {
+        self.tokenConfig = tokenConfig
+    }
+
+    /// Returns the appropriate token value for a given key path on this control's token set.
+    ///
+    /// This method looks for the first value that does not match the default value provided by `defaultTokens`.
+    /// Priority order for tokens are `overrideTokens`, `themeTokens`, then finally `defaultTokens`.
+    func tokenValue<ValueType: Equatable>(_ keyPath: KeyPath<TokenType, ValueType>) -> ValueType {
+        // Begin by ensuring that all tokens are properly configured with the current fluentTheme.
+        prepareTokens()
+
+        let defaultValue = defaultTokens[keyPath: keyPath]
+        if let overrideValue = overrideTokens?[keyPath: keyPath], overrideValue != defaultValue {
+            return overrideValue
+//        } else if let themeValue = themeTokens?[keyPath: keyPath], themeValue != defaultValue {
+//            return themeValue
+        } else {
+            return defaultValue
+        }
+    }
+
+    private func prepareTokens() {
+        let tokenSets: [TokenType?] = [overrideTokens, /*themeTokens,*/ defaultTokens]
+        tokenSets.forEach { tokens in
+            if let tokens = tokens {
+//                tokens.fluentTheme = fluentTheme
+                if let tokenConfig = tokenConfig {
+                    tokenConfig(tokens)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Extensions
