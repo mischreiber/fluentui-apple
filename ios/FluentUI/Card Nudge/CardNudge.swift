@@ -49,7 +49,7 @@ public typealias CardNudgeButtonAction = ((_ state: MSFCardNudgeState) -> Void)
 public struct CardNudge: View, ConfigurableTokenizedControl {
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
     @ObservedObject var state: MSFCardNudgeStateImpl
-    @ObservedObject var tokenResolver: TokenResolver<CardNudgeTokens>
+    @ObservedObject var tokens: TokenResolver<CardNudgeTokens> = .init()
     let defaultTokens: CardNudgeTokens = .init()
     func configureTokens(_ tokens: CardNudgeTokens?) {
         tokens?.style = state.style
@@ -59,15 +59,15 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
     var icon: some View {
         if let icon = state.mainIcon {
             ZStack {
-                RoundedRectangle(cornerRadius: tokenValue(\.circleRadius))
-                    .frame(width: tokenValue(\.circleSize), height: tokenValue(\.circleSize))
-                    .foregroundColor(Color(dynamicColor: tokenValue(\.buttonBackgroundColor)))
+                RoundedRectangle(cornerRadius: tokens.value(\.circleRadius))
+                    .frame(width: tokens.value(\.circleSize), height: tokens.value(\.circleSize))
+                    .foregroundColor(Color(dynamicColor: tokens.value(\.buttonBackgroundColor)))
                 Image(uiImage: icon)
                     .renderingMode(.template)
-                    .frame(width: tokenValue(\.iconSize), height: tokenValue(\.iconSize), alignment: .center)
-                    .foregroundColor(Color(dynamicColor: tokenValue(\.accentColor)))
+                    .frame(width: tokens.value(\.iconSize), height: tokens.value(\.iconSize), alignment: .center)
+                    .foregroundColor(Color(dynamicColor: tokens.value(\.accentColor)))
             }
-            .padding(.trailing, tokenValue(\.horizontalPadding))
+            .padding(.trailing, tokens.value(\.horizontalPadding))
         }
     }
 
@@ -77,33 +77,33 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
 
     @ViewBuilder
     var textContainer: some View {
-        VStack(alignment: .leading, spacing: tokenValue(\.interTextVerticalPadding)) {
+        VStack(alignment: .leading, spacing: tokens.value(\.interTextVerticalPadding)) {
             Text(state.title)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .lineLimit(1)
-                .foregroundColor(Color(dynamicColor: tokenValue(\.textColor)))
+                .foregroundColor(Color(dynamicColor: tokens.value(\.textColor)))
 
             if hasSecondTextRow {
-                HStack(spacing: tokenValue(\.accentPadding)) {
+                HStack(spacing: tokens.value(\.accentPadding)) {
                     if let accentIcon = state.accentIcon {
                         Image(uiImage: accentIcon)
                             .renderingMode(.template)
-                            .frame(width: tokenValue(\.accentIconSize), height: tokenValue(\.accentIconSize))
-                            .foregroundColor(Color(dynamicColor: tokenValue(\.accentColor)))
+                            .frame(width: tokens.value(\.accentIconSize), height: tokens.value(\.accentIconSize))
+                            .foregroundColor(Color(dynamicColor: tokens.value(\.accentColor)))
                     }
                     if let accent = state.accentText {
                         Text(accent)
                             .font(.subheadline)
                             .layoutPriority(1)
                             .lineLimit(1)
-                            .foregroundColor(Color(dynamicColor: tokenValue(\.accentColor)))
+                            .foregroundColor(Color(dynamicColor: tokens.value(\.accentColor)))
                     }
                     if let subtitle = state.subtitle {
                         Text(subtitle)
                             .font(.subheadline)
                             .lineLimit(1)
-                            .foregroundColor(Color(dynamicColor: tokenValue(\.subtitleTextColor)))
+                            .foregroundColor(Color(dynamicColor: tokens.value(\.subtitleTextColor)))
                     }
                 }
             }
@@ -119,12 +119,12 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
                     action(state)
                 }
                 .lineLimit(1)
-                .padding(.horizontal, tokenValue(\.buttonInnerPaddingHorizontal))
-                .padding(.vertical, tokenValue(\.verticalPadding))
-                .foregroundColor(Color(dynamicColor: tokenValue(\.accentColor)))
+                .padding(.horizontal, tokens.value(\.buttonInnerPaddingHorizontal))
+                .padding(.vertical, tokens.value(\.verticalPadding))
+                .foregroundColor(Color(dynamicColor: tokens.value(\.accentColor)))
                 .background(
-                    RoundedRectangle(cornerRadius: tokenValue(\.circleRadius))
-                        .foregroundColor(Color(dynamicColor: tokenValue(\.buttonBackgroundColor)))
+                    RoundedRectangle(cornerRadius: tokens.value(\.circleRadius))
+                        .foregroundColor(Color(dynamicColor: tokens.value(\.buttonBackgroundColor)))
                 )
             }
             if let dismissAction = state.dismissButtonAction {
@@ -133,10 +133,10 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
                 }, label: {
                     Image("dismiss-20x20", bundle: FluentUIFramework.resourceBundle)
                 })
-                .padding(.horizontal, tokenValue(\.buttonInnerPaddingHorizontal))
-                .padding(.vertical, tokenValue(\.verticalPadding))
+                .padding(.horizontal, tokens.value(\.buttonInnerPaddingHorizontal))
+                .padding(.vertical, tokens.value(\.verticalPadding))
                 .accessibility(identifier: "Accessibility.Dismiss.Label")
-                .foregroundColor(Color(dynamicColor: tokenValue(\.textColor)))
+                .foregroundColor(Color(dynamicColor: tokens.value(\.textColor)))
             }
         }
     }
@@ -146,36 +146,36 @@ public struct CardNudge: View, ConfigurableTokenizedControl {
         HStack(spacing: 0) {
             icon
             textContainer
-            Spacer(minLength: tokenValue(\.accentPadding))
+            Spacer(minLength: tokens.value(\.accentPadding))
             buttons
                 .layoutPriority(1)
         }
-        .padding(.vertical, tokenValue(\.mainContentVerticalPadding))
-        .padding(.horizontal, tokenValue(\.horizontalPadding))
-        .frame(minHeight: tokenValue(\.minimumHeight))
+        .padding(.vertical, tokens.value(\.mainContentVerticalPadding))
+        .padding(.horizontal, tokens.value(\.horizontalPadding))
+        .frame(minHeight: tokens.value(\.minimumHeight))
     }
 
     public var body: some View {
         innerContents
             .background(
-                RoundedRectangle(cornerRadius: tokenValue(\.cornerRadius))
-                    .strokeBorder(lineWidth: tokenValue(\.outlineWidth))
-                    .foregroundColor(Color(dynamicColor: tokenValue(\.outlineColor)))
+                RoundedRectangle(cornerRadius: tokens.value(\.cornerRadius))
+                    .strokeBorder(lineWidth: tokens.value(\.outlineWidth))
+                    .foregroundColor(Color(dynamicColor: tokens.value(\.outlineColor)))
                     .background(
-                        Color(dynamicColor: tokenResolver.tokenValue(\.backgroundColor))
+                        Color(dynamicColor: tokens.value(\.backgroundColor))
                             .cornerRadius(tokenValue(\.cornerRadius))
                     )
             )
-            .padding(.vertical, tokenValue(\.verticalPadding))
-            .padding(.horizontal, tokenValue(\.horizontalPadding))
+            .padding(.vertical, tokens.value(\.verticalPadding))
+            .padding(.horizontal, tokens.value(\.horizontalPadding))
+            .designTokens(tokens, fluentTheme) { tokens in
+                tokens.style = state.style
+            }
     }
 
     public init(style: MSFCardNudgeStyle, title: String) {
         let state = MSFCardNudgeStateImpl(style: style, title: title)
         self.state = state
-        self.tokenResolver = .init({ tokens in
-           tokens?.style = state.style
-       })
     }
 }
 

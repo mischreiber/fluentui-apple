@@ -249,7 +249,7 @@ extension CardNudgeDemoController: DemoAppearanceDelegate {
     func perControlOverrideDidChange(isOverrideEnabled: Bool) {
         self.cardNudges.forEach({ cardNudge in
             let tokens = isOverrideEnabled ? PerControlOverrideCardNudgeTokens() : nil
-            cardNudge.state.overrideTokens = tokens
+            cardNudge.overrideTokens = tokens
         })
     }
 

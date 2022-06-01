@@ -18,6 +18,7 @@ import UIKit
                       title: String) {
         let cardNudge = CardNudge(style: style, title: title)
         state = cardNudge.state
+        tokens = cardNudge.tokens
         super.init(AnyView(cardNudge))
     }
 
@@ -27,4 +28,16 @@ import UIKit
 
    /// The object that groups properties that allow control over the Card Nudge appearance.
     @objc public let state: MSFCardNudgeState
+
+    private let tokens: TokenResolver<CardNudgeTokens>
+
+    /// Something
+    public var overrideTokens: CardNudgeTokens? {
+        get {
+            tokens.overrideTokens
+        }
+        set {
+            tokens.overrideTokens = newValue
+        }
+    }
 }
