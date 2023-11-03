@@ -11,7 +11,8 @@ import UIKit
 @IBDesignable
 @objc(MSFButton)
 open class Button: UIButton, Shadowable, TokenizedControlInternal {
-    @objc public func set(overrideValue: AnyObject, for token: ButtonTokenSet.Tokens) {
+    @objc(setOverrideValue:forToken:)
+    public func set(overrideValue: AnyObject, for token: ButtonToken) {
         if let tokenValue = ControlTokenValue(overrideValue) {
             tokenSet[token] = tokenValue
         }
@@ -190,7 +191,7 @@ open class Button: UIButton, Shadowable, TokenizedControlInternal {
         return NSDirectionalEdgeInsets(top: 0, leading: leadingPadding, bottom: 0, trailing: trailingPadding)
     }
 
-    public typealias TokenSetKeyType = ButtonTokenSet.Tokens
+    public typealias TokenSetKeyType = ButtonToken
     public var ambientShadow: CALayer?
     public var keyShadow: CALayer?
 
