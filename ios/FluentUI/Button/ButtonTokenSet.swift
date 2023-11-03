@@ -72,7 +72,7 @@ public enum ButtonSizeCategory: Int, CaseIterable {
 
 /// Design token set for the `Button` control.
 public class ButtonTokenSet: ControlTokenSet<ButtonTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    @objc public enum Tokens: Int, TokenSetKey {
         /// Defines the background color of the button
         case backgroundColor
 

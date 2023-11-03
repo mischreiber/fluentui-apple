@@ -11,6 +11,12 @@ import UIKit
 @IBDesignable
 @objc(MSFButton)
 open class Button: UIButton, Shadowable, TokenizedControlInternal {
+    @objc public func set(overrideValue: AnyObject, for token: ButtonTokenSet.Tokens) {
+        if let tokenValue = ControlTokenValue(overrideValue) {
+            tokenSet[token] = tokenValue
+        }
+    }
+
     @objc open var style: ButtonStyle = .outlineAccent {
         didSet {
             if style != oldValue {
