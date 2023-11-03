@@ -248,6 +248,36 @@ public enum ControlTokenValue {
         }
     }
 
+    /// Creates a `ControlTokenValue` from any supported object type.
+    ///
+    /// Mapping for types of `value` and the resulting `ControlTokenValue`:
+    ///
+    /// | `value` instance type | `ControlTokenValue` |
+    /// |---|---|
+    /// | `NSNumber`¹  | `.float` |
+    /// | `UIColor` | `.uiColor` |
+    /// | `UIFont` | `.uiFont` |
+    /// | `ShadowInfo` | `.shadowInfo` |
+    /// | All other types | `nil` |
+    ///
+    /// ¹ Note that, because `value` must be an object type, floats must be passed as a wrapped `NSNumber`.
+    ///
+    /// - Parameter value: An object of one of the supported types for `ControlTokenValue`.
+    init?(_ value: AnyObject) {
+        switch value {
+        case let number as NSNumber:
+            self = .float { CGFloat(number.doubleValue) }
+        case let color as UIColor:
+            self = .uiColor { color }
+        case let font as UIFont:
+            self = .uiFont { font }
+        case let shadowInfo as ShadowInfo:
+            self = .shadowInfo { shadowInfo }
+        default:
+            return nil
+        }
+    }
+
     // MARK: - Helpers
 
     private var fallbackColor: UIColor {
