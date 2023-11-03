@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `BadgeLabel` control.
-class BadgeLabelTokenSet: ControlTokenSet<BadgeLabelTokenSet.Tokens> {
+class BadgeLabelTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the BadgeLabel.
         case backgroundColor
@@ -18,6 +18,7 @@ class BadgeLabelTokenSet: ControlTokenSet<BadgeLabelTokenSet.Tokens> {
     init(style: @escaping () -> BadgeLabelStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .textColor:
                 return .uiColor {

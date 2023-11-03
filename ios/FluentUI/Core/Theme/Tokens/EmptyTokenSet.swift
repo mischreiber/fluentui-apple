@@ -5,7 +5,7 @@
 
 /// An empty `ControlTokenSet` for components that want to use some of the perks
 /// of being tokenized, but are not fully at that stage yet.
-public class EmptyTokenSet: ControlTokenSet<EmptyTokenSet.Tokens> {
+public class EmptyTokenSet: ControlTokenSet {
 
     /// The set of tokens associated with this `EmptyTokenSet`.
     public enum Tokens: TokenSetKey {

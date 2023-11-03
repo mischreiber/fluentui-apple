@@ -7,6 +7,73 @@ import UIKit
 
 // MARK: ButtonStyle
 
+@objc(MSFControlTokenSetV2) public class ControlTokenSetV2: NSObject {
+//    init(tokenSet: ControlTokenSet<some CaseIterable & Hashable>) {
+//        self.tokenSet = tokenSet
+//    }
+//
+//    public subscript(token: ButtonTokenSet.Tokens) -> TokenValueFloat {
+//        get {
+//            return { self.tokenSet[token].float }
+//        }
+//        set(value) {
+//            self.tokenSet[token] = .float(value)
+//        }
+//    }
+//
+//    @objc func value(for token: ButtonTokenSet.Tokens) -> TokenValueFloat {
+//        return { self.tokenSet[token].float }
+//    }
+//
+//    let tokenSet: any ControlTokenSet
+
+    public subscript(token: some TokenSetKey) -> ControlTokenValue {
+        get {
+            if let value = overrideValue(forToken: token) {
+                return value
+            } else if let value = defaults?(token, self.fluentTheme) {
+                return value
+            } else {
+                preconditionFailure()
+            }
+        }
+        set(value) {
+            setOverrideValue(value, forToken: token)
+        }
+    }
+
+    func overrideValue(forToken token: some TokenSetKey) -> ControlTokenValue? {
+        if let value = valueOverrides?[token.hashValue] {
+            return value
+//        } else if let value = fluentTheme.tokens(for: type(of: self))?[token] {
+//            return value
+        }
+        return nil
+    }
+
+    /// Sets an override value for a given token key.
+    ///
+    /// - Parameter value: The value to set as an override.
+    /// - Parameter token: The token key whose value should be set.
+    func setOverrideValue(_ value: ControlTokenValue?, forToken token: some TokenSetKey) {
+        if valueOverrides == nil {
+            valueOverrides = [:]
+        }
+        valueOverrides?[token.hashValue] = value
+    }
+
+
+    /// The current `FluentTheme` associated with this `ControlTokenSet`.
+    var fluentTheme: FluentTheme = FluentTheme.shared
+
+    /// Access to raw overrides for the `ControlTokenSet`.
+    private var valueOverrides: [Int: ControlTokenValue]?
+
+    /// Reference to the default value lookup function for this control.
+    private var defaults: ((_ token: any TokenSetKey, _ theme: FluentTheme) -> ControlTokenValue)?
+
+}
+
 @objc(MSFButtonStyle)
 public enum ButtonStyle: Int, CaseIterable {
     // Added while we have deprecated styles. Can be removed once deprecated styles are removed.
@@ -71,8 +138,8 @@ public enum ButtonSizeCategory: Int, CaseIterable {
 }
 
 /// Design token set for the `Button` control.
-public class ButtonTokenSet: ControlTokenSet<ButtonTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+public class ButtonTokenSet: ControlTokenSet {
+    @objc public enum Tokens: Int, TokenSetKey {
         /// Defines the background color of the button
         case backgroundColor
 
@@ -127,6 +194,7 @@ public class ButtonTokenSet: ControlTokenSet<ButtonTokenSet.Tokens> {
         self.style = style
         self.size = size
         super.init { [style, size] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

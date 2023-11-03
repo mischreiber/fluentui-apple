@@ -7,7 +7,7 @@ import UIKit
 import SwiftUI
 
 /// Design token set for the `AvatarGroup` control
-public class AvatarGroupTokenSet: ControlTokenSet<AvatarGroupTokenSet.Tokens> {
+public class AvatarGroupTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the color around the unread dot.
         case backgroundColor
@@ -24,6 +24,7 @@ public class AvatarGroupTokenSet: ControlTokenSet<AvatarGroupTokenSet.Tokens> {
         self.style = style
         self.size = size
         super.init { [style, size] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { theme.color(.background1) }

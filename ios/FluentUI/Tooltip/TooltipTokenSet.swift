@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `Tooltip` control.
-public class TooltipTokenSet: ControlTokenSet<TooltipTokenSet.Tokens> {
+public class TooltipTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The color of the body of the tooltip.
         case tooltipColor
@@ -38,6 +38,7 @@ public class TooltipTokenSet: ControlTokenSet<TooltipTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .tooltipColor:
                 return .uiColor { theme.color(.backgroundDarkStatic) }

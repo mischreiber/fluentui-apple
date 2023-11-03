@@ -6,7 +6,7 @@
 import UIKit
 
 /// Internal design token set for the `TabBarItem`.
-class TabBarItemTokenSet: ControlTokenSet<TabBarItemTokenSet.Tokens> {
+class TabBarItemTokenSet: ControlTokenSet {
     enum Tokens: TokenSetKey {
         /// The width of the `BadgeLabel` border.
         case badgeBorderWidth
@@ -47,6 +47,7 @@ class TabBarItemTokenSet: ControlTokenSet<TabBarItemTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .badgeBorderWidth:
                 return .float { GlobalTokens.stroke(.width20) }

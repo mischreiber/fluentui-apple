@@ -31,7 +31,7 @@ public enum TextColorStyle: Int, CaseIterable {
     }
 }
 
-public class LabelTokenSet: ControlTokenSet<LabelTokenSet.Tokens> {
+public class LabelTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         case font
         case textColor
@@ -47,6 +47,7 @@ public class LabelTokenSet: ControlTokenSet<LabelTokenSet.Tokens> {
         self.textStyle = textStyle
         self.colorForTheme = colorForTheme
         super.init { [colorForTheme] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .font:
                 return .uiFont {

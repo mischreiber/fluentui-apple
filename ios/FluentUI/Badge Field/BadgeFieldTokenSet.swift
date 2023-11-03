@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `BadgeField` control.
-public class BadgeFieldTokenSet: ControlTokenSet<BadgeFieldTokenSet.Tokens> {
+public class BadgeFieldTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the BadgeField.
         case backgroundColor
@@ -32,6 +32,7 @@ public class BadgeFieldTokenSet: ControlTokenSet<BadgeFieldTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { theme.color(.background1) }

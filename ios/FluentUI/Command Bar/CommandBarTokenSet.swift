@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `CommandBar` control.
-public class CommandBarTokenSet: ControlTokenSet<CommandBarTokenSet.Tokens> {
+public class CommandBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the Command Bar.
         case backgroundColor
@@ -47,6 +47,7 @@ public class CommandBarTokenSet: ControlTokenSet<CommandBarTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

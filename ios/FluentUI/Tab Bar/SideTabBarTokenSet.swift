@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `TabBar`.
-public class SideTabBarTokenSet: ControlTokenSet<SideTabBarTokenSet.Tokens> {
+public class SideTabBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Optionally overrides the default background color of the  of the `TabBarItem` when selected.
         case tabBarItemSelectedColor
@@ -23,6 +23,7 @@ public class SideTabBarTokenSet: ControlTokenSet<SideTabBarTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .tabBarItemSelectedColor:
                 return .uiColor {

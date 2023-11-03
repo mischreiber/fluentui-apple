@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-public class BottomCommandingTokenSet: ControlTokenSet<BottomCommandingTokenSet.Tokens> {
+public class BottomCommandingTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the color of the background of the `BottomCommandingController`.
         case backgroundColor
@@ -55,6 +55,7 @@ public class BottomCommandingTokenSet: ControlTokenSet<BottomCommandingTokenSet.
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { theme.color(.background2) }

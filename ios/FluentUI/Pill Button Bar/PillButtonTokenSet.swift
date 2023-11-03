@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `PillButton` control.
-public class PillButtonTokenSet: ControlTokenSet<PillButtonTokenSet.Tokens> {
+public class PillButtonTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the `PillButton`.
         case backgroundColor
@@ -45,6 +45,7 @@ public class PillButtonTokenSet: ControlTokenSet<PillButtonTokenSet.Tokens> {
     init(style: @escaping () -> PillButtonStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

@@ -30,7 +30,7 @@ import UIKit
 }
 
 /// Design token set for the `PersonaButton` control.
-public class PersonaButtonTokenSet: ControlTokenSet<PersonaButtonTokenSet.Tokens> {
+public class PersonaButtonTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color for the `PersonaButton`.
         case backgroundColor
@@ -51,6 +51,7 @@ public class PersonaButtonTokenSet: ControlTokenSet<PersonaButtonTokenSet.Tokens
     init(size: @escaping () -> MSFPersonaButtonSize) {
         self.size = size
         super.init { [size] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { theme.color(.background1) }

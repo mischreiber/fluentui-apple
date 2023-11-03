@@ -7,7 +7,7 @@ import UIKit
 import SwiftUI
 
 /// Design token set for the `ResizingHandleView` control.
-public class ResizingHandleTokenSet: ControlTokenSet<ResizingHandleTokenSet.Tokens> {
+public class ResizingHandleTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the color of the mark of the `ResizingHandle`.
         case markColor
@@ -18,6 +18,7 @@ public class ResizingHandleTokenSet: ControlTokenSet<ResizingHandleTokenSet.Toke
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .markColor:
                 return .uiColor {

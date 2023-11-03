@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `SegmentedControl`.
-public class SegmentedControlTokenSet: ControlTokenSet<SegmentedControlTokenSet.Tokens> {
+public class SegmentedControlTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the background color of the unselected segments of the `SegmentedControl`.
         case restTabColor
@@ -60,6 +60,7 @@ public class SegmentedControlTokenSet: ControlTokenSet<SegmentedControlTokenSet.
     init(style: @escaping () -> SegmentedControlStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .restTabColor:
                 return .uiColor {

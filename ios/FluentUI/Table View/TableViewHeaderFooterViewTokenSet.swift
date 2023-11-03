@@ -4,7 +4,7 @@
 //
 import UIKit
 
-public class TableViewHeaderFooterViewTokenSet: ControlTokenSet<TableViewHeaderFooterViewTokenSet.Tokens> {
+public class TableViewHeaderFooterViewTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color in plain mode.
         case backgroundColorPlain
@@ -36,6 +36,7 @@ public class TableViewHeaderFooterViewTokenSet: ControlTokenSet<TableViewHeaderF
         self.style = style
         self.accessoryButtonStyle = accessoryButtonStyle
         super.init { [style, accessoryButtonStyle] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColorPlain:
                 return .uiColor { theme.color(.background1) }

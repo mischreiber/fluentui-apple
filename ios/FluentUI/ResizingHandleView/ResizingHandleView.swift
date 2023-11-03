@@ -15,7 +15,7 @@ open class ResizingHandleView: UIView, TokenizedControlInternal {
         let markLayer = CALayer()
         markLayer.bounds.size = ResizingHandleTokenSet.markSize
         markLayer.cornerRadius = ResizingHandleTokenSet.markCornerRadius
-        markLayer.backgroundColor = tokenSet[.markColor].uiColor.cgColor
+        markLayer.backgroundColor = tokenSet[TokenSetKeyType.markColor].uiColor.cgColor
         return markLayer
     }()
 
@@ -71,7 +71,7 @@ open class ResizingHandleView: UIView, TokenizedControlInternal {
     }
 
     private func updateColors() {
-        markLayer.backgroundColor = tokenSet[.markColor].uiColor.cgColor
-        backgroundColor = customBackgroundColor ?? tokenSet[.backgroundColor].uiColor
+        markLayer.backgroundColor = tokenSet[TokenSetKeyType.markColor].uiColor.cgColor
+        backgroundColor = customBackgroundColor ?? tokenSet[TokenSetKeyType.backgroundColor].uiColor
     }
 }

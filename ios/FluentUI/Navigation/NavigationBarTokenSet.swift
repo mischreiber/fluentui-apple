@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `NavigationBar` control.
-public class NavigationBarTokenSet: ControlTokenSet<NavigationBarTokenSet.Tokens> {
+public class NavigationBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Describes the background color for the navigation bar.
         case backgroundColor
@@ -32,6 +32,7 @@ public class NavigationBarTokenSet: ControlTokenSet<NavigationBarTokenSet.Tokens
 
     init(style: @escaping () -> NavigationBar.Style) {
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

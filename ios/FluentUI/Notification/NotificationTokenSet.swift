@@ -61,7 +61,7 @@ import UIKit
 }
 
 /// Design token set for the `Notification` control.
-public class NotificationTokenSet: ControlTokenSet<NotificationTokenSet.Tokens> {
+public class NotificationTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the notification
         case backgroundColor
@@ -106,6 +106,7 @@ public class NotificationTokenSet: ControlTokenSet<NotificationTokenSet.Tokens> 
     init(style: @escaping () -> MSFNotificationStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

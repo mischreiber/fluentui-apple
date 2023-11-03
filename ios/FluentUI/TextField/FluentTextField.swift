@@ -268,7 +268,7 @@ public final class FluentTextField: UIView, UITextFieldDelegate, TokenizedContro
         textfield.tintColor = tokenSet[.cursorColor].uiColor
         textfield.textColor = tokenSet[.inputTextColor].uiColor
         textfield.attributedPlaceholder = attributedPlaceholder
-        textfield.clearButton.tokenSet[.foregroundColor] = tokenSet[.trailingIconColor]
+        textfield.clearButton.tokenSet[.foregroundColor] = tokenSet[.trailingIconColor] as ControlTokenValue
     }
 
     private func updateState() {

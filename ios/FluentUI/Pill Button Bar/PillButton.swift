@@ -104,7 +104,7 @@ open class PillButton: UIButton, TokenizedControlInternal {
     public var tokenSet: PillButtonTokenSet
 
     lazy var unreadDotColor: UIColor = {
-        tokenSet[.enabledUnreadDotColor].uiColor
+        tokenSet[TokenSetKeyType.enabledUnreadDotColor].uiColor
     }()
 
     private func setupView() {
@@ -126,7 +126,7 @@ open class PillButton: UIButton, TokenizedControlInternal {
             }
         } else {
             setTitle(pillBarItem.title, for: .normal)
-            titleLabel?.font = tokenSet[.font].uiFont
+            titleLabel?.font = tokenSet[TokenSetKeyType.font].uiFont
 
             contentEdgeInsets = UIEdgeInsets(top: PillButtonTokenSet.topInset,
                                              left: PillButtonTokenSet.horizontalInset,
@@ -190,12 +190,12 @@ open class PillButton: UIButton, TokenizedControlInternal {
     private func updateAttributedTitle() {
         let itemTitle = pillBarItem.title
         var attributedTitle = AttributedString(itemTitle)
-        attributedTitle.font = tokenSet[.font].uiFont
+        attributedTitle.font = tokenSet[TokenSetKeyType.font].uiFont
         configuration?.attributedTitle = attributedTitle
 
         let attributedTitleTransformer = UIConfigurationTextAttributesTransformer { [weak self] incoming in
             var outgoing = incoming
-            outgoing.font = self?.tokenSet[.font].uiFont
+            outgoing.font = self?.tokenSet[TokenSetKeyType.font].uiFont
             return outgoing
         }
         configuration?.titleTextAttributesTransformer = attributedTitleTransformer
@@ -253,37 +253,37 @@ open class PillButton: UIButton, TokenizedControlInternal {
 
         if isSelected {
             if isEnabled {
-                resolvedBackgroundColor = tokenSet[.backgroundColorSelected].uiColor
+                resolvedBackgroundColor = tokenSet[TokenSetKeyType.backgroundColorSelected].uiColor
                 if #available(iOS 15.0, *) {
-                    resolvedTitleColor = tokenSet[.titleColorSelected].uiColor
+                    resolvedTitleColor = tokenSet[TokenSetKeyType.titleColorSelected].uiColor
                 } else {
-                    setTitleColor(tokenSet[.titleColorSelected].uiColor, for: .normal)
+                    setTitleColor(tokenSet[TokenSetKeyType.titleColorSelected].uiColor, for: .normal)
                 }
             } else {
-                resolvedBackgroundColor = tokenSet[.backgroundColorSelectedDisabled].uiColor
+                resolvedBackgroundColor = tokenSet[TokenSetKeyType.backgroundColorSelectedDisabled].uiColor
                 if #available(iOS 15.0, *) {
-                    resolvedTitleColor = tokenSet[.titleColorSelectedDisabled].uiColor
+                    resolvedTitleColor = tokenSet[TokenSetKeyType.titleColorSelectedDisabled].uiColor
                 } else {
-                    setTitleColor(tokenSet[.titleColorSelectedDisabled].uiColor, for: .normal)
+                    setTitleColor(tokenSet[TokenSetKeyType.titleColorSelectedDisabled].uiColor, for: .normal)
                 }
             }
         } else {
             unreadDotColor = isEnabled
-                        ? tokenSet[.enabledUnreadDotColor].uiColor
-                        : tokenSet[.disabledUnreadDotColor].uiColor
+                        ? tokenSet[TokenSetKeyType.enabledUnreadDotColor].uiColor
+                        : tokenSet[TokenSetKeyType.disabledUnreadDotColor].uiColor
             if isEnabled {
-                resolvedBackgroundColor = tokenSet[.backgroundColor].uiColor
+                resolvedBackgroundColor = tokenSet[TokenSetKeyType.backgroundColor].uiColor
                 if #available(iOS 15.0, *) {
-                    resolvedTitleColor = tokenSet[.titleColor].uiColor
+                    resolvedTitleColor = tokenSet[TokenSetKeyType.titleColor].uiColor
                 } else {
-                    setTitleColor(tokenSet[.titleColor].uiColor, for: .normal)
+                    setTitleColor(tokenSet[TokenSetKeyType.titleColor].uiColor, for: .normal)
                 }
             } else {
-                resolvedBackgroundColor = tokenSet[.backgroundColorDisabled].uiColor
+                resolvedBackgroundColor = tokenSet[TokenSetKeyType.backgroundColorDisabled].uiColor
                 if #available(iOS 15.0, *) {
-                    resolvedTitleColor = tokenSet[.titleColorDisabled].uiColor
+                    resolvedTitleColor = tokenSet[TokenSetKeyType.titleColorDisabled].uiColor
                 } else {
-                    setTitleColor(tokenSet[.titleColorDisabled].uiColor, for: .disabled)
+                    setTitleColor(tokenSet[TokenSetKeyType.titleColorDisabled].uiColor, for: .disabled)
                 }
             }
         }

@@ -7,7 +7,7 @@ import SwiftUI
 import UIKit
 
 /// Design token set for the `HeadsUpDisplay` control.
-public class HeadsUpDisplayTokenSet: ControlTokenSet<HeadsUpDisplayTokenSet.Tokens> {
+public class HeadsUpDisplayTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The color of the squared background of the Heads-up display.
         case backgroundColor
@@ -24,6 +24,7 @@ public class HeadsUpDisplayTokenSet: ControlTokenSet<HeadsUpDisplayTokenSet.Toke
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `Separator` control.
-public class SeparatorTokenSet: ControlTokenSet<SeparatorTokenSet.Tokens> {
+public class SeparatorTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The color of the Separator
         case color
@@ -14,6 +14,7 @@ public class SeparatorTokenSet: ControlTokenSet<SeparatorTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .color:
                 return .uiColor { theme.color(.stroke2) }

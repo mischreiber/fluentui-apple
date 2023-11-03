@@ -13,7 +13,7 @@ public enum FluentTextFieldState: Int, CaseIterable {
 }
 
 /// Design token set for the `FluentTextField` control.
-public class TextFieldTokenSet: ControlTokenSet<TextFieldTokenSet.Tokens> {
+public class TextFieldTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the color of the text in the bottom label.
         case assistiveTextColor
@@ -55,6 +55,7 @@ public class TextFieldTokenSet: ControlTokenSet<TextFieldTokenSet.Tokens> {
     init(state: @escaping () -> FluentTextFieldState) {
         self.state = state
         super.init { [state] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .assistiveTextColor:
                 return .uiColor {

@@ -5,7 +5,7 @@
 
 import UIKit
 
-public class BottomSheetTokenSet: ControlTokenSet<BottomSheetTokenSet.Tokens> {
+public class BottomSheetTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the background color of the `BottomSheetController`.
         case backgroundColor
@@ -22,6 +22,7 @@ public class BottomSheetTokenSet: ControlTokenSet<BottomSheetTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { UIColor(light: theme.color(.background2).light,

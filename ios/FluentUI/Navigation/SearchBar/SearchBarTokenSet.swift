@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `SearchBar` control.
-public class SearchBarTokenSet: ControlTokenSet<SearchBarTokenSet.Tokens> {
+public class SearchBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the SearchBar
         case backgroundColor
@@ -45,6 +45,7 @@ public class SearchBarTokenSet: ControlTokenSet<SearchBarTokenSet.Tokens> {
     init(style: @escaping () -> SearchBar.Style) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor({

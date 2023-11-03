@@ -15,7 +15,7 @@ import SwiftUI
 }
 
 /// Design token set for the `CardNudge` control.
-public class CardNudgeTokenSet: ControlTokenSet<CardNudgeTokenSet.Tokens> {
+public class CardNudgeTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The  color applied to the accent text and icon
         case accentColor
@@ -57,6 +57,7 @@ public class CardNudgeTokenSet: ControlTokenSet<CardNudgeTokenSet.Tokens> {
     init(style: @escaping () -> MSFCardNudgeStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .accentColor:
                 return .uiColor {

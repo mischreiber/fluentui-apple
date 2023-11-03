@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `Drawer` control
-public class DrawerTokenSet: ControlTokenSet<DrawerTokenSet.Tokens> {
+public class DrawerTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Corner radius for the popover style `Drawer` control.
         case cornerRadius
@@ -32,6 +32,7 @@ public class DrawerTokenSet: ControlTokenSet<DrawerTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .cornerRadius:
                 return .float({

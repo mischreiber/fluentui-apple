@@ -4,7 +4,7 @@
 //
 import UIKit
 
-public class TableViewCellTokenSet: ControlTokenSet<TableViewCellTokenSet.Tokens> {
+public class TableViewCellTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background color of the TableView.
         case backgroundColor
@@ -82,6 +82,7 @@ public class TableViewCellTokenSet: ControlTokenSet<TableViewCellTokenSet.Tokens
     init(customViewSize: @escaping () -> MSFTableViewCellCustomViewSize) {
         self.customViewSize = customViewSize
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor { theme.color(.background1) }

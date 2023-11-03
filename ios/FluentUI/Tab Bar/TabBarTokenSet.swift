@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `TabBar`.
-public class TabBarTokenSet: ControlTokenSet<TabBarTokenSet.Tokens> {
+public class TabBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Defines the background color of the  of the `TabBarItem` when selected.
         case tabBarItemSelectedColor
@@ -24,6 +24,7 @@ public class TabBarTokenSet: ControlTokenSet<TabBarTokenSet.Tokens> {
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .tabBarItemSelectedColor:
                 return .uiColor {

@@ -16,7 +16,7 @@ import UIKit
 }
 
 /// Design token set for the `Shimmer` control.
-public class ShimmerTokenSet: ControlTokenSet<ShimmerTokenSet.Tokens> {
+public class ShimmerTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The alpha value of the center of the gradient in the animation if shimmer is revealing shimmer.
         /// The alpha value of the view other than the gradient if shimmer is concealing shimmer.
@@ -57,6 +57,7 @@ public class ShimmerTokenSet: ControlTokenSet<ShimmerTokenSet.Tokens> {
     init(style: @escaping () -> MSFShimmerStyle) {
         self.style = style
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .shimmerAlpha:
                 return .float {

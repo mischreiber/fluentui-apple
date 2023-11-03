@@ -7,7 +7,7 @@ import SwiftUI
 import UIKit
 
 /// Representation of design tokens for the Indeterminate Progress Bar.
-public class IndeterminateProgressBarTokenSet: ControlTokenSet<IndeterminateProgressBarTokenSet.Tokens> {
+public class IndeterminateProgressBarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Progress bar's background color.
         case backgroundColor
@@ -18,6 +18,7 @@ public class IndeterminateProgressBarTokenSet: ControlTokenSet<IndeterminateProg
 
     init() {
         super.init { token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundColor:
                 return .uiColor {

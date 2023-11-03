@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `BadgeView` control.
-public class BadgeViewTokenSet: ControlTokenSet<BadgeViewTokenSet.Tokens> {
+public class BadgeViewTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The background tint color of the Badge.
         case backgroundTintColor
@@ -44,6 +44,7 @@ public class BadgeViewTokenSet: ControlTokenSet<BadgeViewTokenSet.Tokens> {
         self.style = style
         self.sizeCategory = sizeCategory
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .backgroundTintColor:
                 return .uiColor {

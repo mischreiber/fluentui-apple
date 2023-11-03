@@ -6,8 +6,14 @@
 import Combine
 import UIKit
 
+public typealias TokenValueFloat = (() -> CGFloat)
+public typealias TokenValueUIColor = (() -> UIColor)
+public typealias TokenValueUIFont = (() -> UIFont)
+public typealias TokenValueShadowInfo = (() -> ShadowInfo)
+
 /// Base class for all Fluent control tokenization.
-public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
+@objc(MSFControlTokenSet)
+public class ControlTokenSet: NSObject, ObservableObject {
     /// Allows us to index into this token set using square brackets.
     ///
     /// We can use square brackets to both read and write into this `TokenSet`. For example:
@@ -15,7 +21,7 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// let value = tokenSet[.primary]   // exercises the `get`
     /// tokenSet[.secondary] = newValue  // exercises the `set`
     /// ```
-    public subscript(token: T) -> ControlTokenValue {
+    public subscript(token: some TokenSetKey) -> ControlTokenValue {
         get {
             if let value = overrideValue(forToken: token) {
                 return value
@@ -30,11 +36,29 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
         }
     }
 
+    public subscript(token: some TokenSetKey) -> TokenValueFloat {
+        get {
+            return { self[token].float }
+        }
+        set(value) {
+            self[token] = .float(value)
+        }
+    }
+
+    public subscript(token: some TokenSetKey) -> TokenValueUIColor {
+        get {
+            return { self[token].uiColor }
+        }
+        set(value) {
+            self[token] = .uiColor(value)
+        }
+    }
+
     /// Removes a stored override for a given token value.
     ///
     /// - Parameter token: The token value whose override should be removed.
-    public func removeOverride(_ token: T) {
-        valueOverrides?[token] = nil
+    public func removeOverride(_ token: some TokenSetKey) {
+        valueOverrides?[token.hashValue] = nil
     }
 
     /// Convenience method to replace all overrides with a new set of values.
@@ -43,14 +67,14 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// removed from this control. If overrideTokens is `nil`, then all current overrides will be removed.
     ///
     /// - Parameter overrideTokens: The set of tokens to set as custom, or `nil` to remove all overrides.
-    public func replaceAllOverrides(with overrideTokens: [T: ControlTokenValue]?) {
-        T.allCases.forEach { token in
-            if let value = overrideTokens?[token] {
-                self[token] = value
-            } else {
-                self.removeOverride(token)
-            }
-        }
+    public func replaceAllOverrides(with overrideTokens: [some TokenSetKey: ControlTokenValue]?) {
+//        T.allCases.forEach { token in
+//            if let value = overrideTokens?[token] {
+//                self[token] = value
+//            } else {
+//                self.removeOverride(token)
+//            }
+//        }
     }
 
     /// Convenience method to override multiple tokens from another token set.
@@ -60,17 +84,17 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// - Parameter otherTokenSet: The token set we will be pulling values from.
     /// - Parameter mapping: A `Dictionary` that maps our own tokens that we wish to override with
     /// their corresponding tokens in `otherTokenSet`.
-    func setOverrides<U>(from otherTokenSet: ControlTokenSet<U>, mapping: [T: U]) {
+    func setOverrides(from otherTokenSet: ControlTokenSet, mapping: [some TokenSetKey: some TokenSetKey]) {
         // Make a copy so we write all the values at once
         var valueOverrideCopy = valueOverrides ?? [:]
         mapping.forEach { (thisToken, otherToken) in
-            valueOverrideCopy[thisToken] = otherTokenSet.overrideValue(forToken: otherToken)
+            valueOverrideCopy[thisToken.hashValue] = otherTokenSet.overrideValue(forToken: otherToken)
         }
         valueOverrides = valueOverrideCopy
     }
 
     /// Initialize the `ControlTokenSet` with an escaping callback for fetching default values.
-    init(_ defaults: @escaping (_ token: T, _ theme: FluentTheme) -> ControlTokenValue) {
+    init(_ defaults: @escaping (_ token: any TokenSetKey, _ theme: FluentTheme) -> ControlTokenValue) {
         self.defaults = defaults
     }
 
@@ -110,8 +134,8 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// - Parameter token: The token key to fetch any existing override for.
     ///
     /// - Returns: the active override value for a given token, or nil if none exists.
-    func overrideValue(forToken token: T) -> ControlTokenValue? {
-        if let value = valueOverrides?[token] {
+    func overrideValue(forToken token: some TokenSetKey) -> ControlTokenValue? {
+        if let value = valueOverrides?[token.hashValue] {
             return value
         } else if let value = fluentTheme.tokens(for: type(of: self))?[token] {
             return value
@@ -123,11 +147,11 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     ///
     /// - Parameter value: The value to set as an override.
     /// - Parameter token: The token key whose value should be set.
-    func setOverrideValue(_ value: ControlTokenValue?, forToken token: T) {
+    func setOverrideValue(_ value: ControlTokenValue?, forToken token: some TokenSetKey) {
         if valueOverrides == nil {
             valueOverrides = [:]
         }
-        valueOverrides?[token] = value
+        valueOverrides?[token.hashValue] = value
     }
 
     /// Registers an observing control for update calls.
@@ -183,10 +207,10 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     }
 
     /// Access to raw overrides for the `ControlTokenSet`.
-    @Published private var valueOverrides: [T: ControlTokenValue]?
+    @Published private var valueOverrides: [Int: ControlTokenValue]?
 
     /// Reference to the default value lookup function for this control.
-    private var defaults: ((_ token: T, _ theme: FluentTheme) -> ControlTokenValue)?
+    private var defaults: ((_ token: any TokenSetKey, _ theme: FluentTheme) -> ControlTokenValue)?
 
     /// Holds the sink for any changes to the control token set.
     private var changeSink: AnyCancellable?

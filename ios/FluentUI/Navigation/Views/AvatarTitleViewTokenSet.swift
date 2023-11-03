@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `AvatarTitleView` control.
-class AvatarTitleViewTokenSet: ControlTokenSet<AvatarTitleViewTokenSet.Tokens> {
+class AvatarTitleViewTokenSet: ControlTokenSet {
     enum Tokens: TokenSetKey {
         /// Describes the font used for a large one-line title.
         case largeTitleFont
@@ -26,6 +26,7 @@ class AvatarTitleViewTokenSet: ControlTokenSet<AvatarTitleViewTokenSet.Tokens> {
 
     init(style: @escaping () -> AvatarTitleView.Style) {
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .largeTitleFont:
                 return .uiFont {

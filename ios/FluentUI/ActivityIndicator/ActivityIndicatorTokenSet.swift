@@ -16,7 +16,7 @@ import UIKit
 }
 
 /// Design token set for the `ActivityIndicator` control.
-public class ActivityIndicatorTokenSet: ControlTokenSet<ActivityIndicatorTokenSet.Tokens> {
+public class ActivityIndicatorTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The default color of the Activity Indicator.
         case defaultColor
@@ -28,6 +28,7 @@ public class ActivityIndicatorTokenSet: ControlTokenSet<ActivityIndicatorTokenSe
     init(size: @escaping () -> MSFActivityIndicatorSize) {
         self.size = size
         super.init { [size] token, _ in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .defaultColor:
                 return .uiColor {

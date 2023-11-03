@@ -6,7 +6,7 @@
 import UIKit
 
 /// Design token set for the `TwoLineTitleView` control.
-public class TwoLineTitleViewTokenSet: ControlTokenSet<TwoLineTitleViewTokenSet.Tokens> {
+public class TwoLineTitleViewTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// Describes the color of the subtitle.
         case subtitleColor
@@ -23,6 +23,7 @@ public class TwoLineTitleViewTokenSet: ControlTokenSet<TwoLineTitleViewTokenSet.
 
     init(style: @escaping () -> TwoLineTitleView.Style) {
         super.init { [style] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .subtitleColor:
                 return .uiColor {

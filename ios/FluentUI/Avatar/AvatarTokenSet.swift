@@ -7,7 +7,7 @@ import UIKit
 import SwiftUI
 
 /// Design token set for the `Avatar` control.
-public class AvatarTokenSet: ControlTokenSet<AvatarTokenSet.Tokens> {
+public class AvatarTokenSet: ControlTokenSet {
     public enum Tokens: TokenSetKey {
         /// The radius of the corners of the `Avatar`.
         case borderRadius
@@ -54,6 +54,7 @@ public class AvatarTokenSet: ControlTokenSet<AvatarTokenSet.Tokens> {
         self.style = style
         self.size = size
         super.init { [style, size] token, theme in
+            guard let token = token as? Tokens else { preconditionFailure() }
             switch token {
             case .borderRadius:
                 return .float({

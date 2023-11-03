@@ -2018,8 +2018,8 @@ open class TableViewCell: UITableViewCell, TokenizedControlInternal {
     }
 
     private func updateSeparatorColor() {
-        topSeparator.tokenSet[.color] = tokenSet[.separatorColor]
-        bottomSeparator.tokenSet[.color] = tokenSet[.separatorColor]
+        topSeparator.tokenSet[.color] = tokenSet[.separatorColor] as ControlTokenValue
+        bottomSeparator.tokenSet[.color] = tokenSet[.separatorColor] as ControlTokenValue
     }
 
     @objc private func handleContentSizeCategoryDidChange() {
