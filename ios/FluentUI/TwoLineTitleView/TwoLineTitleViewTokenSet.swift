@@ -5,22 +5,23 @@
 
 import UIKit
 
+//@objc(MSFTwoLineTitleViewToken)
+public enum TwoLineTitleViewToken: Int, TokenSetKey {
+    /// Describes the color of the subtitle.
+    case subtitleColor
+
+    /// Describes the font used for the subtitle.
+    case subtitleFont
+
+    /// Describes the color of the title.
+    case titleColor
+
+    /// Describes the font used for the title.
+    case titleFont
+}
+
 /// Design token set for the `TwoLineTitleView` control.
-public class TwoLineTitleViewTokenSet: ControlTokenSet<TwoLineTitleViewTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
-        /// Describes the color of the subtitle.
-        case subtitleColor
-
-        /// Describes the font used for the subtitle.
-        case subtitleFont
-
-        /// Describes the color of the title.
-        case titleColor
-
-        /// Describes the font used for the title.
-        case titleFont
-    }
-
+public class TwoLineTitleViewTokenSet: ControlTokenSet<TwoLineTitleViewToken> {
     init(style: @escaping () -> TwoLineTitleView.Style) {
         super.init { [style] token, theme in
             switch token {

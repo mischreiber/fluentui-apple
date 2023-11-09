@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 @objc(MSFButton)
 open class Button: UIButton, Shadowable, TokenizedControlInternal {
-    @objc(setOverrideValue:forToken:)
+//    @objc(setOverrideValue:forToken:)
     public func set(overrideValue: AnyObject, for token: ButtonToken) {
         if let tokenValue = ControlTokenValue(overrideValue) {
             tokenSet[token] = tokenValue

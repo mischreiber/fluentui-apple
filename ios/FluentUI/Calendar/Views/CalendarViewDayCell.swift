@@ -82,7 +82,7 @@ class CalendarViewDayCell: UICollectionViewCell, TokenizedControlInternal {
     let dateLabel: UILabel
     let dotView: DotView
 
-    typealias TokenSetKeyType = EmptyTokenSet.Tokens
+    typealias TokenSetKeyType = EmptyToken
     let tokenSet: EmptyTokenSet = .init()
 
     override init(frame: CGRect) {

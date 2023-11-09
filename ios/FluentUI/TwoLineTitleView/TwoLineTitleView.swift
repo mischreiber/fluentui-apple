@@ -18,6 +18,13 @@ public protocol TwoLineTitleViewDelegate: AnyObject {
 
 @objc(MSFTwoLineTitleView)
 open class TwoLineTitleView: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc(MSFTwoLineTitleViewStyle)
     public enum Style: Int {
         case primary
@@ -100,7 +107,7 @@ open class TwoLineTitleView: UIView, TokenizedControlInternal {
         set { subtitleLabel.accessibilityTraits = newValue }
     }
 
-    public typealias TokenSetKeyType = TwoLineTitleViewTokenSet.Tokens
+    public typealias TokenSetKeyType = TwoLineTitleViewToken
     public lazy var tokenSet: TwoLineTitleViewTokenSet = .init(style: { [weak self] in
         self?.currentStyle ?? .system
     })

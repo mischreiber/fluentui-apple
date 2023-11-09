@@ -17,7 +17,14 @@ public enum SeparatorOrientation: Int {
 
 @objc(MSFSeparator)
 open class Separator: UIView, TokenizedControlInternal {
-    public typealias TokenSetKeyType = SeparatorTokenSet.Tokens
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
+    public typealias TokenSetKeyType = SeparatorToken
     lazy public var tokenSet: SeparatorTokenSet = .init()
 
     private var orientation: SeparatorOrientation = .horizontal

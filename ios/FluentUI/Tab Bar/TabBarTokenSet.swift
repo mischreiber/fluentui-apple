@@ -5,23 +5,24 @@
 
 import UIKit
 
+//@objc(MSFTabBarToken)
+public enum TabBarToken: Int, TokenSetKey {
+    /// Defines the background color of the  of the `TabBarItem` when selected.
+    case tabBarItemSelectedColor
+
+    /// Defines the background color of the  of the `TabBarItem` when not selected.
+    case tabBarItemUnselectedColor
+
+    /// Font info for the title label when in portrait view.
+    case tabBarItemTitleLabelFontPortrait
+
+    /// Font info for the title label when in landscape view.
+    case tabBarItemTitleLabelFontLandscape
+
+}
+
 /// Design token set for the `TabBar`.
-public class TabBarTokenSet: ControlTokenSet<TabBarTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
-        /// Defines the background color of the  of the `TabBarItem` when selected.
-        case tabBarItemSelectedColor
-
-        /// Defines the background color of the  of the `TabBarItem` when not selected.
-        case tabBarItemUnselectedColor
-
-        /// Font info for the title label when in portrait view.
-        case tabBarItemTitleLabelFontPortrait
-
-        /// Font info for the title label when in landscape view.
-        case tabBarItemTitleLabelFontLandscape
-
-    }
-
+public class TabBarTokenSet: ControlTokenSet<TabBarToken> {
     init() {
         super.init { token, theme in
             switch token {

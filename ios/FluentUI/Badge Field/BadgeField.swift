@@ -58,6 +58,13 @@ public protocol BadgeFieldDelegate: AnyObject {
  */
 @objc(MSFBadgeField)
 open class BadgeField: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     private struct Constants {
         static let emptyTextFieldString: String = ""
         static let dragAndDropMinimumPressDuration: TimeInterval = 0.2
@@ -136,7 +143,7 @@ open class BadgeField: UIView, TokenizedControlInternal {
 
     @objc public weak var badgeFieldDelegate: BadgeFieldDelegate?
 
-    public typealias TokenSetKeyType = BadgeFieldTokenSet.Tokens
+    public typealias TokenSetKeyType = BadgeFieldToken
     public var tokenSet: BadgeFieldTokenSet = .init()
 
     var deviceOrientationIsChanging: Bool {

@@ -57,6 +57,13 @@ public protocol BadgeViewDelegate {
  */
 @objc(MSFBadgeView)
 open class BadgeView: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc open var dataSource: BadgeViewDataSource? {
         didSet {
             reload()
@@ -129,7 +136,7 @@ open class BadgeView: UIView, TokenizedControlInternal {
         return sizeThatFits(CGSize(width: CGFloat.infinity, height: CGFloat.infinity))
     }
 
-    public typealias TokenSetKeyType = BadgeViewTokenSet.Tokens
+    public typealias TokenSetKeyType = BadgeViewToken
     lazy public var tokenSet: BadgeViewTokenSet = .init(style: { [weak self] in
         return self?.style ?? .default
     },

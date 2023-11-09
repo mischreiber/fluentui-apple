@@ -144,7 +144,7 @@ open class PeoplePicker: BadgeField {
 
     private let separator = Separator()
 
-    public typealias TokenSetKeyType = PeoplePickerTokenSet.Tokens
+    public typealias TokenSetKeyType = BadgeFieldToken
     public override var tokenSet: BadgeFieldTokenSet {
         get {
             return peoplePickerTokenSet

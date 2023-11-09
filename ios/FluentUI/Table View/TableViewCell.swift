@@ -114,6 +114,13 @@ NOTE: This cell implements its own custom separator. Make sure to remove the UIT
 */
 @objc(MSFTableViewCell)
 open class TableViewCell: UITableViewCell, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc(MSFTableViewCellSeparatorType)
     public enum SeparatorType: Int {
         case none
@@ -176,7 +183,7 @@ open class TableViewCell: UITableViewCell, TokenizedControlInternal {
     /// The vertical margins for cells with one or three lines of text
     class var labelVerticalMarginForOneAndThreeLines: CGFloat { return TableViewCellTokenSet.defaultLabelVerticalMarginForOneAndThreeLines }
 
-    public typealias TokenSetKeyType = TableViewCellTokenSet.Tokens
+    public typealias TokenSetKeyType = TableViewCellToken
     public lazy var tokenSet: TableViewCellTokenSet = .init(customViewSize: { [weak self] in
         return self?.customViewSize ?? .default
     })

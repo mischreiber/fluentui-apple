@@ -8,6 +8,12 @@ import UIKit
 /// View that converts the subviews of a container view into a loading state with the "shimmering" effect.
 @objc(MSFShimmerView)
 open class ShimmerView: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
 
     /// Optional synchronizer to sync multiple shimmer views.
     @objc open weak var animationSynchronizer: AnimationSynchronizerProtocol?
@@ -73,7 +79,7 @@ open class ShimmerView: UIView, TokenizedControlInternal {
     }
 
     // MARK: - TokenizedControl
-    public typealias TokenSetKeyType = ShimmerTokenSet.Tokens
+    public typealias TokenSetKeyType = ShimmerToken
     public lazy var tokenSet: ShimmerTokenSet = .init(style: { [weak self] in
         return self?.style ?? .concealing
     })

@@ -9,9 +9,16 @@ import UIKit
 
 @objc(MSFCenteredLabelCell)
 open class CenteredLabelCell: UITableViewCell, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     public static let identifier: String = "CenteredLabelCell"
 
-    public typealias TokenSetKeyType = TableViewCellTokenSet.Tokens
+    public typealias TokenSetKeyType = TableViewCellToken
     public var tokenSet: TableViewCellTokenSet = .init(customViewSize: { .default })
 
     private func updateAppearance() {

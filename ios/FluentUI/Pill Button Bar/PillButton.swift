@@ -10,6 +10,12 @@ import UIKit
 /// A `PillButton` is a button in the shape of a pill that can have two states: on (Selected) and off (not selected)
 @objc(MSFPillButton)
 open class PillButton: UIButton, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
 
     open override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         guard self == context.nextFocusedView || self == context.previouslyFocusedView else {
@@ -36,7 +42,7 @@ open class PillButton: UIButton, TokenizedControlInternal {
     /// Internal init used by the `PillButtonBar` to initialized buttons with overrides.
     init(pillBarItem: PillButtonBarItem,
          style: PillButtonStyle = .primary,
-         tokenOverrides: [PillButtonTokenSet.Tokens: ControlTokenValue]?) {
+         tokenOverrides: [PillButtonToken: ControlTokenValue]?) {
         self.pillBarItem = pillBarItem
         self.style = style
         self.tokenSet = PillButtonTokenSet(style: { style })
@@ -100,7 +106,7 @@ open class PillButton: UIButton, TokenizedControlInternal {
 
     @objc public let style: PillButtonStyle
 
-    public typealias TokenSetKeyType = PillButtonTokenSet.Tokens
+    public typealias TokenSetKeyType = PillButtonToken
     public var tokenSet: PillButtonTokenSet
 
     lazy var unreadDotColor: UIColor = {

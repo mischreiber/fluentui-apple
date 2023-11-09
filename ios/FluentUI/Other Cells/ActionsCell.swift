@@ -16,6 +16,13 @@ import UIKit
  */
 @objc(MSFActionsCell)
 open class ActionsCell: UITableViewCell, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc(MSFActionsCellActionType)
     public enum ActionType: Int {
         case regular
@@ -47,7 +54,7 @@ open class ActionsCell: UITableViewCell, TokenizedControlInternal {
 
     public static let identifier: String = "ActionsCell"
 
-    public typealias TokenSetKeyType = TableViewCellTokenSet.Tokens
+    public typealias TokenSetKeyType = TableViewCellToken
     public let tokenSet: TableViewCellTokenSet = .init(customViewSize: { .default })
 
     private func updateAppearance() {

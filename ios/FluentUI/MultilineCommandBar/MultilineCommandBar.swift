@@ -88,13 +88,13 @@ public class MultilineCommandBar: UIViewController {
         preconditionFailure("init(coder:) has not been implemented")
     }
 
-    public var scrollableRowOverrideTokens: [CommandBarTokenSet.Tokens: ControlTokenValue]? {
+    public var scrollableRowOverrideTokens: [CommandBarToken: ControlTokenValue]? {
         didSet {
             updateScrollableRows()
         }
     }
 
-    public var fixedRowOverrideTokens: [CommandBarTokenSet.Tokens: ControlTokenValue]? {
+    public var fixedRowOverrideTokens: [CommandBarToken: ControlTokenValue]? {
         didSet {
             updateFixedRows()
         }

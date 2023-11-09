@@ -41,6 +41,12 @@ public protocol BottomSheetControllerDelegate: AnyObject {
 
 @objc(MSFBottomSheetController)
 public class BottomSheetController: UIViewController, Shadowable, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
 
     /// Initializes the bottom sheet controller
     /// - Parameters:
@@ -448,7 +454,7 @@ public class BottomSheetController: UIViewController, Shadowable, TokenizedContr
         completeAnimationsIfNeeded(skipToEnd: true)
     }
 
-    public typealias TokenSetKeyType = BottomSheetTokenSet.Tokens
+    public typealias TokenSetKeyType = BottomSheetToken
     public var tokenSet: BottomSheetTokenSet = .init()
 
     var fluentTheme: FluentTheme { return view.fluentTheme }

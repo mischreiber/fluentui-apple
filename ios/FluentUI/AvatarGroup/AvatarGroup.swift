@@ -92,7 +92,7 @@ import SwiftUI
 
 /// View that represents the AvatarGroup.
 public struct AvatarGroup: View, TokenizedControlView {
-    public typealias TokenSetKeyType = AvatarGroupTokenSet.Tokens
+    public typealias TokenSetKeyType = AvatarGroupToken
     @ObservedObject public var tokenSet: AvatarGroupTokenSet
 
     /// Creates and initializes a SwiftUI AvatarGroup.

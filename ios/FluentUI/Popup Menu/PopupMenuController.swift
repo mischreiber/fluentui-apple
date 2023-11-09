@@ -18,7 +18,7 @@ open class PopupMenuController: DrawerController {
         static let minimumContentWidth: CGFloat = 250
     }
 
-    public typealias TokenSetKeyType = PopupMenuTokenSet.Tokens
+    public typealias TokenSetKeyType = DrawerToken
     public typealias TokenSetType = PopupMenuTokenSet
     public override var tokenSet: DrawerTokenSet {
         get {

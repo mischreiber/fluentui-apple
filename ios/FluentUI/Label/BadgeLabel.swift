@@ -14,7 +14,7 @@ class BadgeLabel: UILabel, TokenizedControlInternal {
         }
     }
 
-    typealias TokenSetKeyType = BadgeLabelTokenSet.Tokens
+    typealias TokenSetKeyType = BadgeLabelToken
     lazy var tokenSet: BadgeLabelTokenSet = .init(style: { [weak self] in
         return self?.style ?? .system
     })

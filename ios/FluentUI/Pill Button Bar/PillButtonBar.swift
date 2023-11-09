@@ -185,7 +185,7 @@ open class PillButtonBar: UIScrollView {
 
     @objc public let pillButtonStyle: PillButtonStyle
 
-    public var pillButtonOverrideTokens: [PillButtonTokenSet.Tokens: ControlTokenValue]? {
+    public var pillButtonOverrideTokens: [PillButtonToken: ControlTokenValue]? {
         didSet {
             updatePillButtonAppearance()
         }

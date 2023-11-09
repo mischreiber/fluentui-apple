@@ -98,6 +98,13 @@ public protocol DrawerControllerDelegate: AnyObject {
 
 @objc(MSFDrawerController)
 open class DrawerController: UIViewController, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     /// DrawerController colors with obj-c support
     @objc public static func drawerBackgroundColor(fluentTheme: FluentTheme?) -> UIColor {
         let theme = fluentTheme ?? .shared
@@ -592,7 +599,7 @@ open class DrawerController: UIViewController, TokenizedControlInternal {
         return dismissPresentingViewController(animated: true)
     }
 
-    public typealias TokenSetKeyType = DrawerTokenSet.Tokens
+    public typealias TokenSetKeyType = DrawerToken
     public var tokenSet: DrawerTokenSet = .init()
 
     var fluentTheme: FluentTheme { return view.fluentTheme }

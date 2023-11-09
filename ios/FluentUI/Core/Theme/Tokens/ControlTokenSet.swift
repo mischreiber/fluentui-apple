@@ -196,6 +196,9 @@ public class ControlTokenSet<T: TokenSetKey>: ObservableObject {
 
     /// A callback to be invoked after the token set has completed updating.
     private var onUpdate: (() -> Void)?
+
+    /// Common approach for addressing the tokens of a given control.
+    public typealias Tokens = T
 }
 
 /// Union-type enumeration of all possible token values to be stored by a `ControlTokenSet`.

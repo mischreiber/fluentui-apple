@@ -12,7 +12,7 @@ import UIKit
 /// This class in itself is fairly straightforward, defining a height and a containment layout
 /// The animation around showing/hiding this view progressively is handled by its superview/superVC, an instance of ShyHeaderController
 class ShyHeaderView: UIView, TokenizedControlInternal {
-    typealias TokenSetKeyType = EmptyTokenSet.Tokens
+    typealias TokenSetKeyType = EmptyToken
     public var tokenSet: EmptyTokenSet = .init()
 
     /// Defines all possible states of the header view's appearance

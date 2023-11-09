@@ -27,7 +27,7 @@ class DateTimePickerViewComponentCell: UITableViewCell, TokenizedControlInternal
         }
     }
 
-    typealias TokenSetKeyType = EmptyTokenSet.Tokens
+    typealias TokenSetKeyType = EmptyToken
     var tokenSet: EmptyTokenSet = .init()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

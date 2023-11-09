@@ -22,6 +22,13 @@ public protocol TableViewHeaderFooterViewDelegate: AnyObject {
 /// Use `titleNumberOfLines` to configure the number of lines for the `title`. Headers generally use the default number of lines of 1 while footers may use a multiple number of lines.
 @objc(MSFTableViewHeaderFooterView)
 open class TableViewHeaderFooterView: UITableViewHeaderFooterView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc public static var identifier: String { return String(describing: self) }
 
     /// The height of the view based on the height of its content.
@@ -157,7 +164,7 @@ open class TableViewHeaderFooterView: UITableViewHeaderFooterView, TokenizedCont
         }
     }
 
-    public typealias TokenSetKeyType = TableViewHeaderFooterViewTokenSet.Tokens
+    public typealias TokenSetKeyType = TableViewHeaderFooterViewToken
     lazy public var tokenSet: TableViewHeaderFooterViewTokenSet = .init(style: { [weak self] in
         return self?.style ?? .header
     },

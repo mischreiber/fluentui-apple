@@ -49,8 +49,8 @@
     ]];
 
     MSFButton *testTokensButton = [self createButtonWithTitle:@"Test global and alias" action:@selector(tokensButtonPressed:)];
-    [testTokensButton setOverrideValue:[UIColor greenColor] forToken:MSFButtonTokenForegroundColor];
-    [testTokensButton setOverrideValue:[UIFont fontWithName:@"Times" size:32.0] forToken:MSFButtonTokenTitleFont];
+//    [testTokensButton setOverrideValue:[UIColor greenColor] forToken:MSFButtonTokenForegroundColor];
+//    [testTokensButton setOverrideValue:[UIFont fontWithName:@"Times" size:32.0] forToken:MSFButtonTokenTitleFont];
     [self.container addArrangedSubview:testTokensButton];
 
 

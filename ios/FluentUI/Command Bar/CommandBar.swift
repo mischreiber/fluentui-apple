@@ -48,6 +48,12 @@ public class CommandBar: UIView, TokenizedControlInternal {
     // |--|--buttons
 
     // MARK: - Public methods
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
 
     @available(*, renamed: "init(itemGroups:leadingItemGroups:trailingItemGroups:)")
     @objc public convenience init(itemGroups: [CommandBarItemGroup],
@@ -168,7 +174,7 @@ public class CommandBar: UIView, TokenizedControlInternal {
 
     // MARK: - TokenizedControl
 
-    public typealias TokenSetKeyType = CommandBarTokenSet.Tokens
+    public typealias TokenSetKeyType = CommandBarToken
     public var tokenSet: CommandBarTokenSet
 
     /// Items shown in the center of the CommandBar

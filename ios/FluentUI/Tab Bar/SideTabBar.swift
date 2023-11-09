@@ -24,6 +24,13 @@ public protocol SideTabBarDelegate {
 /// Optimized for horizontal regular + vertical regular size class configuration. Prefer using TabBarView for other size class configurations.
 @objc(MSFSideTabBar)
 open class SideTabBar: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     /// Delegate to handle user interactions in the side tab bar.
     @objc public weak var delegate: SideTabBarDelegate? {
         didSet {
@@ -341,7 +348,7 @@ open class SideTabBar: UIView, TokenizedControlInternal {
         }
     }
 
-    public typealias TokenSetKeyType = SideTabBarTokenSet.Tokens
+    public typealias TokenSetKeyType = SideTabBarToken
     public var tokenSet: SideTabBarTokenSet = .init()
 
     private func updateAppearance() {

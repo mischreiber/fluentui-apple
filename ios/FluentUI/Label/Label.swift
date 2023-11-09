@@ -10,6 +10,13 @@ import UIKit
 /// By default, `adjustsFontForContentSizeCategory` is set to true to automatically update its font when device's content size category changes
 @objc(MSFLabel)
 open class Label: UILabel, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     private static let defaultColorForTheme: (FluentTheme) -> UIColor = TextColorStyle.regular.uiColor
 
     @objc open var colorStyle: TextColorStyle {
@@ -82,7 +89,7 @@ open class Label: UILabel, TokenizedControlInternal {
         }
     }
 
-    public typealias TokenSetKeyType = LabelTokenSet.Tokens
+    public typealias TokenSetKeyType = LabelToken
     lazy public var tokenSet: LabelTokenSet = .init(textStyle: { [weak self] in
         return self?.textStyle ?? .body1
     },

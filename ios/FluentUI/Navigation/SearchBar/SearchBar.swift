@@ -23,6 +23,13 @@ public protocol SearchBarDelegate: AnyObject {
 /// Drop-in replacement for UISearchBar that allows for more customization
 @objc(MSFSearchBar)
 open class SearchBar: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc open var hidesNavigationBarDuringSearch: Bool = true {
         didSet {
             if oldValue != hidesNavigationBarDuringSearch && isActive {
@@ -60,7 +67,7 @@ open class SearchBar: UIView, TokenizedControlInternal {
 
     weak var navigationController: NavigationController?
 
-    public typealias TokenSetKeyType = SearchBarTokenSet.Tokens
+    public typealias TokenSetKeyType = SearchBarToken
     public lazy var tokenSet: SearchBarTokenSet = .init(style: { [weak self] in
         self?.style ?? .onBrandNavigationBar
     })

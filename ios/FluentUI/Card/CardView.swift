@@ -152,6 +152,12 @@ public enum CardSize: Int, CaseIterable {
  */
 @objc(MSFCardView)
 open class CardView: UIView, Shadowable, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
 
     /// Delegate to handle user interaction with the CardView
     @objc public weak var delegate: CardDelegate?
@@ -262,7 +268,7 @@ open class CardView: UIView, Shadowable, TokenizedControlInternal {
         }
     }
 
-    public typealias TokenSetKeyType = EmptyTokenSet.Tokens
+    public typealias TokenSetKeyType = EmptyToken
     public var tokenSet: EmptyTokenSet = .init()
 
     /// The size of the card.

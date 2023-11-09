@@ -9,6 +9,13 @@ import UIKit
 
 @objc(MSFResizingHandleView)
 open class ResizingHandleView: UIView, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     @objc public static let height: CGFloat = 20
 
     private lazy var markLayer: CALayer = {
@@ -60,7 +67,7 @@ open class ResizingHandleView: UIView, TokenizedControlInternal {
         updateColors()
     }
 
-    public typealias TokenSetKeyType = ResizingHandleTokenSet.Tokens
+    public typealias TokenSetKeyType = ResizingHandleToken
     public var tokenSet = ResizingHandleTokenSet()
 
     /// Internal custom color to preserve deprecated Drawer API (resizingHandleViewBackgroundColor)

@@ -7,6 +7,13 @@ import UIKit
 
 @objc(MSFTextField)
 public final class FluentTextField: UIView, UITextFieldDelegate, TokenizedControlInternal {
+//    @objc(setOverrideValue:forToken:)
+//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
+//        if let tokenValue = ControlTokenValue(overrideValue) {
+//            tokenSet[token] = tokenValue
+//        }
+//    }
+
     public override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         guard let newWindow else {
@@ -16,7 +23,7 @@ public final class FluentTextField: UIView, UITextFieldDelegate, TokenizedContro
         updateTokenizedValues()
     }
 
-    public typealias TokenSetKeyType = TextFieldTokenSet.Tokens
+    public typealias TokenSetKeyType = TextFieldToken
     lazy public var tokenSet: TextFieldTokenSet = .init(state: { [weak self] in
         return self?.state ?? .unfocused
     })
