@@ -18,13 +18,6 @@ public protocol TwoLineTitleViewDelegate: AnyObject {
 
 @objc(MSFTwoLineTitleView)
 open class TwoLineTitleView: UIView, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     @objc(MSFTwoLineTitleViewStyle)
     public enum Style: Int {
         case primary

@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFSideTabBarToken)
 public enum SideTabBarToken: Int, TokenSetKey {
     /// Optionally overrides the default background color of the  of the `TabBarItem` when selected.
     case tabBarItemSelectedColor

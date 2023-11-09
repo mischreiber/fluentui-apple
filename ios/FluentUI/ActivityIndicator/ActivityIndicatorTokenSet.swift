@@ -15,7 +15,6 @@ import UIKit
     case xLarge
 }
 
-//@objc(MSFActivityIndicatorToken)
 public enum ActivityIndicatorToken: Int, TokenSetKey {
     /// The default color of the Activity Indicator.
     case defaultColor

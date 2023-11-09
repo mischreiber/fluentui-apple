@@ -9,13 +9,6 @@ import UIKit
 
 @objc(MSFActivityIndicatorCell)
 open class ActivityIndicatorCell: UITableViewCell, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     public static let identifier: String = "ActivityIndicatorCell"
 
     @objc public var backgroundStyleType: TableViewCellBackgroundStyleType = .plain {

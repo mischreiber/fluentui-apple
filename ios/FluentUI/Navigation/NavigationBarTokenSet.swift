@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFNavigationBarToken)
 public enum NavigationBarToken: Int, TokenSetKey {
     /// Describes the background color for the navigation bar.
     case backgroundColor

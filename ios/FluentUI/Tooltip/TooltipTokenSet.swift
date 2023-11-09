@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFTooltipToken)
 public enum TooltipToken: Int, TokenSetKey {
     /// The color of the body of the tooltip.
     case tooltipColor

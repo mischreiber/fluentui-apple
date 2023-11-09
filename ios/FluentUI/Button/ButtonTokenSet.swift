@@ -70,7 +70,6 @@ public enum ButtonSizeCategory: Int, CaseIterable {
     case small
 }
 
-//@objc(MSFButtonToken)
 public enum ButtonToken: Int, TokenSetKey {
     /// Defines the background color of the button
     case backgroundColor

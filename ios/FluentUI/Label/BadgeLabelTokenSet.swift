@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFBadgeLabelToken)
 public enum BadgeLabelToken: Int, TokenSetKey {
     /// The background color of the BadgeLabel.
     case backgroundColor

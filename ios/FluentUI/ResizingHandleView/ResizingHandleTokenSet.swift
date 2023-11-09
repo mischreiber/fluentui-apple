@@ -6,7 +6,6 @@
 import UIKit
 import SwiftUI
 
-//@objc(MSFResizingHandleToken)
 public enum ResizingHandleToken: Int, TokenSetKey {
     /// Defines the color of the mark of the `ResizingHandle`.
     case markColor

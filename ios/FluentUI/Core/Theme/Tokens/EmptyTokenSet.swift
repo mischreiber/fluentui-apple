@@ -4,7 +4,6 @@
 //
 
 /// The set of tokens associated with this `EmptyTokenSet`.
-//@objc(MSFEmptyToken)
 public enum EmptyToken: Int, TokenSetKey {
     /// A default token, which only exists because Swift requires at least one value in this enum.
     case none

@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFDrawerToken)
 public enum DrawerToken: Int, TokenSetKey {
     /// Corner radius for the popover style `Drawer` control.
     case cornerRadius

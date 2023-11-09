@@ -21,13 +21,6 @@ public protocol TabBarViewDelegate {
 /// Use `selectedItem` property to change the selected tab bar item.
 @objc(MSFTabBarView)
 open class TabBarView: UIView, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     /// List of TabBarItems in the TabBarView. Order of the array is the order of the subviews.
     @objc open var items: [TabBarItem] = [] {
         willSet {

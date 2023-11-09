@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFPillButtonToken)
 public enum PillButtonToken: Int, TokenSetKey {
     /// The background color of the `PillButton`.
     case backgroundColor

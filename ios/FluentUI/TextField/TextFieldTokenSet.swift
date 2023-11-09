@@ -12,7 +12,6 @@ public enum FluentTextFieldState: Int, CaseIterable {
     case error
 }
 
-//@objc(MSFTextFieldToken)
 public enum TextFieldToken: Int, TokenSetKey {
     /// Defines the color of the text in the bottom label.
     case assistiveTextColor

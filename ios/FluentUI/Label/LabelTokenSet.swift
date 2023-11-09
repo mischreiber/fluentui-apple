@@ -31,7 +31,6 @@ public enum TextColorStyle: Int, CaseIterable {
     }
 }
 
-//@objc(MSFLabelToken)
 public enum LabelToken: Int, TokenSetKey {
     case font
     case textColor

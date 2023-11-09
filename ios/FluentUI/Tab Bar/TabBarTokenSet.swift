@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFTabBarToken)
 public enum TabBarToken: Int, TokenSetKey {
     /// Defines the background color of the  of the `TabBarItem` when selected.
     case tabBarItemSelectedColor

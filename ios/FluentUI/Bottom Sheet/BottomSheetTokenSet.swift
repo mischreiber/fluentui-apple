@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFBottomSheetToken)
 public enum BottomSheetToken: Int, TokenSetKey {
     /// Defines the background color of the `BottomSheetController`.
     case backgroundColor

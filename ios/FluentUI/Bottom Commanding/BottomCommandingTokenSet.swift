@@ -5,7 +5,6 @@
 
 import SwiftUI
 
-//@objc(MSFBottomCommandingToken)
 public enum BottomCommandingToken: Int, TokenSetKey {
     /// Defines the color of the background of the `BottomCommandingController`.
     case backgroundColor

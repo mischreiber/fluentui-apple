@@ -16,13 +16,6 @@ import UIKit
  */
 @objc(MSFActionsCell)
 open class ActionsCell: UITableViewCell, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     @objc(MSFActionsCellActionType)
     public enum ActionType: Int {
         case regular

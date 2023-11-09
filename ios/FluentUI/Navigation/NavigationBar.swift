@@ -101,13 +101,6 @@ protocol NavigationBarBackButtonDelegate {
 /// Custom UI can be hidden if desired
 @objc(MSFNavigationBar)
 open class NavigationBar: UINavigationBar, TokenizedControlInternal, TwoLineTitleViewDelegate {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     /// If the style is `.custom`, UINavigationItem's `navigationBarColor` is used for all the subviews' backgroundColor
     @objc(MSFNavigationBarStyle)
     public enum Style: Int {

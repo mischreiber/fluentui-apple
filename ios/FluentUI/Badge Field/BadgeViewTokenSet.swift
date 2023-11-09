@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFBadgeViewToken)
 public enum BadgeViewToken: Int, TokenSetKey {
     /// The background tint color of the Badge.
     case backgroundTintColor

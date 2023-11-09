@@ -4,7 +4,6 @@
 //
 import UIKit
 
-//@objc(MSFTableViewCellToken)
 public enum TableViewCellToken: Int, TokenSetKey {
     /// The background color of the TableView.
     case backgroundColor

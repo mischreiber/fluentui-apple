@@ -6,7 +6,6 @@
 import UIKit
 import SwiftUI
 
-//@objc(MSFAvatarGroupToken)
 public enum AvatarGroupToken: Int, TokenSetKey {
     /// Defines the color around the unread dot.
     case backgroundColor

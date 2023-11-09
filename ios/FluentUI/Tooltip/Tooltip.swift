@@ -18,13 +18,6 @@ import UIKit
 /// A styled tooltip that is presented anchored to a view.
 @objc(MSFTooltip)
 open class Tooltip: NSObject, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     /// Displays a tooltip based on the current settings, pointing to the supplied anchorView.
     /// If another tooltip view is already showing, it will be dismissed and the new tooltip will be shown.
     ///

@@ -114,13 +114,6 @@ NOTE: This cell implements its own custom separator. Make sure to remove the UIT
 */
 @objc(MSFTableViewCell)
 open class TableViewCell: UITableViewCell, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     @objc(MSFTableViewCellSeparatorType)
     public enum SeparatorType: Int {
         case none

@@ -6,7 +6,6 @@
 import UIKit
 import SwiftUI
 
-//@objc(MSFAvatarToken)
 public enum AvatarToken: Int, TokenSetKey {
     /// The radius of the corners of the `Avatar`.
     case borderRadius

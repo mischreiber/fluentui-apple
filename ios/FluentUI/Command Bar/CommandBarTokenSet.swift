@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFCommandBarToken)
 public enum CommandBarToken: Int, TokenSetKey {
     /// The background color of the Command Bar.
     case backgroundColor

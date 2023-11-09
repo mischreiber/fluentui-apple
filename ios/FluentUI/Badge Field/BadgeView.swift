@@ -57,13 +57,6 @@ public protocol BadgeViewDelegate {
  */
 @objc(MSFBadgeView)
 open class BadgeView: UIView, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     @objc open var dataSource: BadgeViewDataSource? {
         didSet {
             reload()

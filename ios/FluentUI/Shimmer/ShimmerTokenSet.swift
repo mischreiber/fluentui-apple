@@ -15,7 +15,6 @@ import UIKit
     case revealing
 }
 
-//@objc(MSFShimmerToken)
 public enum ShimmerToken: Int, TokenSetKey {
     /// The alpha value of the center of the gradient in the animation if shimmer is revealing shimmer.
     /// The alpha value of the view other than the gradient if shimmer is concealing shimmer.

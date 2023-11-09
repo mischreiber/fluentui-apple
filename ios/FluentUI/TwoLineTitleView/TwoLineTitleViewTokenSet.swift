@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFTwoLineTitleViewToken)
 public enum TwoLineTitleViewToken: Int, TokenSetKey {
     /// Describes the color of the subtitle.
     case subtitleColor

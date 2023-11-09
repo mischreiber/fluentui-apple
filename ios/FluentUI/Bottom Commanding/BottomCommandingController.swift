@@ -61,13 +61,6 @@ public protocol BottomCommandingControllerDelegate: AnyObject {
 ///
 @objc(MSFBottomCommandingController)
 open class BottomCommandingController: UIViewController, TokenizedControlInternal {
-//    @objc(setOverrideValue:forToken:)
-//    public func set(overrideValue: AnyObject, for token: TokenSetKeyType) {
-//        if let tokenValue = ControlTokenValue(overrideValue) {
-//            tokenSet[token] = tokenValue
-//        }
-//    }
-
     /// View controller that will be displayed below the bottom commanding UI.
     @objc public var contentViewController: UIViewController? {
         didSet {

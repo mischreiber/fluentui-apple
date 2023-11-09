@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFSegmentedControlToken)
 public enum SegmentedControlToken: Int, TokenSetKey {
     /// Defines the background color of the unselected segments of the `SegmentedControl`.
     case restTabColor

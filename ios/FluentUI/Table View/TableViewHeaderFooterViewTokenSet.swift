@@ -4,7 +4,6 @@
 //
 import UIKit
 
-//@objc(MSFTableViewHeaderFooterViewToken)
 public enum TableViewHeaderFooterViewToken: Int, TokenSetKey {
     /// The background color in plain mode.
     case backgroundColorPlain

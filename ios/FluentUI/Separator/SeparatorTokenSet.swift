@@ -5,7 +5,6 @@
 
 import UIKit
 
-//@objc(MSFSeparatorToken)
 public enum SeparatorToken: Int, TokenSetKey {
     /// The color of the Separator
     case color
