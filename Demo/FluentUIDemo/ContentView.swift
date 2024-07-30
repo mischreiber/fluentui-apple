@@ -6,37 +6,44 @@
 import SwiftUI
 import FluentUI
 
-struct ContentView: View {
-#if os(macOS)
-    // Until we have a SwiftUI button on macOS, this will have to do.
-    private struct ButtonRepresentable: NSViewRepresentable {
-        func makeNSView(context: Context) -> some NSView {
-            return FluentUI.Button(title: "Hello, world!",
-                                   image: .init(systemSymbolName: "globe", accessibilityDescription: nil))
-        }
+/// Definition of a DemoController
+struct DemoDescriptor: Identifiable, Hashable {
+    let title: String
+    let id = UUID()
+}
 
-        func updateNSView(_ nsView: NSViewType, context: Context) {
-        }
-    }
-#endif
+let demos: [DemoDescriptor] = [
+    DemoDescriptor(title: "Button")
+]
+
+struct ContentView: View {
+    @State private var currentDemo: DemoDescriptor?
+    @State var date = Date()
 
     var body: some View {
-        VStack {
-#if os(macOS)
-            ButtonRepresentable()
-                .fixedSize()
-#else
-            Button(action: {}, label: {
-                HStack {
-                    Image(systemName: "globe")
-                        .imageScale(.large)
-                    Text("Hello, world!")
-                }
-            })
-            .buttonStyle(FluentButtonStyle(style: .accent))
-            .controlSize(.extraLarge)
-#endif
+        NavigationSplitView {
+            List(demos, selection: $currentDemo) { demo in
+                NavigationLink(demo.title, value: demo)
+            }
+        } detail: {
+            if let title = currentDemo?.title {
+                DetailView(value: title)
+            } else {
+                Text("Choose a link")
+            }
         }
-        .padding()
     }
+
+    struct DetailView: View {
+        var value: String
+
+        var body: some View {
+            Text("\(value)")
+                .font(.largeTitle)
+        }
+    }
+}
+
+#Preview {
+    ContentView()
 }
