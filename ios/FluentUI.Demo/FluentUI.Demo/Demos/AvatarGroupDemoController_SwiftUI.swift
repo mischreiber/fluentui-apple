@@ -35,6 +35,7 @@ struct AvatarGroupDemoView: View {
     @State var isRingVisible: Bool = false
     @State var showImage: Bool = true
     @State var showImageBasedRingColor: Bool = false
+    @State var hasRingInnerGap: Bool = true
 
     // AvatarGroup settings
     @State var maxDisplayedAvatars: Int = startingMaxDisplayedAvatars
@@ -53,6 +54,7 @@ struct AvatarGroupDemoView: View {
                primaryText: samplePersona.name,
                secondaryText: samplePersona.email)
         .isRingVisible(isRingVisible)
+        .hasRingInnerGap(hasRingInnerGap)
         .imageBasedRingColor(showImageBasedRingColor ? AvatarDemoController.colorfulCustomImage : nil)
     }
 
@@ -84,6 +86,7 @@ struct AvatarGroupDemoView: View {
                 FluentListSection("Ring") {
                     Toggle("Ring Visible", isOn: $isRingVisible)
                     Toggle("Image Based Ring Color", isOn: $showImageBasedRingColor)
+                    Toggle("Has Ring Inner Gap", isOn: $hasRingInnerGap)
                 }
 
                 FluentListSection("Style") {

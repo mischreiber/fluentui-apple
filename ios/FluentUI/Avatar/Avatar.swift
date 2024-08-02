@@ -49,7 +49,12 @@ import SwiftUI
 
     /// Sets the transparency of the avatar elements (inner and outer ring gaps, presence, and activity icon outline).
     /// Uses the solid default background color if set to false.
+    @available(iOS, deprecated, message: "Transparency is deprecated, and will always be disabled.")
     var isTransparent: Bool { get set }
+
+    /// Determines whether to draw a simple outline around the avatar.
+    /// Uses the solid default background color if set to true.
+    var hasBackgroundOutline: Bool { get set }
 
     /// Defines the presence displayed by the Avatar.
     /// Image displayed depends on the value of the isOutOfOffice property.
@@ -133,18 +138,14 @@ public struct Avatar: View, TokenizedControlView, Equatable {
         let shouldDisplayPresence = (shouldDisplayActivity ? false : presence != .none) && !isPresenceSizeZero && style != .group
         let cornerRadius = shouldDisplayActivity ? (activityStyle == .square ? AvatarTokenSet.activityIconRadius(size) : .infinity) : .infinity
         let isRingVisible = state.isRingVisible
-        let hasRingInnerGap = state.hasRingInnerGap
-        let ringThicknessToken: CGFloat = tokenSet[.ringThickness].float
+        let hasBackgroundOutline = state.hasBackgroundOutline
         let accessoryBorderThicknessToken: CGFloat = tokenSet[.borderThickness].float
         let accessoryBorderColorToken: UIColor = tokenSet[.borderColor].uiColor
-        let isTransparent = state.isTransparent
         let isOutOfOffice = state.isOutOfOffice
 
-        // Adding ringInnerGapOffset to ringInnerGap & ringThickness to accommodate for a small space between
-        // the ring and avatar when the ring is visible and there is no inner ring gap
-        let ringInnerGapOffset = 0.5
-        let ringInnerGap: CGFloat = isRingVisible ? (hasRingInnerGap ? tokenSet[.ringInnerGap].float : -ringInnerGapOffset) : 0
-        let ringThickness: CGFloat = isRingVisible ? (hasRingInnerGap ? ringThicknessToken : ringThicknessToken + ringInnerGapOffset) : 0
+        // Various dimensions for avatar rings
+        let ringInnerGap: CGFloat = (isRingVisible || hasBackgroundOutline) ? tokenSet[.ringInnerGap].float : 0
+        let ringThickness: CGFloat = isRingVisible ? tokenSet[.ringThickness].float : 0
         let ringOuterGap: CGFloat = isRingVisible ? tokenSet[.ringOuterGap].float : 0
         let totalRingGap: CGFloat = ringInnerGap + ringThickness + ringOuterGap
         let avatarImageSize: CGFloat = contentSize
@@ -160,11 +161,15 @@ public struct Avatar: View, TokenizedControlView, Equatable {
         let backgroundColor: UIColor = state.backgroundColor ?? (
             !shouldUseCalculatedColors ? tokenSet[.backgroundDefaultColor].uiColor :
                 CalculatedColors.backgroundColor(hashCode: colorHashCode))
-        let ringGapColor = Color(tokenSet[.ringGapColor].uiColor).opacity(isTransparent ? 0 : 1)
-        let ringColor = !isRingVisible ? Color.clear :
-        Color(state.ringColor ?? ( !shouldUseCalculatedColors ?
-                                       tokenSet[.ringDefaultColor].uiColor :
-                                       CalculatedColors.ringColor(hashCode: colorHashCode)))
+        let ringGapColor = Color(tokenSet[.ringGapColor].uiColor)
+        let ringColor = ( !isRingVisible ?
+                          Color.clear :
+                            Color(state.ringColor ?? ( !shouldUseCalculatedColors ?
+                                                       tokenSet[.ringDefaultColor].uiColor :
+                                                        CalculatedColors.ringColor(hashCode: colorHashCode)
+                                                     )
+                            )
+        )
 
         let avatarImageInfo: (image: UIImage?, renderingMode: Image.TemplateRenderingMode) = {
             if shouldUseDefaultImage {
@@ -236,52 +241,68 @@ public struct Avatar: View, TokenizedControlView, Equatable {
         @ViewBuilder
         var avatarRingView: some View {
             if let imageBasedRingColor = state.imageBasedRingColor {
-                Circle()
-                    .foregroundStyle(.clear)
-                    .background(Image(uiImage: imageBasedRingColor)
-                        .resizable())
-                    .mask {
-                        Circle()
-                            .strokeBorder(lineWidth: ringThickness)
-                    }
+                Image(uiImage: imageBasedRingColor)
+                    .resizable()
+                    .frame(width: ringSize, height: ringSize, alignment: .center)
+                    .clipShape(Circle())
             } else {
-                Circle()
-                    .strokeBorder(ringColor,
-                                  lineWidth: ringThickness)
+                ringColor
+                    .frame(width: ringSize, height: ringSize, alignment: .center)
+                    .clipShape(Circle())
             }
         }
 
         @ViewBuilder
         var avatarBody: some View {
             if style == .group {
-                let avatarSize = contentSize
                 avatarContent
                     .background(Rectangle()
-                        .frame(width: avatarSize, height: avatarSize, alignment: .center)
+                        .frame(width: avatarImageSize, height: avatarImageSize, alignment: .center)
                         .foregroundColor(Color(backgroundColor)))
-                    .frame(width: avatarSize, height: avatarSize, alignment: .center)
+                    .frame(width: avatarImageSize, height: avatarImageSize, alignment: .center)
                     .contentShape(RoundedRectangle(cornerRadius: tokenSet[.borderRadius].float))
                     .clipShape(RoundedRectangle(cornerRadius: tokenSet[.borderRadius].float))
             } else {
-                Circle()
+                let coloredBackground = Circle()
+                    .frame(width: avatarImageSize, height: avatarImageSize, alignment: .center)
+                    .foregroundStyle(Color(backgroundColor))
+                let innerWhiteRing = Circle()
+                    .frame(width: ringInnerGapSize, height: ringInnerGapSize, alignment: .center)
                     .foregroundColor(ringGapColor)
+                let outerWhiteRing = Circle()
                     .frame(width: ringOuterGapSize, height: ringOuterGapSize, alignment: .center)
-                    .overlay(avatarRingView
-                                .frame(width: ringSize, height: ringSize, alignment: .center)
-                                .overlay(Circle()
-                                            .foregroundColor(Color(backgroundColor))
-                                            .frame(width: avatarImageSize, height: avatarImageSize, alignment: .center)
-                                            .overlay(avatarContent
-                                                        .frame(width: avatarImageSize * avatarImageSizeRatio,
-                                                               height: avatarImageSize * avatarImageSizeRatio,
-                                                               alignment: .center)
-                                                        .contentShape(Circle())
-                                                        .clipShape(Circle())
-                                                        .transition(.opacity),
-                                                     alignment: .center)
-                                        )
-                                .contentShape(Circle()),
-                             alignment: .center)
+                    .foregroundColor(ringGapColor)
+
+                avatarContent
+                    .frame(width: avatarImageSize * avatarImageSizeRatio,
+                           height: avatarImageSize * avatarImageSizeRatio,
+                           alignment: .center)
+                    .contentShape(Circle())
+                    .clipShape(Circle())
+                    // Various backgrounds to draw different rings
+                    .background(coloredBackground)
+                    .background(innerWhiteRing)
+                    .background(avatarRingView)
+                    .background(outerWhiteRing)
+//                Circle()
+//                    .foregroundColor(ringGapColor)
+//                    .frame(width: ringOuterGapSize, height: ringOuterGapSize, alignment: .center)
+//                    .overlay(avatarRingView
+//                                .frame(width: ringSize, height: ringSize, alignment: .center)
+//                                .overlay(Circle()
+//                                            .foregroundColor(Color(backgroundColor))
+//                                            .frame(width: avatarImageSize, height: avatarImageSize, alignment: .center)
+//                                            .overlay(avatarContent
+//                                                        .frame(width: avatarImageSize * avatarImageSizeRatio,
+//                                                               height: avatarImageSize * avatarImageSizeRatio,
+//                                                               alignment: .center)
+//                                                        .contentShape(Circle())
+//                                                        .clipShape(Circle())
+//                                                        .transition(.opacity),
+//                                                     alignment: .center)
+//                                        )
+//                                .contentShape(Circle()),
+//                             alignment: .center)
             }
         }
 
@@ -304,32 +325,34 @@ public struct Avatar: View, TokenizedControlView, Equatable {
                 let accessoryCutoutCoordinates: CGPoint = accessoryCoordinates(iconOffset: accessoryIconOffset,
                                                                                iconSize: accessoryBorderSize,
                                                                                totalRingGap: totalRingGap)
-                let accessoryBorderFrameLTR: CGFloat = accessoryCutoutCoordinates.x + accessoryBorderSize
-                let accessoryBorderFrameRTL: CGFloat = AvatarTokenSet.avatarSize(size) + totalRingGap + accessoryBorderThicknessToken + (shouldDisplayActivity ? accessoryBorderThicknessToken : 0)
-                let accessoryBorderFrameSideRelativeToOuterRing: CGFloat = layoutDirection == .rightToLeft ? accessoryBorderFrameRTL : accessoryBorderFrameLTR
+                let accessoryBorderFrameSideRelativeToOuterRing: CGFloat = {
+                    if layoutDirection == .rightToLeft {
+                        return AvatarTokenSet.avatarSize(size) + totalRingGap + accessoryBorderThicknessToken + (shouldDisplayActivity ? accessoryBorderThicknessToken : 0)
+                    } else {
+                        return accessoryCutoutCoordinates.x + accessoryBorderSize
+                    }
+                }()
                 let accessoryOverallFrameSide = max(ringOuterGapSize, accessoryBorderFrameSideRelativeToOuterRing)
 
                 // Activity icon background calculation
                 let activityImageSize: CGFloat = AvatarTokenSet.activityIconSize(size)
-                let activityBackgroundFrameLTR: CGFloat = accessoryBorderFrameLTR - accessoryBorderThicknessToken
-                let activityBackgroundFrameRTL: CGFloat = accessoryBorderFrameRTL - accessoryBorderThicknessToken
-                let activityBackgroundFrameSideRelativeToOuterRing: CGFloat = layoutDirection == .rightToLeft ? activityBackgroundFrameRTL : activityBackgroundFrameLTR
+                let activityBackgroundFrameSideRelativeToOuterRing: CGFloat = accessoryBorderFrameSideRelativeToOuterRing - accessoryBorderThicknessToken
 
                 avatarBody
-                // Creates the cutout shape
-                    .modifyIf((shouldDisplayActivity || shouldDisplayPresence), { thisView in
-                        thisView
-                            .clipShape(ShapeCutout(xOrigin: accessoryCutoutCoordinates.x,
-                                                   yOrigin: accessoryCutoutCoordinates.y,
-                                                   cornerRadius: cornerRadius,
-                                                   cutoutSize: accessoryBorderSize),
-                                       style: FillStyle(eoFill: true))
-                    })
+//                // Creates the cutout shape
+//                    .modifyIf((shouldDisplayActivity || shouldDisplayPresence), { thisView in
+//                        thisView
+//                            .clipShape(ShapeCutout(xOrigin: accessoryCutoutCoordinates.x,
+//                                                   yOrigin: accessoryCutoutCoordinates.y,
+//                                                   cornerRadius: cornerRadius,
+//                                                   cutoutSize: accessoryBorderSize),
+//                                       style: FillStyle(eoFill: true))
+//                    })
                 // Creates the activity outer border overlay
                     .modifyIf(shouldDisplayActivity, { thisView in
                         thisView
                             .overlay(RoundedRectangle(cornerRadius: cornerRadius)
-                                .foregroundColor(Color(accessoryBorderColorToken).opacity(isTransparent ? 0 : 1))
+                                .foregroundColor(Color(accessoryBorderColorToken))
                                 .frame(width: accessoryBorderSize, height: accessoryBorderSize, alignment: .center)
                                 .contentShape(Circle())
                                 .frame(width: accessoryBorderFrameSideRelativeToOuterRing, height: accessoryBorderFrameSideRelativeToOuterRing,
@@ -340,7 +363,7 @@ public struct Avatar: View, TokenizedControlView, Equatable {
                     .modifyIf((shouldDisplayActivity || shouldDisplayPresence), { thisView in
                         thisView
                             .overlay(RoundedRectangle(cornerRadius: cornerRadius)
-                                .foregroundColor(Color(accessoryBackgroundColor).opacity(isTransparent ? 0 : 1))
+                                .foregroundColor(Color(accessoryBackgroundColor))
                                 .frame(width: shouldDisplayActivity ? accessoryIconSize : accessoryBorderSize,
                                        height: shouldDisplayActivity ? accessoryIconSize : accessoryBorderSize,
                                        alignment: .center)
@@ -405,19 +428,6 @@ public struct Avatar: View, TokenizedControlView, Equatable {
         state = avatarState
         tokenSet = AvatarTokenSet(style: { avatarState.style },
                                   size: { avatarState.size })
-    }
-
-    /// Calculates the size of the avatar, including ring spacing
-    var totalSize: CGFloat {
-        let avatarImageSize: CGFloat = contentSize
-        let ringOuterGap: CGFloat = tokenSet[.ringOuterGap].float
-        if !state.isRingVisible {
-            return avatarImageSize + (ringOuterGap * 2)
-        } else {
-            let ringThickness: CGFloat = tokenSet[.ringThickness].float
-            let ringInnerGap: CGFloat = state.hasRingInnerGap ? tokenSet[.ringInnerGap].float : 0
-            return ((ringInnerGap + ringThickness + ringOuterGap) * 2 + avatarImageSize)
-        }
     }
 
     var contentSize: CGFloat {
@@ -567,7 +577,8 @@ class MSFAvatarStateImpl: ControlState, MSFAvatarState {
     @Published var isAnimated: Bool = true
     @Published var isOutOfOffice: Bool = false
     @Published var isRingVisible: Bool = false
-    @Published var isTransparent: Bool = true
+    @Published var isTransparent: Bool = false
+    @Published var hasBackgroundOutline: Bool = false
     @Published var presence: MSFAvatarPresence = .none
     @Published var activityStyle: MSFAvatarActivityStyle = .none
     @Published var activityImage: UIImage?

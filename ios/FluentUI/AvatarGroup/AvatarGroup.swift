@@ -323,6 +323,16 @@ public struct AvatarGroup: View, TokenizedControlView {
         let state = MSFAvatarStateImpl(style: .overflow, size: state.size)
         state.primaryText = "\(count)"
         state.image = nil
+        state.ringColor = .white
+
+        // Gets a ring if any avatar has one
+        self.state.avatars.forEach { avatar in
+            if avatar.state.isRingVisible {
+                state.isRingVisible = true
+                state.hasRingInnerGap = avatar.state.hasRingInnerGap
+            }
+        }
+
         return Avatar(state)
     }
 }
