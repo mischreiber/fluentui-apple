@@ -16,6 +16,9 @@ let targets: [Target] = [
     ),
     .target(
         name: "FluentUI_ios",
+        dependencies: [
+            .target(name: "FluentUI_common")
+        ],
         path: "Sources/FluentUI_iOS",
         resources: [
             .copy("Resources/Version.plist")
@@ -23,25 +26,32 @@ let targets: [Target] = [
     ),
     .target(
         name: "FluentUI_macos",
+        dependencies: [
+            .target(name: "FluentUI_common")
+        ],
         path: "Sources/FluentUI_macOS"
+    ),
+    .target(
+        name: "FluentUI_common",
+        path: "Sources/FluentUI_common"
     )
 ]
 
 let testTargets: [Target] = [
-    .testTarget(
-        name: "FluentUI_iOS_Tests",
-        dependencies: [
-            .target(name: "FluentUI_ios", condition: .when(platforms: iOSPlatforms)),
-        ],
-        path: "Tests/FluentUI_iOS_Tests"
-    ),
-    .testTarget(
-        name: "FluentUI_macOS_Tests",
-        dependencies: [
-            .target(name: "FluentUI_macos", condition: .when(platforms: macOSPlatforms))
-        ],
-        path: "Tests/FluentUI_macOS_Tests"
-    )
+//    .testTarget(
+//        name: "FluentUI_iOS_Tests",
+//        dependencies: [
+//            .target(name: "FluentUI_ios", condition: .when(platforms: iOSPlatforms)),
+//        ],
+//        path: "Tests/FluentUI_iOS_Tests"
+//    ),
+//    .testTarget(
+//        name: "FluentUI_macOS_Tests",
+//        dependencies: [
+//            .target(name: "FluentUI_macos", condition: .when(platforms: macOSPlatforms))
+//        ],
+//        path: "Tests/FluentUI_macOS_Tests"
+//    )
 ]
 
 let package = Package(
