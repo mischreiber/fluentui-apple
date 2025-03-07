@@ -70,6 +70,12 @@ class TestAvatarViewController: NSViewController {
 		view = containerView
 	}
 
+	override func viewDidAppear() {
+		super.viewDidAppear()
+		let color = NSColor(light: NSColor.red, dark: NSColor.blue)
+		self.view.window?.backgroundColor = color
+	}
+
 	/// Create a single avatar view from a given size and test identity
 	private static func avatarView(size: CGFloat, identity: TestIdentity) -> AvatarView {
 		let avatarView = AvatarView(avatarSize: size,

@@ -14,68 +14,18 @@ extension NSColor {
     ///
     /// The decision order for choosing between the colors is based on the following questions, in order:
     /// - Is the current `userInterfaceStyle` `.dark` or `.light`?
-    /// - Is the current `userInterfaceLevel` `.base` or `.elevated`?
-    /// - Is the current `accessibilityContrast` `.normal` or `.high`?
     ///
     /// - Parameter light: The default color for a light context. Required.
-    /// - Parameter lightHighContrast: The override color for a light, high contrast context. Optional.
-    /// - Parameter lightElevated: The override color for a light, elevated context. Optional.
-    /// - Parameter lightElevatedHighContrast: The override color for a light, elevated, high contrast context. Optional.
     /// - Parameter dark: The override color for a dark context. Optional.
-    /// - Parameter darkHighContrast: The override color for a dark, high contrast context. Optional.
-    /// - Parameter darkElevated: The override color for a dark, elevated context. Optional.
-    /// - Parameter darkElevatedHighContrast: The override color for a dark, elevated, high contrast context. Optional.
     @objc public convenience init(light: NSColor,
                                   dark: NSColor? = nil) {
-        self.init { traits -> NSColor in
-            let getColorForContrast = { (_ default: NSColor?, highContrast: NSColor?) -> NSColor? in
-                if traits.accessibilityContrast == .high, let color = highContrast {
-                    return color
-                }
-                return `default`
-            }
-
-            let getColor = { (_ default: NSColor?, highContrast: NSColor?, elevated: NSColor?, elevatedHighContrast: NSColor?) -> NSColor? in
-                if traits.userInterfaceLevel == .elevated,
-                   let color = getColorForContrast(elevated, elevatedHighContrast) {
-                    return color
-                }
-                return getColorForContrast(`default`, highContrast)
-            }
-
-            if traits.userInterfaceStyle == .dark,
-               let color = getColor(dark, darkHighContrast, darkElevated, darkElevatedHighContrast) {
-                return color
-            } else if let color = getColor(light, lightHighContrast, lightElevated, lightElevatedHighContrast) {
-                return color
-            } else {
-                preconditionFailure("Unable to choose color. Should not be reachable, as `light` color is non-optional.")
-            }
+        self.init(name: nil) { appearance -> NSColor in
+            let isDarkMode = appearance.bestMatch(from:[NSAppearance.Name.darkAqua]) == NSAppearance.Name.darkAqua
+            return isDarkMode ? (dark ?? light) : light
         }
     }
 
-    /// Creates a dynamic color object that returns the appropriate light or dark color value based on the current
-    /// rendering context.
-    ///
-    /// Convenience wrapper for
-    ///`init(light:lightHighContrast:lightElevated:lightElevatedHighContrast:dark:darkHighContrast:darkElevated:darkElevatedHighContrast:)`
-    /// to simplify Objective-C consumption.
-    ///
-    /// - Parameter light: The default color for a light context. Required.
-    /// - Parameter dark: The override color for a dark context. Required.
-    @objc public convenience init(light: NSColor,
-                                  dark: NSColor) {
-        self.init(light: light,
-                  lightHighContrast: nil,
-                  lightElevated: nil,
-                  lightElevatedHighContrast: nil,
-                  dark: dark,
-                  darkHighContrast: nil,
-                  darkElevated: nil,
-                  darkElevatedHighContrast: nil)
-    }
-
-    /// Creates a `NSColor` instance with the specified three-channel, 8-bit-per-channel color value, usually in hex.
+    /// Creates an `NSColor` instance with the specified three-channel, 8-bit-per-channel color value, usually in hex.
     ///
     /// For example: `0xFF0000` represents red, `0x00FF00` green, and `0x0000FF` blue. There is no way to specify an
     /// alpha channel via this initializer. For that, use `init(red:green:blue:alpha)` instead.
@@ -94,77 +44,49 @@ extension NSColor {
     }
 
     @objc public var light: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .light)
-    }
-
-    @objc public var lightHighContrast: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .light,
-                                  accessibilityContrast: .high)
-    }
-
-    @objc public var lightElevated: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .light,
-                                  userInterfaceLevel: .elevated)
-    }
-
-    @objc public var lightElevatedHighContrast: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .light,
-                                  accessibilityContrast: .high,
-                                  userInterfaceLevel: .elevated)
+        return resolvedColorValue(appearance: NSAppearance(named: .aqua))
     }
 
     @objc public var dark: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .dark)
-    }
-
-    @objc public var darkHighContrast: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .dark,
-                                  accessibilityContrast: .high)
-    }
-
-    @objc public var darkElevated: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .dark,
-                                  userInterfaceLevel: .elevated)
-    }
-
-    @objc public var darkElevatedHighContrast: NSColor {
-        return resolvedColorValue(userInterfaceStyle: .dark,
-                                  accessibilityContrast: .high,
-                                  userInterfaceLevel: .elevated)
+        return resolvedColorValue(appearance: NSAppearance(named: .darkAqua))
     }
 
     convenience init(dynamicColor: DynamicColor) {
         let colorResolver = { $0 != nil ? NSColor($0!) : nil }
         self.init(light: NSColor(dynamicColor.light),
-                  dark: colorResolver(dynamicColor.dark),
-                  darkElevated: colorResolver(dynamicColor.darkElevated))
+                  dark: colorResolver(dynamicColor.dark))
     }
 
-    /// Returns the version of the current color that results from the specified traits as a `ColorValue`.
+    /// Returns the version of the current color that results from the specified traits as an `NSColor`.
     ///
-    /// - Parameter userInterfaceStyle: The user interface style to use when resolving the color information.
-    /// - Parameter accessibilityContrast: The accessibility contrast to use when resolving the color information.
-    /// - Parameter userInterfaceLevel: The user interface level to use when resolving the color information.
+    /// - Parameter appearance: The user interface appearance to use when resolving the color information.
     ///
-    /// - Returns: The version of the color to display for the specified traits.
-    private func resolvedColorValue(userInterfaceStyle: UIUserInterfaceStyle,
-                                    accessibilityContrast: UIAccessibilityContrast = .unspecified,
-                                    userInterfaceLevel: UIUserInterfaceLevel = .unspecified) -> NSColor {
-        let traitCollection: UITraitCollection
-        if #available(iOS 17, *) {
-            traitCollection = UITraitCollection { mutableTraits in
-                mutableTraits.userInterfaceStyle = userInterfaceStyle
-                mutableTraits.accessibilityContrast = accessibilityContrast
-                mutableTraits.userInterfaceLevel = userInterfaceLevel
-            }
-        } else {
-            let traitCollectionStyle = UITraitCollection(userInterfaceStyle: userInterfaceStyle)
-            let traitCollectionContrast = UITraitCollection(accessibilityContrast: accessibilityContrast)
-            let traitCollectionLevel = UITraitCollection(userInterfaceLevel: userInterfaceLevel)
-            traitCollection = UITraitCollection(traitsFrom: [traitCollectionStyle, traitCollectionContrast, traitCollectionLevel])
+    /// - Returns: The version of the color to display for the specified appearance.
+    private func resolvedColorValue(appearance: NSAppearance?) -> NSColor {
+        guard let appearance else {
+            return self
         }
-        let resolvedColor = self.resolvedColor(with: traitCollection)
-        return resolvedColor
+
+        /// `NSAppearance.performAsCurrentDrawingAppearance` will let us
+        /// retrieve NSColor variants for a given drawing appearance.
+        /// Unfortunately there's no direct way to pass data out of the closure
+        /// passed into this method, so create a local class that can shuttle
+        /// values in and out.
+        class ColorHolder {
+            var cgColor: CGColor = .black
+        }
+
+        let holder = ColorHolder()
+        appearance.performAsCurrentDrawingAppearance { [holder] in
+            // Use `cgColor` to force `NSColor` to flatten into the appropriate
+            // set of values for this appearance.
+            holder.cgColor = self.cgColor
+        }
+
+        guard let nsColorValue = NSColor(cgColor: holder.cgColor) else {
+            preconditionFailure("Should not be possible to fail to create NSColor here!")
+        }
+        return nsColorValue
     }
 }
-#endif // canImport(UIKit)
+#endif // canImport(AppKit)
