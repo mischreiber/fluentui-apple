@@ -3,10 +3,7 @@
 //  Licensed under the MIT License.
 //
 
-#if canImport(FluentUI_common)
-import FluentUI_common
-#endif
-import UIKit
+import SwiftUI
 
 /// Shimmer style can be either concealing or revealing.
 /// The style affects the default shimmer alpha value and the default shimmer tint color.
@@ -57,7 +54,7 @@ public enum ShimmerToken: Int, TokenSetKey {
 
 /// Design token set for the `Shimmer` control.
 public class ShimmerTokenSet: ControlTokenSet<ShimmerToken> {
-    init(style: @escaping () -> MSFShimmerStyle) {
+    public init(style: @escaping () -> MSFShimmerStyle) {
         self.style = style
         super.init { [style] token, theme in
             switch token {
@@ -72,17 +69,17 @@ public class ShimmerTokenSet: ControlTokenSet<ShimmerToken> {
                 }
 
             case .tintColor:
-                return .uiColor {
+                return .color {
                     switch style() {
                     case .concealing:
-                        return theme.color(.stencil2)
+                        return theme.swiftUIColor(.stencil2)
                     case .revealing:
-                        return theme.color(.stencil1)
+                        return theme.swiftUIColor(.stencil1)
                     }
                 }
 
             case .darkGradient:
-                return .uiColor { theme.color(.foregroundDarkStatic) }
+                return .color { theme.swiftUIColor(.foregroundDarkStatic) }
 
             case .shimmerWidth:
                 return .float { 180.0 }

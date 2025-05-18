@@ -87,6 +87,7 @@
 		8F0B8116267021A700463726 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; platformFilter = ios; productRef = 8F0B8115267021A700463726 /* AppCenterCrashes */; };
 		9211BC612BD97B7900B95200 /* DemoHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211BC602BD97B7900B95200 /* DemoHostingController.swift */; };
 		92279B352B97F5DA00994D88 /* ButtonDemoController_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92279B342B97F5D900994D88 /* ButtonDemoController_SwiftUI.swift */; };
+		9242719F2DD5438E0030A25F /* ShimmerViewDemoController_SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9242719E2DD5438E0030A25F /* ShimmerViewDemoController_SwiftUI.swift */; };
 		9245E1F927BECDBB007616F3 /* GlobalColorTokensDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9245E1F827BECDBB007616F3 /* GlobalColorTokensDemoController.swift */; };
 		9246B7072C628CF6004A4440 /* FluentUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9246B7062C628CF6004A4440 /* FluentUI */; };
 		92561E732718AD090072ED00 /* DemoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92561E722718AD090072ED00 /* DemoTableViewController.swift */; };
@@ -120,7 +121,7 @@
 		B4EF66542295F1A8007FEAB0 /* TableViewHeaderFooterViewDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EF66532295F1A8007FEAB0 /* TableViewHeaderFooterViewDemoController.swift */; };
 		B4EF66562295F729007FEAB0 /* TableViewHeaderFooterSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EF66552295F729007FEAB0 /* TableViewHeaderFooterSampleData.swift */; };
 		C038992E2359307D00265026 /* TableViewCellShimmerDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C038992D2359307D00265026 /* TableViewCellShimmerDemoController.swift */; };
-		C0938E4A235F733100256251 /* ShimmerLinesViewDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0938E49235F733100256251 /* ShimmerLinesViewDemoController.swift */; };
+		C0938E4A235F733100256251 /* ShimmerViewDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0938E49235F733100256251 /* ShimmerViewDemoController.swift */; };
 		CCC18C2F2501C75F00BE830E /* CardViewDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC18C2E2501C75F00BE830E /* CardViewDemoController.swift */; };
 		D6296DB1295B8E5E002E8EB6 /* ObjectiveCDemoColorProviding.m in Sources */ = {isa = PBXBuildFile; fileRef = D6296DB0295B8E5E002E8EB6 /* ObjectiveCDemoColorProviding.m */; };
 		E6842974247B672000A29C40 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6842973247B672000A29C40 /* SceneDelegate.swift */; };
@@ -227,6 +228,7 @@
 		92279B342B97F5D900994D88 /* ButtonDemoController_SwiftUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonDemoController_SwiftUI.swift; sourceTree = "<group>"; };
 		923DF2DA271158C900637646 /* libFluentUI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFluentUI.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		923DF2DC271158CD00637646 /* FluentUIResources-ios.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = "FluentUIResources-ios.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9242719E2DD5438E0030A25F /* ShimmerViewDemoController_SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerViewDemoController_SwiftUI.swift; sourceTree = "<group>"; };
 		9245E1F827BECDBB007616F3 /* GlobalColorTokensDemoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalColorTokensDemoController.swift; sourceTree = "<group>"; };
 		9246B7052C628CAE004A4440 /* fluentui-apple */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "fluentui-apple"; path = ../..; sourceTree = "<group>"; };
 		92561E722718AD090072ED00 /* DemoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTableViewController.swift; sourceTree = "<group>"; };
@@ -266,7 +268,7 @@
 		B4EF66532295F1A8007FEAB0 /* TableViewHeaderFooterViewDemoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewHeaderFooterViewDemoController.swift; sourceTree = "<group>"; };
 		B4EF66552295F729007FEAB0 /* TableViewHeaderFooterSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewHeaderFooterSampleData.swift; sourceTree = "<group>"; };
 		C038992D2359307D00265026 /* TableViewCellShimmerDemoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCellShimmerDemoController.swift; sourceTree = "<group>"; };
-		C0938E49235F733100256251 /* ShimmerLinesViewDemoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmerLinesViewDemoController.swift; sourceTree = "<group>"; };
+		C0938E49235F733100256251 /* ShimmerViewDemoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmerViewDemoController.swift; sourceTree = "<group>"; };
 		CCC18C2E2501C75F00BE830E /* CardViewDemoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewDemoController.swift; sourceTree = "<group>"; };
 		D6296DAF295B8E1A002E8EB6 /* ObjectiveCDemoColorProviding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectiveCDemoColorProviding.h; sourceTree = "<group>"; };
 		D6296DB0295B8E5E002E8EB6 /* ObjectiveCDemoColorProviding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCDemoColorProviding.m; sourceTree = "<group>"; };
@@ -566,7 +568,8 @@
 				EC24DBC528B97EB70026EF92 /* PopupMenuObjCDemoController.m */,
 				2F0A96FB25CA047100EF9736 /* SearchBarDemoController.swift */,
 				FDCF7C8221BF35680058E9E6 /* SegmentedControlDemoController.swift */,
-				C0938E49235F733100256251 /* ShimmerLinesViewDemoController.swift */,
+				C0938E49235F733100256251 /* ShimmerViewDemoController.swift */,
+				9242719E2DD5438E0030A25F /* ShimmerViewDemoController_SwiftUI.swift */,
 				7D0931C024AAA3D30072458A /* SideTabBarDemoController.swift */,
 				11047D2522932DB1001F0F59 /* TabBarViewDemoController.swift */,
 				B498141521E42C140077B48D /* TableViewCellDemoController.swift */,
@@ -876,9 +879,10 @@
 				92DD1E8D279F496300FDEE0F /* DemoAppearanceMenu.swift in Sources */,
 				53097D4027028AE500A6E4DC /* PersonaButtonCarouselDemoController.swift in Sources */,
 				92C55CB72BEAA94500E0AB8D /* AvatarGroupDemoController_SwiftUI.swift in Sources */,
-				C0938E4A235F733100256251 /* ShimmerLinesViewDemoController.swift in Sources */,
+				C0938E4A235F733100256251 /* ShimmerViewDemoController.swift in Sources */,
 				EC1C31752923032000CF052C /* ColoredPillBackgroundView.swift in Sources */,
 				80AECC0C2630F1BB005AF2F3 /* BottomCommandingDemoController.swift in Sources */,
+				9242719F2DD5438E0030A25F /* ShimmerViewDemoController_SwiftUI.swift in Sources */,
 				C038992E2359307D00265026 /* TableViewCellShimmerDemoController.swift in Sources */,
 				53097D3D27028AD800A6E4DC /* NavigationControllerDemoController.swift in Sources */,
 				532FE3DC26EA6D8D007539C0 /* ActivityIndicatorDemoController_SwiftUI.swift in Sources */,
