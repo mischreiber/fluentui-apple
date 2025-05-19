@@ -5,52 +5,6 @@
 
 import SwiftUI
 
-/// ViewModifier that uses GeometryReader to get the size of the content view and sets it in the SizePreferenceKey
-fileprivate struct OnSizeChangeViewModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content.background(GeometryReader { geometryReader in
-            Color.clear.preference(key: SizePreferenceKey.self,
-                                   value: geometryReader.size)
-        })
-    }
-}
-
-/// PreferenceKey that will store the measured size of the view
-fileprivate struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
-}
-
-fileprivate extension View {
-    /// Measures the size of a view, monitors when its size is updated, and takes a closure to be called when it does
-    /// - Parameter action: Block to be performed on size change
-    /// - Returns The modified view.
-    func onSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
-        self.modifier(OnSizeChangeViewModifier())
-            .onPreferenceChange(SizePreferenceKey.self,
-                                perform: action)
-    }
-}
-
-/// Properties that can be used to customize the appearance of the `ShimmerLines`.
-public protocol MSFShimmerLinesState {
-
-    /// Determines whether the shimmer lines have a revealing shimmer or a concealing shimmer.
-    var style: MSFShimmerStyle { get set }
-
-    /// Number of lines that will shimmer in this view. Use 0 if the number of lines should fill the available space.
-    var lineCount: Int { get set }
-
-    /// The percent the first line (if 2+ lines) should fill the available horizontal space.
-    var firstLineFillPercent: CGFloat? { get set }
-
-    /// The percent the last line should fill the available horizontal space.
-    var lastLineFillPercent: CGFloat? { get set }
-
-    /// Sets the accessibility label for the Shimmer.
-    var accessibilityLabel: String? { get set }
-}
-
 /// View that represents the ShimmerLines view.
 public struct ShimmerLines: View, TokenizedControlView {
     public typealias TokenSetKeyType = ShimmerTokenSet.Tokens
@@ -67,68 +21,42 @@ public struct ShimmerLines: View, TokenizedControlView {
                 firstLineFillPercent: CGFloat,
                 lastLineFillPercent: CGFloat,
                 accessibilityLabel: String? = nil) {
-        let state = MSFShimmerLinesStateImpl(style: style,
-                                             lineCount: lineCount)
-        state.firstLineFillPercent = firstLineFillPercent
-        state.lastLineFillPercent = lastLineFillPercent
-        state.accessibilityLabel = accessibilityLabel
+        self.style = style
+        self.lineCount = lineCount
+        self.firstLineFillPercent = firstLineFillPercent
+        self.lastLineFillPercent = lastLineFillPercent
+        self.accessibilityLabel = accessibilityLabel
 
-        self.state = state
-        self.tokenSet = ShimmerTokenSet(style: { state.style })
+        self.tokenSet = ShimmerTokenSet(style: { style })
     }
 
     public var body: some View {
-        ShimmerLinesShape(lineCount: state.lineCount,
-                          firstLineFillPercent: state.firstLineFillPercent,
-                          lastLineFillPercent: state.lastLineFillPercent,
+        ShimmerLinesShape(lineCount: lineCount,
+                          firstLineFillPercent: firstLineFillPercent,
+                          lastLineFillPercent: lastLineFillPercent,
                           lineHeight: tokenSet[.labelHeight].float,
                           lineSpacing: tokenSet[.labelSpacing].float,
                           frame: containerSize)
         .foregroundColor(tokenSet[.tintColor].color)
-        .shimmering(style: state.style,
+        .shimmering(style: style,
                     shouldAddShimmeringCover: false,
                     usesTextHeightForLabels: false,
                     animationId: namespace,
                     isLabel: false,
-                    accessibilityLabel: state.accessibilityLabel)
-        .frame(maxWidth: .infinity, maxHeight: state.lineCount == 0 ? .infinity : (CGFloat(state.lineCount - 1) * tokenSet[.labelSpacing].float) + (CGFloat(state.lineCount) * tokenSet[.labelHeight].float))
+                    accessibilityLabel: accessibilityLabel)
+        .frame(maxWidth: .infinity, maxHeight: lineCount == 0 ? .infinity : (CGFloat(lineCount - 1) * tokenSet[.labelSpacing].float) + (CGFloat(lineCount) * tokenSet[.labelHeight].float))
         .onSizeChange { newSize in
             containerSize = newSize
         }
     }
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
-    @ObservedObject var state: MSFShimmerLinesStateImpl
+    var style: MSFShimmerStyle
+    var lineCount: Int
+    var firstLineFillPercent: CGFloat?
+    var lastLineFillPercent: CGFloat?
+    var accessibilityLabel: String?
     @Namespace private var namespace: Namespace.ID
     @State private var phase: CGFloat = 0
     @State private var containerSize: CGSize = CGSize()
-}
-
-/// Properties that can be used to customize the appearance of the `ShimmerLines`.
-class MSFShimmerLinesStateImpl: ControlState, MSFShimmerLinesState {
-    @Published var style: MSFShimmerStyle
-    @Published var lineCount: Int
-    @Published var firstLineFillPercent: CGFloat?
-    @Published var lastLineFillPercent: CGFloat?
-
-    @objc init(style: MSFShimmerStyle,
-               lineCount: Int) {
-        self.style = style
-        self.lineCount = lineCount
-
-        super.init()
-    }
-
-    convenience init(style: MSFShimmerStyle,
-                     lineCount: Int = 3,
-                     firstLineFillPercent: CGFloat? = 0.94,
-                     lastLineFillPercent: CGFloat? = 0.6,
-                     accessibilityLabel: String? = nil) {
-        self.init(style: style,
-                  lineCount: lineCount)
-
-        self.firstLineFillPercent = firstLineFillPercent
-        self.lastLineFillPercent = lastLineFillPercent
-        self.accessibilityLabel = accessibilityLabel
-    }
 }

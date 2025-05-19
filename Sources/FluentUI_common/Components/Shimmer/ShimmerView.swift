@@ -5,47 +5,6 @@
 
 import SwiftUI
 
-/// ViewModifier that uses GeometryReader to get the size of the content view and sets it in the SizePreferenceKey
-fileprivate struct OnSizeChangeViewModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content.background(GeometryReader { geometryReader in
-            Color.clear.preference(key: SizePreferenceKey.self,
-                                   value: geometryReader.size)
-        })
-    }
-}
-
-/// PreferenceKey that will store the measured size of the view
-fileprivate struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
-}
-
-fileprivate extension View {
-    /// Measures the size of a view, monitors when its size is updated, and takes a closure to be called when it does
-    /// - Parameter action: Block to be performed on size change
-    /// - Returns The modified view.
-    func onSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
-        self.modifier(OnSizeChangeViewModifier())
-            .onPreferenceChange(SizePreferenceKey.self,
-                                perform: action)
-    }
-}
-
-
-/// Properties that can be used to customize the appearance of the `Shimmer`.
-@objc public protocol MSFShimmerState {
-
-    /// Determines whether the shimmer is a revealing shimmer or a concealing shimmer.
-    var style: MSFShimmerStyle { get set }
-
-    /// Determines whether the view itself is shimmered or an added cover on top is shimmered.
-    var shouldAddShimmeringCover: Bool { get set }
-
-    /// Whether to use the height of the view (if the view is a label), else default to token value.
-    var usesTextHeightForLabels: Bool { get set }
-}
-
 /// View Modifier that adds a "shimmering" effect to any view.
 public struct Shimmer: ViewModifier, TokenizedControlView {
     public typealias TokenSetKeyType = ShimmerTokenSet.Tokens
@@ -55,7 +14,9 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
         if isShimmering {
             content
                 .modifier(AnimatedMask(tokenSet: tokenSet,
-                                       state: state,
+                                       style: style,
+                                       shouldAddShimmeringCover: shouldAddShimmeringCover,
+                                       usesTextHeightForLabels: usesTextHeightForLabels,
                                        isLabel: isLabel,
                                        phase: phase,
                                        contentSize: contentSize)
@@ -82,7 +43,9 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
     /// An animatable modifier to interpolate between `phase` values.
     struct AnimatedMask: AnimatableModifier {
         var tokenSet: ShimmerTokenSet
-        var state: MSFShimmerState
+        var style: MSFShimmerStyle
+        var shouldAddShimmeringCover: Bool
+        var usesTextHeightForLabels: Bool
         var isLabel: Bool
         var phase: CGFloat
         var contentSize: CGSize
@@ -94,18 +57,18 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
 
         func body(content: Content) -> some View {
             let gradientMask = GradientMask(tokenSet: tokenSet,
-                                            state: state,
+                                            style: style,
                                             contentSize: contentSize,
                                             phase: phase)
 
-            if state.shouldAddShimmeringCover {
+            if shouldAddShimmeringCover {
                 ZStack {
                     content
                     HStack {
                         RoundedRectangle(cornerRadius: isLabel && tokenSet[.labelCornerRadius].float >= 0 ? tokenSet[.labelCornerRadius].float : tokenSet[.cornerRadius].float)
                             .foregroundColor(tokenSet[.tintColor].color)
                             .frame(width: contentSize.width,
-                                   height: !isLabel || state.usesTextHeightForLabels ? contentSize.height : tokenSet[.labelHeight].float)
+                                   height: !isLabel || usesTextHeightForLabels ? contentSize.height : tokenSet[.labelHeight].float)
                             .mask(gradientMask)
                     }
                 }
@@ -120,7 +83,7 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
     /// The `phase` parameter shifts the gradient, moving the shimmer band.
     struct GradientMask: View {
         var tokenSet: ShimmerTokenSet
-        var state: MSFShimmerState
+        var style: MSFShimmerStyle
         var contentSize: CGSize
         var phase: CGFloat
 
@@ -130,16 +93,19 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
 
             let widthPercentage = tokenSet[.shimmerWidth].float / contentSize.width
             LinearGradient(gradient: Gradient(stops: [
-                .init(color: state.style == .concealing ? light : dark, location: phase - widthPercentage),
-                .init(color: state.style == .concealing ? dark : light, location: phase - widthPercentage / 2.0),
-                .init(color: state.style == .concealing ? light : dark, location: phase)]),
+                .init(color: style == .concealing ? light : dark, location: phase - widthPercentage),
+                .init(color: style == .concealing ? dark : light, location: phase - widthPercentage / 2.0),
+                .init(color: style == .concealing ? light : dark, location: phase)]),
                            startPoint: .topLeading,
                            endPoint: .bottomTrailing)
         }
     }
 
     @Environment(\.fluentTheme) var fluentTheme: FluentTheme
-    @ObservedObject var state: MSFShimmerStateImpl
+
+    var style: MSFShimmerStyle
+    var shouldAddShimmeringCover: Bool = true
+    var usesTextHeightForLabels: Bool = false
 
     /// When displaying one or more shimmers, this ID will synchronize the animations.
     let animationId: Namespace.ID
@@ -150,23 +116,4 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
 
     @State private var phase: CGFloat = 0
     @State private var contentSize: CGSize = CGSize()
-}
-
-class MSFShimmerStateImpl: ControlState, MSFShimmerState {
-    @Published var style: MSFShimmerStyle
-    @Published var shouldAddShimmeringCover: Bool = true
-    @Published var usesTextHeightForLabels: Bool = false
-
-    init(style: MSFShimmerStyle) {
-        self.style = style
-        super.init()
-    }
-
-    convenience init(style: MSFShimmerStyle,
-                     shouldAddShimmeringCover: Bool = true,
-                     usesTextHeightForLabels: Bool = false) {
-        self.init(style: style)
-        self.shouldAddShimmeringCover = shouldAddShimmeringCover
-        self.usesTextHeightForLabels = usesTextHeightForLabels
-    }
 }
