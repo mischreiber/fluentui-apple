@@ -30,9 +30,9 @@ public extension View {
         }()
 
         modifier(Shimmer(tokenSet: ShimmerTokenSet(style: { style }),
-                         state: MSFShimmerStateImpl(style: style,
-                                                    shouldAddShimmeringCover: shouldAddShimmeringCover,
-                                                    usesTextHeightForLabels: usesTextHeightForLabels),
+                         style: style,
+                         shouldAddShimmeringCover: shouldAddShimmeringCover,
+                         usesTextHeightForLabels: usesTextHeightForLabels,
                          animationId: animationId,
                          isLabel: isLabel,
                          isShimmering: isShimmering)
