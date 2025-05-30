@@ -4,6 +4,9 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// View Modifier that adds a "shimmering" effect to any view.
 public struct Shimmer: ViewModifier, TokenizedControlView {
@@ -27,11 +30,13 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
                 .onSizeChange { newSize in
                     contentSize = newSize
                 }
+#if canImport(UIKit)
                 .onAppear {
                     if !UIAccessibility.isReduceMotionEnabled {
                         phase = .init(1.0 + (tokenSet[.shimmerWidth].float / contentSize.width))
                     }
                 }
+#endif // canImport(UIKit)
             /// RTL languages require shimmer in the respective direction.
                 .flipsForRightToLeftLayoutDirection(true)
                 .matchedGeometryEffect(id: UUID(), in: self.animationId)
@@ -89,7 +94,7 @@ public struct Shimmer: ViewModifier, TokenizedControlView {
 
         var body: some View {
             let light = Color.white.opacity(self.tokenSet[.shimmerAlpha].float)
-            let dark = Color(self.tokenSet[.darkGradient].uiColor.light)
+            let dark = self.tokenSet[.darkGradient].color
 
             let widthPercentage = tokenSet[.shimmerWidth].float / contentSize.width
             LinearGradient(gradient: Gradient(stops: [
