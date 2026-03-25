@@ -599,6 +599,7 @@ public class BottomSheetController: UIViewController, Shadowable, TokenizedContr
                 delegate?.bottomSheetController?(self, willMoveTo: .expanded, interaction: .noUserAction)
                 currentExpansionState = .expanded
                 bottomSheetView.frame = sheetFrame(offset: offset(for: .expanded))
+                updateResizingHandleViewAccessibility(for: .expanded)
                 delegate?.bottomSheetController?(self, didMoveTo: .expanded, interaction: .noUserAction)
             } else {
                 bottomSheetView.frame = sheetFrame(offset: offset(for: currentExpansionState))
