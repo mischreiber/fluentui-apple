@@ -95,9 +95,29 @@ class CommandBarCommandGroupsView: UIView {
         }
 
         updateButtonGroupViews()
-        for view in buttonGroupViews {
+        for (index, view) in buttonGroupViews.enumerated() {
             view.equalWidthButtons = equalWidthGroups
             buttonGroupsStackView.addArrangedSubview(view)
+
+            if index < buttonGroupViews.count - 1 {
+                let separatorContainer = UIView()
+                separatorContainer.translatesAutoresizingMaskIntoConstraints = false
+
+                let separator = UIView()
+                separator.translatesAutoresizingMaskIntoConstraints = false
+                separator.backgroundColor = .opaqueSeparator
+                separatorContainer.addSubview(separator)
+
+                NSLayoutConstraint.activate([
+                    separator.topAnchor.constraint(equalTo: separatorContainer.topAnchor, constant: CommandBarTokenSet.separatorVerticalPadding),
+                    separator.bottomAnchor.constraint(equalTo: separatorContainer.bottomAnchor, constant: -CommandBarTokenSet.separatorVerticalPadding),
+                    separator.leadingAnchor.constraint(equalTo: separatorContainer.leadingAnchor),
+                    separator.trailingAnchor.constraint(equalTo: separatorContainer.trailingAnchor),
+                    separatorContainer.widthAnchor.constraint(equalToConstant: 1)
+                ])
+
+                buttonGroupsStackView.addArrangedSubview(separatorContainer)
+            }
         }
     }
 
