@@ -50,6 +50,9 @@ public enum CommandBarToken: Int, TokenSetKey {
 
     /// The shadows used by the `CommandBar`.
     case shadow
+
+    /// The maximum width of each button in the CommandBar. When greater than 0, buttons will be constrained to this width and truncate text that exceeds it.
+    case maxButtonWidth
 }
 
 /// Design token set for the `CommandBar` control.
@@ -98,6 +101,9 @@ public class CommandBarTokenSet: ControlTokenSet<CommandBarToken> {
 
             case .shadow:
                 return .shadowInfo { theme.shadow(.shadow08) }
+
+            case .maxButtonWidth:
+                return .float { 0.0 }
             }
         }
     }
