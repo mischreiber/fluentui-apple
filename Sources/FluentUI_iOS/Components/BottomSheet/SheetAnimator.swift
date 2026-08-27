@@ -21,6 +21,7 @@ import UIKit
 ///         handleCompletedStateChange(...)
 ///     }
 @available(iOS 18.0, visionOS 2.0, *)
+@MainActor
 public class SheetAnimator {
 
     /// Creates a `SheetAnimator`.
@@ -215,7 +216,8 @@ public class SheetAnimator {
     private var completionHandler: (() -> Void)?
     private var updateLink: UIUpdateLink?
 
-    deinit {
-        stopUpdateLink()
+    // `isolated deinit` is required here because `UIUpdateLink.isEnabled` is main actor-isolated.
+    isolated deinit {
+        updateLink?.isEnabled = false
     }
 }

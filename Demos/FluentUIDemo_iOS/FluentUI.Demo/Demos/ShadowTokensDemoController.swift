@@ -90,7 +90,7 @@ private class ShadowView: UIView, Shadowable {
 }
 
 extension FluentTheme.ShadowToken: @retroactive CaseIterable {
-    public static var allCases: [FluentTheme.ShadowToken] = [
+    public static let allCases: [FluentTheme.ShadowToken] = [
         .clear,
         .shadow02,
         .shadow04,

@@ -9,7 +9,7 @@ import FluentUI_common
 import SwiftUI
 
 /// Fluent specific list style enum
-public enum FluentListStyle {
+nonisolated public enum FluentListStyle {
     case plain
     case insetGrouped
     case inset

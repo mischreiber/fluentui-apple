@@ -232,7 +232,11 @@ open class BadgeField: UIView, TokenizedControl {
 
 #if os(iOS)
     deinit {
-        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        // `deinit` is nonisolated, so the main actor-isolated `UIDevice.current` cannot be touched
+        // directly. This balances the `beginGeneratingDeviceOrientationNotifications()` call in `setup`.
+        Task { @MainActor in
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
     }
 #endif // os(iOS)
 

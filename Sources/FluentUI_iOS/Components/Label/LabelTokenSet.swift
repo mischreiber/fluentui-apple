@@ -34,7 +34,7 @@ public enum TextColorStyle: Int, CaseIterable {
     }
 }
 
-public enum LabelToken: Int, TokenSetKey {
+nonisolated public enum LabelToken: Int, TokenSetKey {
     case font
     case textColor
 }

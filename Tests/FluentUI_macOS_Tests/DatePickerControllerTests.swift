@@ -6,18 +6,19 @@
 import XCTest
 @testable import FluentUI_macos
 
+@MainActor
 class DatePickerControllerTests: XCTestCase {
 
-	var calendar: Calendar!
+	// Initialized here rather than in `setUp()`: `XCTestCase.setUp()` is nonisolated, so it cannot mutate
+	// a main actor-isolated property. XCTest creates a fresh instance per test method, so a property
+	// initializer runs exactly as often as `setUp()` did.
+	var calendar: Calendar = {
+		var calendar = Calendar(identifier: .gregorian)
+		calendar.locale = Locale(identifier: "en_US")
+		return calendar
+	}()
 
 	var delegateCalled: Bool = false
-
-	override func setUp() {
-		super.setUp()
-
-		calendar = Calendar(identifier: .gregorian)
-		calendar.locale = Locale(identifier: "en_US")
-	}
 
 	func testWeekdays () {
 		// In Slovak locale, weekdays should be localized and start on a monday ("po")

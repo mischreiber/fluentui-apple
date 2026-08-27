@@ -8,7 +8,7 @@ import AppKit
 @objc(MSFBadgeView)
 open class BadgeView: NSView {
 	@objc(MSFBadgeViewStyle)
-	public enum Style: Int, CaseIterable {
+	nonisolated public enum Style: Int, CaseIterable {
 		case `default`
 		case primary
 	}

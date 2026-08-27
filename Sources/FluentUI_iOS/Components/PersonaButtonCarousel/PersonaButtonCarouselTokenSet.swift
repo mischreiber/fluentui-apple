@@ -11,7 +11,7 @@ import UIKit
 /// Representation of design tokens to controls at runtime which interfaces with the Design Token System auto-generated code.
 /// Updating these properties causes the SwiftUI controls to update its view automatically.
 public class PersonaButtonCarouselTokenSet: ControlTokenSet<PersonaButtonCarouselTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// The background color for the `PersonaButtonCarousel`.
         case backgroundColor
     }

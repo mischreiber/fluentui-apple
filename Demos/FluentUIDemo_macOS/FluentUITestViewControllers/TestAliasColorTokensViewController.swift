@@ -375,6 +375,7 @@ extension FluentTheme.ColorToken {
         }
     }
 
+    @MainActor
     func textColor(_ fluentTheme: FluentTheme) -> Color {
         switch self {
         case .background1,

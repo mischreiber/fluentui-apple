@@ -497,7 +497,7 @@ public protocol DatePickerControllerDelegate: AnyObject {
 }
 
 @objc(MSFDatePickerStyle)
-public enum DatePickerStyle: Int {
+nonisolated public enum DatePickerStyle: Int {
 	case date
 	case dateTime
 }

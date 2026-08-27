@@ -18,7 +18,7 @@ public protocol CardDelegate {
 
 /// Color style can be app colors, neutral colors, or custom colors. The style affects the background, border, title, subtitle and icon colors
 @objc(MSFCardColorStyle)
-public enum CardColorStyle: Int, CaseIterable {
+nonisolated public enum CardColorStyle: Int, CaseIterable {
     case appColor
     case neutral
     case custom
@@ -26,7 +26,7 @@ public enum CardColorStyle: Int, CaseIterable {
 
 /// Pre-defined sizes of the Card.
 @objc(MSFCardSize)
-public enum CardSize: Int, CaseIterable {
+nonisolated public enum CardSize: Int, CaseIterable {
     case small
     case large
 

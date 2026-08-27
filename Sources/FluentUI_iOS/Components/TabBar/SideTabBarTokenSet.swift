@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum SideTabBarToken: Int, TokenSetKey {
+nonisolated public enum SideTabBarToken: Int, TokenSetKey {
     /// Optionally overrides the default background color of the `SideTabBar`.
     case backgroundColor
 

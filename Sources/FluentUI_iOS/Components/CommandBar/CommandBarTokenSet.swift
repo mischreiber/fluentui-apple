@@ -9,7 +9,7 @@ import FluentUI_common
 import UIKit
 
 @objc(MSFCommandBarStyle)
-public enum CommandBarStyle: Int {
+nonisolated public enum CommandBarStyle: Int {
     /// Default style — solid background color.
     case primary
 
@@ -17,7 +17,7 @@ public enum CommandBarStyle: Int {
     case glass
 }
 
-public enum CommandBarToken: Int, TokenSetKey {
+nonisolated public enum CommandBarToken: Int, TokenSetKey {
     /// The background color of the Command Bar.
     case backgroundColor
 

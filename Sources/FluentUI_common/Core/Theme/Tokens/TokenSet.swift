@@ -7,7 +7,7 @@
 public typealias TokenSetKey = Hashable & Sendable
 
 /// Template for all token sets, both global and alias. This ensures a unified return type for any given token set.
-public final class TokenSet<T: TokenSetKey, V> {
+nonisolated public final class TokenSet<T: TokenSetKey, V> {
 
     /// Allows us to index into this token set using square brackets.
     ///

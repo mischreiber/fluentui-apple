@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum PillButtonToken: Int, TokenSetKey {
+nonisolated public enum PillButtonToken: Int, TokenSetKey {
     /// The background color of the `PillButton`.
     case backgroundColor
 
@@ -278,7 +278,7 @@ extension PillButtonTokenSet {
 // MARK: - PillButtonStyle
 
 @objc(MSFPillButtonStyle)
-public enum PillButtonStyle: Int {
+nonisolated public enum PillButtonStyle: Int {
     /// primary: the default style of PillButton; use this style in conjunction with a neutral or white background.
     case primary
 

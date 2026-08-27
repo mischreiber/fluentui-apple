@@ -15,7 +15,11 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { "Microsoft" => "fluentuinativeowners@microsoft.com"}
   s.source           = { :git => "https://github.com/microsoft/fluentui-apple.git", :tag => "#{s.version}" }
-  s.swift_version    = "5.9"
+  # Keep in sync with Package.swift: `swiftLanguageModes: [.v6]` and
+  # `.defaultIsolation(MainActor.self)`. Without both, a CocoaPods consumer gets a library whose
+  # public API has a different isolation contract than the one an SPM consumer gets.
+  s.swift_version    = "6.0"
+  s.pod_target_xcconfig = { "SWIFT_DEFAULT_ACTOR_ISOLATION" => "MainActor" }
   s.module_name      = 'FluentUI'
 
   s.ios.deployment_target = "17.0"

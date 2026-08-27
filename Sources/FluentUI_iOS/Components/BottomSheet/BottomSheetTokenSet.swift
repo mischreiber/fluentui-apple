@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum BottomSheetToken: Int, TokenSetKey {
+nonisolated public enum BottomSheetToken: Int, TokenSetKey {
     /// Defines the background color of the `BottomSheetController`.
     case backgroundColor
 
@@ -65,7 +65,7 @@ extension BottomSheetTokenSet {
 // MARK: - BottomSheetControllerStyle
 
 @objc(MSFBottomSheetControllerStyle)
-public enum BottomSheetControllerStyle: Int {
+nonisolated public enum BottomSheetControllerStyle: Int {
     /// The default style, this applies a solid background color to the BottomSheet view
     case primary
 

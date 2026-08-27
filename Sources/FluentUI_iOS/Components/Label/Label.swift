@@ -13,7 +13,7 @@ import UIKit
 /// By default, `adjustsFontForContentSizeCategory` is set to true to automatically update its font when device's content size category changes
 @objc(MSFLabel)
 open class Label: UILabel, TokenizedControl {
-    private static let defaultColorForTheme: (FluentTheme) -> UIColor = TextColorStyle.regular.uiColor
+    private static let defaultColorForTheme: @MainActor (FluentTheme) -> UIColor = TextColorStyle.regular.uiColor
 
     @objc open var colorStyle: TextColorStyle {
         @available(*, unavailable)
@@ -83,7 +83,7 @@ open class Label: UILabel, TokenizedControl {
         return (self?.colorForTheme ?? Self.defaultColorForTheme)(theme)
     })
 
-    private var colorForTheme: (FluentTheme) -> UIColor = Label.defaultColorForTheme
+    private var colorForTheme: @MainActor (FluentTheme) -> UIColor = Label.defaultColorForTheme
 
     @objc convenience public init() {
         self.init(textStyle: .body1, colorStyle: .regular)
@@ -96,7 +96,11 @@ open class Label: UILabel, TokenizedControl {
         initialize()
     }
 
-    @objc public init(textStyle: FluentTheme.TypographyToken = .body1, colorForTheme: @escaping (FluentTheme) -> UIColor) {
+    // `@preconcurrency` preserves source compatibility: `@objc` closure types are implicitly `@Sendable`
+    // in Swift 6, which makes passing an existing non-`Sendable` function value (such as a method
+    // reference) an error at some call sites. The callback has always been invoked on the main thread,
+    // so this only relaxes the diagnostic, not the actual contract.
+    @preconcurrency @objc public init(textStyle: FluentTheme.TypographyToken = .body1, colorForTheme: @escaping @MainActor (FluentTheme) -> UIColor) {
         super.init(frame: .zero)
         self.textStyle = textStyle
         self.colorForTheme = colorForTheme

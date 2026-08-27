@@ -9,7 +9,7 @@ import FluentUI_common
 import SwiftUI
 import UIKit
 
-public enum AvatarToken: Int, TokenSetKey {
+nonisolated public enum AvatarToken: Int, TokenSetKey {
     /// The radius of the corners of the `Avatar`.
     case borderRadius
 
@@ -285,7 +285,7 @@ extension AvatarTokenSet {
 }
 
 /// Pre-defined styles of the avatar.
-@objc public enum MSFAvatarStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFAvatarStyle: Int, CaseIterable {
     case `default`
     case accent
     case group
@@ -295,7 +295,7 @@ extension AvatarTokenSet {
 }
 
 /// Pre-defined sizes of the avatar.
-@objc public enum MSFAvatarSize: Int, CaseIterable {
+@objc nonisolated public enum MSFAvatarSize: Int, CaseIterable {
     case size16
     case size20
     case size24
@@ -306,7 +306,7 @@ extension AvatarTokenSet {
 }
 
 /// Types of Avatar Activity styles.
-@objc public enum MSFAvatarActivityStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFAvatarActivityStyle: Int, CaseIterable {
     case none
     case circle
     case square

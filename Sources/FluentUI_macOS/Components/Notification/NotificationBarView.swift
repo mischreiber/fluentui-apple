@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Pre-defined styles of the notification
-@objc public enum MSFNotificationStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFNotificationStyle: Int, CaseIterable {
 	/// Bar notification with brand colored text and background.
 	case accent
 
@@ -18,7 +18,7 @@ import SwiftUI
 }
 
 /// Direction that the notification will appear from.
-@objc public enum MSFNotificationDirection: Int, CaseIterable {
+@objc nonisolated public enum MSFNotificationDirection: Int, CaseIterable {
 	case top
 	case bottom
 }

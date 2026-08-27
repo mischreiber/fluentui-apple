@@ -14,7 +14,7 @@ public class GlobalTokens: NSObject {
     // MARK: - BrandColor
 
     @objc(MSFGlobalTokensBrandColor)
-    public enum BrandColorToken: Int, CaseIterable, Hashable {
+    nonisolated public enum BrandColorToken: Int, CaseIterable, Hashable {
         // Communication blue colors
         case comm10
         case comm20
@@ -94,7 +94,7 @@ public class GlobalTokens: NSObject {
     // MARK: - NeutralColor
 
     @objc(MSFGlobalTokensNeutralColor)
-    public enum NeutralColorToken: Int, CaseIterable, Hashable {
+    nonisolated public enum NeutralColorToken: Int, CaseIterable, Hashable {
         case black
         case grey2
         case grey4
@@ -257,7 +257,7 @@ public class GlobalTokens: NSObject {
     // MARK: - SharedColor
 
     @objc(MSFGlobalTokensSharedColorSet)
-    public enum SharedColorSet: Int, CaseIterable, Hashable {
+    nonisolated public enum SharedColorSet: Int, CaseIterable, Hashable {
         case darkRed
         case burgundy
         case cranberry
@@ -310,7 +310,7 @@ public class GlobalTokens: NSObject {
     }
 
     @objc(MSFGlobalTokensSharedColor)
-    public enum SharedColorToken: Int, CaseIterable, Hashable {
+    nonisolated public enum SharedColorToken: Int, CaseIterable, Hashable {
         case shade50
         case shade40
         case shade30
@@ -1655,7 +1655,7 @@ public class GlobalTokens: NSObject {
 
     // MARK: - FontSize
     @objc(MSFGlobalTokensFontSize)
-    public enum FontSizeToken: Int, CaseIterable, Hashable {
+    nonisolated public enum FontSizeToken: Int, CaseIterable, Hashable {
         case size100
         case size200
         case size300
@@ -1674,7 +1674,7 @@ public class GlobalTokens: NSObject {
     // MARK: - FontWeight
 
     @objc(MSFGlobalTokensFontWeight)
-    public enum FontWeightToken: Int, CaseIterable, Hashable {
+    nonisolated public enum FontWeightToken: Int, CaseIterable, Hashable {
         case regular
         case medium
         case semibold
@@ -1696,7 +1696,7 @@ public class GlobalTokens: NSObject {
     // MARK: - IconSize
 
     @objc(MSFGlobalTokensIconSize)
-    public enum IconSizeToken: Int, CaseIterable, Hashable {
+    nonisolated public enum IconSizeToken: Int, CaseIterable, Hashable {
         case size100
         case size120
         case size160
@@ -1734,7 +1734,7 @@ public class GlobalTokens: NSObject {
     // MARK: - Spacing
 
     @objc(MSFGlobalTokensSpacing)
-    public enum SpacingToken: Int, CaseIterable, Hashable {
+    nonisolated public enum SpacingToken: Int, CaseIterable, Hashable {
         case sizeNone
         case size20
         case size40
@@ -1796,7 +1796,7 @@ public class GlobalTokens: NSObject {
     // MARK: - BorderRadius
 
     @objc(MSFGlobalTokensCornerRadius)
-    public enum CornerRadiusToken: Int, CaseIterable, Hashable {
+    nonisolated public enum CornerRadiusToken: Int, CaseIterable, Hashable {
         case radiusNone
         case radius20
         case radius40
@@ -1831,7 +1831,7 @@ public class GlobalTokens: NSObject {
     // MARK: - BorderSize
 
     @objc(MSFGlobalTokensStrokeWidthToken)
-    public enum StrokeWidthToken: Int, CaseIterable, Hashable {
+    nonisolated public enum StrokeWidthToken: Int, CaseIterable, Hashable {
         case widthNone
         case width05
         case width10

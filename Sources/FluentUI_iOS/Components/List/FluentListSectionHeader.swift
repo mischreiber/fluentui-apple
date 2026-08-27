@@ -11,7 +11,7 @@ import SwiftUI
 public typealias ListSectionHeaderFooterTokenSet = TableViewHeaderFooterViewTokenSet
 
 /// Defines the visual style of the FluentListSectionHeader
-public enum ListSectionHeaderStyle {
+nonisolated public enum ListSectionHeaderStyle {
     case regular
     case primary
 }

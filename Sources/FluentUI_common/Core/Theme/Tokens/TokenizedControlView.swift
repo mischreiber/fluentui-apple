@@ -7,6 +7,7 @@ import Combine
 import SwiftUI
 
 /// SwiftUI-specific extension to `TokenizedControl`.
+@MainActor
 public protocol TokenizedControlView: TokenizedControl {
     /// Modifier function that updates the design tokens for a given control.
     ///

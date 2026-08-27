@@ -6,6 +6,7 @@
 import XCTest
 @testable import FluentUI_ios
 
+@MainActor
 class DatePickerControllerTests: XCTestCase {
     let startDate: Date = NSDate.now
     let endDate: Date = NSDate.now.adding(days: 1)

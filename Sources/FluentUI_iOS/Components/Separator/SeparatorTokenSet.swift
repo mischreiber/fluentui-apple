@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum SeparatorToken: Int, TokenSetKey {
+nonisolated public enum SeparatorToken: Int, TokenSetKey {
     /// The color of the Separator
     case color
 }

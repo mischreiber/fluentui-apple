@@ -11,7 +11,7 @@ import UIKit
 
 /// Representation of design tokens for the Progress Bar.
 public class ProgressBarTokenSet: ControlTokenSet<ProgressBarTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// Progress bar's background color.
         case backgroundColor
 

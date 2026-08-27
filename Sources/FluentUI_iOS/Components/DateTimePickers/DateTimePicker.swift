@@ -11,7 +11,7 @@ import UIKit
 // MARK: DateTimePickerMode
 
 @objc(MSFDateTimePickerMode)
-public enum DateTimePickerMode: Int {
+nonisolated public enum DateTimePickerMode: Int {
     case date
     case dateTime
     case dateRange
@@ -37,7 +37,7 @@ public protocol DateTimePickerDelegate: AnyObject {
 @objc(MSFDateTimePicker)
 public class DateTimePicker: NSObject {
     @objc(MSFDateTimePickerDatePickerType)
-    public enum DatePickerType: Int {
+    nonisolated public enum DatePickerType: Int {
         /// Date picker is represented as a calendar with 7 columns to show days of week and each row showing one week of dates.
         case calendar
         /// Date picker is represented by a set of "spinners" each allowing to modify one component of a date: day, month, or year. Only one spinner for the entire date is shown when time picking is also allowed.
@@ -45,7 +45,7 @@ public class DateTimePicker: NSObject {
     }
 
     @objc(MSFDateTimePickerDateRangePresentation)
-    public enum DateRangePresentation: Int {
+    nonisolated public enum DateRangePresentation: Int {
         case paged
         case tabbed
     }

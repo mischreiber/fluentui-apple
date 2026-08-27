@@ -88,19 +88,33 @@ class DrawerShadowView: UIView, Shadowable {
         updateFrame()
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if let owner = owner {
-            if object as? UIView == owner && (keyPath == #keyPath(frame) || keyPath == #keyPath(bounds)) {
-                updateFrame()
-                return
+    // KVO delivers this callback synchronously on whatever thread mutated the observed property. Since
+    // `owner`'s `frame`/`bounds` and its layer's `mask` are only ever mutated from the main actor, it's
+    // safe to assume isolation here in order to reach our main actor-isolated members below.
+    //
+    // `object` is reduced to an `ObjectIdentifier` before crossing into the isolated block so that no
+    // non-`Sendable` value has to cross the boundary, and the `super` call is made from this
+    // nonisolated scope so that `object`/`change` never cross it either.
+    nonisolated override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        let objectIdentifier = object.map { ObjectIdentifier($0 as AnyObject) }
+        let didHandleChange = MainActor.assumeIsolated { () -> Bool in
+            guard let owner = owner else {
+                return false
             }
-            if object as? CALayer == owner.layer && keyPath == #keyPath(CALayer.mask) {
+            if objectIdentifier == ObjectIdentifier(owner) && (keyPath == #keyPath(frame) || keyPath == #keyPath(bounds)) {
+                updateFrame()
+                return true
+            }
+            if objectIdentifier == ObjectIdentifier(owner.layer) && keyPath == #keyPath(CALayer.mask) {
                 updateShadowPath(ambientShadow)
                 updateShadowPath(keyShadow)
-                return
+                return true
             }
+            return false
         }
-        super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        if !didHandleChange {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
     }
 
     private func updateFrame() {

@@ -6,6 +6,7 @@
 import SwiftUI
 
 /// Defines a control with customizable design tokens.
+@MainActor
 public protocol TokenizedControl {
     /// The type of tokens associated with this `TokenizedControl`.
     associatedtype TokenSetKeyType: TokenSetKey

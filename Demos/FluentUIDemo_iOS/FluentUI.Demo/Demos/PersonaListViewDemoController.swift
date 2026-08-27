@@ -6,7 +6,7 @@
 import FluentUI
 import UIKit
 
-let samplePersonas: [PersonaData] = [
+@MainActor let samplePersonas: [PersonaData] = [
     PersonaData(name: "Kat Larsson", email: "kat.larsson@contoso.com", subtitle: "Designer", image: UIImage(named: "avatar_kat_larsson")),
     PersonaData(name: "Kristin Patterson", email: "kristin.patterson@contoso.com", subtitle: "Software Engineer"),
     PersonaData(name: "Ashley McCarthy", image: UIImage(named: "avatar_ashley_mccarthy")),
@@ -36,7 +36,7 @@ let samplePersonas: [PersonaData] = [
     PersonaData(name: "🦃", email: "🦃🦃🦃🦃🦃🦃🦃🦃@example.com")
 ]
 
-let searchDirectoryPersonas: [PersonaData] = [
+@MainActor let searchDirectoryPersonas: [PersonaData] = [
     PersonaData(name: "Celeste Burton", email: "celeste.burton@contoso.com", subtitle: "Program Manager", image: UIImage(named: "avatar_celeste_burton")),
     PersonaData(name: "Erik Nason", email: "erik.nason@contoso.com", subtitle: "Designer"),
     PersonaData(name: "Miguel Garcia", email: "miguel.garcia@contoso.com", subtitle: "Software Engineer", image: UIImage(named: "avatar_miguel_garcia"))

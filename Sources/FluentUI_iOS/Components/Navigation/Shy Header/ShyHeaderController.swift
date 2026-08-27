@@ -68,6 +68,14 @@ class ShyHeaderController: UIViewController {
         }
     }
     private var contentScrollViewObservation: NSKeyValueObservation?
+
+    /// The navigation item observed by `contentScrollViewObservation`, `accessoryViewObservation`, and
+    /// `secondaryAccessoryViewObservation`. Held so the `@Sendable` KVO handlers can re-read it on the
+    /// main actor instead of receiving the non-`Sendable` item across an isolation boundary.
+    private weak var observedNavigationItem: UINavigationItem?
+
+    /// The navigation item observed by `navigationBarColorObservation`, held for the same reason.
+    private weak var colorObservedNavigationItem: UINavigationItem?
     private var previousContentScrollViewTraits = ContentScrollViewTraits() //properties of the scroll view at the last scrollDidOccurIn: update. Used with current traits to understand user action
 
     // The context of the parent controller used to pull the correct FluentTheme to update visuals
@@ -87,27 +95,38 @@ class ShyHeaderController: UIViewController {
         contentViewController.didMove(toParent: self)
         contentViewController.view.fitIntoSuperview(usingConstraints: true)
 
-        contentScrollViewObservation = contentViewController.navigationItem.observe(\.fluentConfiguration.contentScrollView, options: [.new]) { [weak self] (_, change) in
-            guard let strongSelf = self else {
-                return
-            }
-
-            if let newValue = change.newValue {
-                strongSelf.contentScrollView = newValue
-            } else {
-                strongSelf.contentScrollView = nil
+        // KVO change handlers are `@Sendable`, so main actor-isolated state may only be touched inside a
+        // checked `MainActor.assumeIsolated`, and non-`Sendable` observed objects must be re-read from
+        // `self` rather than received. UIKit only mutates these on the main thread.
+        observedNavigationItem = contentViewController.navigationItem
+        contentScrollViewObservation = contentViewController.navigationItem.observe(\.fluentConfiguration.contentScrollView) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let strongSelf = self else {
+                    return
+                }
+                strongSelf.contentScrollView = strongSelf.observedNavigationItem?.fluentConfiguration.contentScrollView
             }
         }
         defer {
             contentScrollView = contentViewController.navigationItem.fluentConfiguration.contentScrollView
         }
 
-        accessoryViewObservation = contentViewController.navigationItem.observe(\UINavigationItem.fluentConfiguration.accessoryView) { [weak self] item, _ in
-            self?.shyHeaderView.accessoryView = item.fluentConfiguration.accessoryView
+        accessoryViewObservation = contentViewController.navigationItem.observe(\UINavigationItem.fluentConfiguration.accessoryView) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self else {
+                    return
+                }
+                self.shyHeaderView.accessoryView = self.observedNavigationItem?.fluentConfiguration.accessoryView
+            }
         }
 
-        secondaryAccessoryViewObservation = contentViewController.navigationItem.observe(\UINavigationItem.fluentConfiguration.secondaryAccessoryView) { [weak self] item, _ in
-            self?.shyHeaderView.secondaryAccessoryView = item.fluentConfiguration.secondaryAccessoryView
+        secondaryAccessoryViewObservation = contentViewController.navigationItem.observe(\UINavigationItem.fluentConfiguration.secondaryAccessoryView) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self else {
+                    return
+                }
+                self.shyHeaderView.secondaryAccessoryView = self.observedNavigationItem?.fluentConfiguration.secondaryAccessoryView
+            }
         }
     }
 
@@ -233,14 +252,26 @@ class ShyHeaderController: UIViewController {
     private func setupNotificationObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleAccessoryExpansionRequested), name: .accessoryExpansionRequested, object: nil)
         // Observing `center` instead of `isHidden` allows us to do our changes along the system animation
-        navigationBarCenterObservation = navigationController?.navigationBar.observe(\.center) { [weak self] navigationBar, _ in
-            self?.shyHeaderView.navigationBarIsHidden = navigationBar.frame.maxY == 0
+        // KVO change handlers are `@Sendable`, so main actor-isolated state may only be touched inside a
+        // checked `MainActor.assumeIsolated`, and non-`Sendable` observed objects must be re-read from
+        // `self` rather than received. UIKit only mutates these on the main thread.
+        navigationBarCenterObservation = navigationController?.navigationBar.observe(\.center) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self, let navigationBar = self.navigationController?.navigationBar else {
+                    return
+                }
+                self.shyHeaderView.navigationBarIsHidden = navigationBar.frame.maxY == 0
+            }
         }
         navigationBarStyleObservation = msfNavigationController?.msfNavigationBar.observe(\.style) { [weak self] _, _ in
-            self?.updateNavigationBarStyle()
+            MainActor.assumeIsolated {
+                self?.updateNavigationBarStyle()
+            }
         }
         navigationBarHeightObservation = msfNavigationController?.msfNavigationBar.observe(\.barHeight) { [weak self] _, _ in
-            self?.updatePadding()
+            MainActor.assumeIsolated {
+                self?.updatePadding()
+            }
         }
     }
 
@@ -286,8 +317,14 @@ class ShyHeaderController: UIViewController {
         view.backgroundColor = color
         paddingView.backgroundColor = color
 
-        navigationBarColorObservation = item.observe(\.fluentConfiguration.customNavigationBarColor) { [weak self] item, _ in
-            self?.updateBackgroundColor(with: item)
+        colorObservedNavigationItem = item
+        navigationBarColorObservation = item.observe(\.fluentConfiguration.customNavigationBarColor) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self, let item = self.colorObservedNavigationItem else {
+                    return
+                }
+                self.updateBackgroundColor(with: item)
+            }
         }
     }
 

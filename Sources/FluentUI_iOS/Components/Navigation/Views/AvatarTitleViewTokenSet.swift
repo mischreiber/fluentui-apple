@@ -10,7 +10,7 @@ import UIKit
 
 /// Design token set for the `AvatarTitleView` control.
 class AvatarTitleViewTokenSet: ControlTokenSet<AvatarTitleViewTokenSet.Tokens> {
-    enum Tokens: TokenSetKey {
+    nonisolated enum Tokens: TokenSetKey {
         /// Describes the font used for a large one-line title.
         case largeTitleFont
 

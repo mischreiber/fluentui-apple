@@ -63,14 +63,14 @@ public protocol NavigationBarTitleAccessoryDelegate {
 open class NavigationBarTitleAccessory: NSObject {
     /// Specifies a location where the title accessory should appear within the navigation bar.
     @objc(MSFNavigationBarTitleAccessoryLocation)
-    public enum Location: Int {
+    nonisolated public enum Location: Int {
         case title
         case subtitle
     }
 
     /// The style of title accessory to show.
     @objc(MSFNavigationBarTitleAccessoryStyle)
-    public enum Style: Int {
+    nonisolated public enum Style: Int {
         case disclosure
         case downArrow
         case custom
@@ -106,7 +106,7 @@ protocol NavigationBarBackButtonDelegate {
 open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDelegate {
     /// If the style is `.custom`, UINavigationItem's `navigationBarColor` is used for all the subviews' backgroundColor
     @objc(MSFNavigationBarStyle)
-    public enum Style: Int {
+    nonisolated public enum Style: Int {
         case `default`
         case primary
         case system
@@ -116,7 +116,7 @@ open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDel
 
     @objc(MSFNavigationBarTitleStyle)
     /// Describes the style in which the title is shown in a navigation bar.
-    public enum TitleStyle: Int {
+    nonisolated public enum TitleStyle: Int {
         /// Shows a center-aligned title and/or subtitle. Most closely aligned with UIKit's default. Not capable of showing an avatar.
         case system
         /// Shows a leading-aligned title and/or subtitle. Also capable of showing an avatar.
@@ -135,12 +135,12 @@ open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDel
 
     /// Describes the sizing behavior of navigation bar elements (title, avatar, bar height)
     @objc(MSFNavigationBarElementSize)
-    public enum ElementSize: Int {
+    nonisolated public enum ElementSize: Int {
         case automatic, contracted, expanded
     }
 
     @objc(MSFNavigationBarShadow)
-    public enum Shadow: Int {
+    nonisolated public enum Shadow: Int {
         case automatic
         case alwaysHidden
     }
@@ -665,9 +665,19 @@ open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDel
         // Update the scroll edge appearance to match the new standard appearance
         scrollEdgeAppearance = standardAppearance
 
-        navigationBarColorObserver = navigationItem?.observe(\.fluentConfiguration.customNavigationBarColor) { [unowned self] navigationItem, _ in
-            // Unlike title or barButtonItems that depends on the topItem, navigation bar color can be set from the parentViewController's navigationItem
-            self.updateColors(for: navigationItem)
+        // Unlike title or barButtonItems that depend on the topItem, navigation bar color can be set from
+        // the parentViewController's navigationItem, so the observed item is tracked separately.
+        colorObservedNavigationItem = navigationItem
+        navigationBarColorObserver = navigationItem?.observe(\.fluentConfiguration.customNavigationBarColor) { [weak self] _, _ in
+            // The KVO change handler is `@Sendable`, so the non-`Sendable` `UINavigationItem` may not be
+            // received across the isolation boundary; it is re-read from `self` on the main actor instead.
+            // UIKit only mutates navigation items on the main thread, so this checked assertion holds.
+            MainActor.assumeIsolated {
+                guard let self else {
+                    return
+                }
+                self.updateColors(for: self.colorObservedNavigationItem)
+            }
         }
     }
 
@@ -693,54 +703,26 @@ open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDel
         // Force layout to avoid animation
         layoutIfNeeded()
 
-        leftBarButtonItemsObserver = navigationItem.observe(\UINavigationItem.leftBarButtonItems) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        rightBarButtonItemsObserver = navigationItem.observe(\UINavigationItem.rightBarButtonItems) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        titleObserver = navigationItem.observe(\UINavigationItem.title) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
+        leftBarButtonItemsObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.leftBarButtonItems)
+        rightBarButtonItemsObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.rightBarButtonItems)
+        titleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.title)
 #if os(visionOS)
-        subtitleObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.subtitle) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
+        subtitleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.subtitle)
 #else
         if #available(iOS 26, macCatalyst 26, *) {
-            subtitleObserver = navigationItem.observe(\UINavigationItem.subtitle) { [unowned self] item, _ in
-                self.navigationItemDidUpdate(item)
-            }
+            subtitleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.subtitle)
         } else {
-            subtitleObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.subtitle) { [unowned self] item, _ in
-                self.navigationItemDidUpdate(item)
-            }
+            subtitleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.subtitle)
         }
 #endif // !os(visionOS)
-        titleAccessoryObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.titleAccessory) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        titleImageObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.titleImage) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        accessoryViewObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.accessoryView) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        topAccessoryViewObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.topAccessoryView) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        topAccessoryViewAttributesObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.topAccessoryViewAttributes) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        navigationBarStyleObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.navigationBarStyle) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        navigationBarShadowObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.navigationBarShadow) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
-        titleStyleObserver = navigationItem.observe(\UINavigationItem.fluentConfiguration.titleStyle) { [unowned self] item, _ in
-            self.navigationItemDidUpdate(item)
-        }
+        titleAccessoryObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.titleAccessory)
+        titleImageObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.titleImage)
+        accessoryViewObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.accessoryView)
+        topAccessoryViewObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.topAccessoryView)
+        topAccessoryViewAttributesObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.topAccessoryViewAttributes)
+        navigationBarStyleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.navigationBarStyle)
+        navigationBarShadowObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.navigationBarShadow)
+        titleStyleObserver = makeNavigationItemObserver(navigationItem, keyPath: \UINavigationItem.fluentConfiguration.titleStyle)
     }
 
     func actualStyleAndItem(for navigationItem: UINavigationItem) -> (style: Style, item: UINavigationItem) {
@@ -842,6 +824,32 @@ open class NavigationBar: UINavigationBar, TokenizedControl, TwoLineTitleViewDel
             update(with: navigationItem)
         }
     }
+
+    /// Observes `keyPath` on `navigationItem` and re-runs `update(with:)` when it changes.
+    ///
+    /// KVO change handlers are `@Sendable`, so the non-`Sendable` `UINavigationItem` can neither be
+    /// captured by nor received into the handler. Only `self` — a main actor-isolated, and therefore
+    /// implicitly `Sendable`, class — is captured, and the item is re-read on the main actor. UIKit only
+    /// mutates navigation items on the main thread, so the checked `MainActor.assumeIsolated` holds.
+    private func makeNavigationItemObserver<Value>(_ navigationItem: UINavigationItem,
+                                                   keyPath: KeyPath<UINavigationItem, Value>) -> NSKeyValueObservation {
+        observedNavigationItem = navigationItem
+        return navigationItem.observe(keyPath) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self, let observedNavigationItem = self.observedNavigationItem else {
+                    return
+                }
+                self.navigationItemDidUpdate(observedNavigationItem)
+            }
+        }
+    }
+
+    /// The navigation item currently being observed by `makeNavigationItemObserver(_:keyPath:)`.
+    private weak var observedNavigationItem: UINavigationItem?
+
+    /// The navigation item currently being observed by `navigationBarColorObserver`. Tracked separately
+    /// because the color may come from a different item than the one supplying the title and bar items.
+    private weak var colorObservedNavigationItem: UINavigationItem?
 
     // MARK: Obscurant handling
 

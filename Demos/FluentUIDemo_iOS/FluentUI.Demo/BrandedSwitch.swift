@@ -10,16 +10,21 @@ class BrandedSwitch: UISwitch {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        notificationObserver = NotificationCenter.default.addObserver(forName: .didChangeTheme,
-                                                                      object: nil,
-                                                                      queue: nil) { [weak self] notification in
-            guard let strongSelf = self,
-                  FluentTheme.isApplicableThemeChange(notification, for: strongSelf)
-            else {
-                return
-            }
-            strongSelf.onTintColor = strongSelf.fluentTheme.color(.brandForeground1)
+        // Notifications are delivered synchronously on the thread that posted them, and
+        // `.didChangeTheme` is only ever posted from the main actor. A target/selector observer keeps
+        // this handler main actor-isolated, so the non-`Sendable` `Notification` never has to cross an
+        // isolation boundary — unlike the block-based API, whose closure is `@Sendable`.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(themeDidChange(_:)),
+                                               name: .didChangeTheme,
+                                               object: nil)
+    }
+
+    @objc private func themeDidChange(_ notification: Notification) {
+        guard FluentTheme.isApplicableThemeChange(notification, for: self) else {
+            return
         }
+        onTintColor = fluentTheme.color(.brandForeground1)
     }
 
     required init?(coder: NSCoder) {
@@ -33,7 +38,4 @@ class BrandedSwitch: UISwitch {
         }
         onTintColor = newWindow.fluentTheme.color(.brandForeground1)
     }
-
-    /// Stores the notification handler for .didChangeTheme notifications.
-    private var notificationObserver: NSObjectProtocol?
 }

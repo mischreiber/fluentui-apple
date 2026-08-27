@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// A container that stores a dynamic set of `Color` values.
-public struct DynamicColor: Hashable {
+nonisolated public struct DynamicColor: Hashable {
 
     /// Creates a custom `ShapeStyle` that stores a dynamic set of `Color` values.
     ///
@@ -28,7 +28,7 @@ public struct DynamicColor: Hashable {
 
 extension DynamicColor: ShapeStyle {
     /// Evaluate to a resolved `Color` (in the form of a `ShapeStyle`) given the current `environment`.
-    public func resolve(in environment: EnvironmentValues) -> Color.Resolved {
+    nonisolated public func resolve(in environment: EnvironmentValues) -> Color.Resolved {
         if environment.colorScheme == .dark {
             if environment.isPresented, let darkElevated = darkElevated {
                 return darkElevated.resolve(in: environment)

@@ -9,7 +9,7 @@ import FluentUI_common
 import SwiftUI
 
 /// Style to draw the `CardNudge` control.
-@objc public enum MSFCardNudgeStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFCardNudgeStyle: Int, CaseIterable {
     /// Drawn with a shaded background and no outline.
     case standard
 
@@ -19,7 +19,7 @@ import SwiftUI
 
 /// Design token set for the `CardNudge` control.
 public class CardNudgeTokenSet: ControlTokenSet<CardNudgeTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// The  color applied to the accent text and icon
         case accentColor
 

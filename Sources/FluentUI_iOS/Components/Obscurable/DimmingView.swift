@@ -11,7 +11,7 @@ import UIKit
 // MARK: DimmingViewType
 
 @objc(MSFDimmingViewType)
-public enum DimmingViewType: Int {
+nonisolated public enum DimmingViewType: Int {
     case white = 1
     case black
     case none

@@ -228,8 +228,12 @@ open class PeoplePicker: BadgeField {
     @objc open func showPersonaSuggestions() {
         personaListView.contentOffset = .zero
         window?.addSubview(personaSuggestionsView)
-        containingViewBoundsObservation = window?.observe(\.bounds) { [unowned self] (_, _) in
-            self.layoutPersonaSuggestions()
+        // The KVO change handler is `@Sendable`, so main actor-isolated state may only be touched inside a
+        // checked `MainActor.assumeIsolated`. UIKit only changes a window's bounds on the main thread.
+        containingViewBoundsObservation = window?.observe(\.bounds) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                self?.layoutPersonaSuggestions()
+            }
         }
 
         personaListView.searchDirectoryState = .idle

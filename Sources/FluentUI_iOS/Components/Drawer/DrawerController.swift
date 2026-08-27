@@ -11,7 +11,7 @@ import UIKit
 // MARK: DrawerResizingBehavior
 
 @objc(MSFDrawerResizingBehavior)
-public enum DrawerResizingBehavior: Int {
+nonisolated public enum DrawerResizingBehavior: Int {
     case none
     case dismiss
     case expand
@@ -21,7 +21,7 @@ public enum DrawerResizingBehavior: Int {
 // MARK: - DrawerPresentationDirection
 
 @objc(MSFDrawerPresentationDirection)
-public enum DrawerPresentationDirection: Int {
+nonisolated public enum DrawerPresentationDirection: Int {
     /// Drawer animated down from a top base
     case down
     /// Drawer animated up from a bottom base
@@ -38,7 +38,7 @@ public enum DrawerPresentationDirection: Int {
 // MARK: - DrawerPresentationStyle
 
 @objc(MSFDrawerPresentationStyle)
-public enum DrawerPresentationStyle: Int {
+nonisolated public enum DrawerPresentationStyle: Int {
     /// Always `.slideover` for horizontal presentation. For vertical presentation results in `.slideover` in horizontally compact environments, `.popover` otherwise.
     case automatic = -1
     case slideover
@@ -48,7 +48,7 @@ public enum DrawerPresentationStyle: Int {
 // MARK: - DrawerPresentationBackground
 
 @objc(MSFDrawerPresentationBackground)
-public enum DrawerPresentationBackground: Int {
+nonisolated public enum DrawerPresentationBackground: Int {
     /// Clear background
     case none
     /// Black semi-transparent background
@@ -544,8 +544,13 @@ open class DrawerController: UIViewController, TokenizedControl {
         containerViewBottomConstraint = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 
         // Tracking container size by monitoring its center instead of bounds due to ordering of calls
-        containerViewCenterObservation = containerView.observe(\.center) { [unowned self] _, _ in
-            if self.tracksContentHeight {
+        // The KVO change handler is `@Sendable`, so main actor-isolated state may only be touched inside a
+        // checked `MainActor.assumeIsolated`. UIKit only changes a view's center on the main thread.
+        containerViewCenterObservation = containerView.observe(\.center) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                guard let self, self.tracksContentHeight else {
+                    return
+                }
                 (self.presentationController as? DrawerPresentationController)?.updateContentViewFrame(animated: true)
                 (self.presentationController as? UIPopoverPresentationController)?.preferredContentSizeDidChange(forChildContentContainer: self)
             }

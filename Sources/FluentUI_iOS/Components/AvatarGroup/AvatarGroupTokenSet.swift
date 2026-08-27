@@ -9,7 +9,7 @@ import FluentUI_common
 import SwiftUI
 import UIKit
 
-public enum AvatarGroupToken: Int, TokenSetKey {
+nonisolated public enum AvatarGroupToken: Int, TokenSetKey {
     /// Defines the color around the unread dot.
     case backgroundColor
 

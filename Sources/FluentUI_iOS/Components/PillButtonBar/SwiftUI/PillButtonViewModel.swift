@@ -35,4 +35,11 @@ public final class PillButtonViewModel<Selection: Hashable>: Identifiable {
         self.leadingImage = leadingImage
         self.isUnread = isUnread
     }
+
+    // This `deinit` is explicitly `nonisolated` to work around a Swift 6.3.1 compiler bug: optimizing the
+    // deallocating destructor of a *generic* class with an isolated `deinit` sends `EarlyPerfInliner` into
+    // infinite recursion, crashing any `-O` build. Under `-default-isolation MainActor` every `deinit` is
+    // implicitly isolated, so generic classes must opt out explicitly. There is no isolated cleanup to do
+    // here, so this is also semantically free.
+    nonisolated deinit {}
 }

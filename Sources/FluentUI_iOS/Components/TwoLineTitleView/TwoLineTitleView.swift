@@ -22,7 +22,7 @@ public protocol TwoLineTitleViewDelegate: AnyObject {
 @objc(MSFTwoLineTitleView)
 open class TwoLineTitleView: UIView, TokenizedControl {
     @objc(MSFTwoLineTitleViewStyle)
-    public enum Style: Int {
+    nonisolated public enum Style: Int {
         case primary
         case system
     }
@@ -52,7 +52,7 @@ open class TwoLineTitleView: UIView, TokenizedControl {
     }
 
     @objc(MSFTwoLineTitleViewInteractivePart)
-    public enum InteractivePart: Int {
+    nonisolated public enum InteractivePart: Int {
         // The @objc requirement doesn't let us use OptionSet, so we provide the bitmasks and the `contains` method ourselves
         case none = 0
         case title = 1 // 0b01

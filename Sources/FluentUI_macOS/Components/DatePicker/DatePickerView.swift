@@ -324,25 +324,44 @@ class DatePickerView: NSView {
 		nextCalendarView.update(with: dataSource.paddedDays)
 		monthClipView.addSubview(nextCalendarView)
 
-		NSAnimationContext.runAnimationGroup({ context in
+		// `runAnimationGroup` takes `@Sendable` closures, so neither `context` (which stays entirely in
+		// the nonisolated scope below) nor the non-`Sendable` `nextCalendarView` may cross into the main
+		// actor. `nextCalendarView` is therefore handed off through `self` rather than captured, and the
+		// main actor-isolated work is done inside a checked `MainActor.assumeIsolated`. AppKit always
+		// runs these on the main thread.
+		pendingCalendarView = nextCalendarView
+
+		NSAnimationContext.runAnimationGroup({ [weak self] context in
 			if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
 				context.duration = 0.0
 			} else {
 				context.duration = Constants.pageScrollAnimationDuration
 			}
-			monthClipView.animator().bounds.origin.x += scrollOffset
-		}, completionHandler: {
-			self.monthClipView.bounds.origin = .zero
-			self.calendarView.removeFromSuperview()
-			self.calendarView = nextCalendarView
-			self.calendarView.frame.origin.x = .zero
-			self.monthClipView.widthAnchor.constraint(equalTo: self.calendarView.widthAnchor).isActive = true
-			self.monthClipView.heightAnchor.constraint(equalTo: self.calendarView.heightAnchor).isActive = true
-			self.updateSelection()
-			self.isAnimating = false
-			self.window?.recalculateKeyViewLoop()
+			MainActor.assumeIsolated {
+				self?.monthClipView.animator().bounds.origin.x += scrollOffset
+			}
+		}, completionHandler: { [weak self] in
+			MainActor.assumeIsolated {
+				guard let self, let nextCalendarView = self.pendingCalendarView else {
+					return
+				}
+				self.pendingCalendarView = nil
+				self.monthClipView.bounds.origin = .zero
+				self.calendarView.removeFromSuperview()
+				self.calendarView = nextCalendarView
+				self.calendarView.frame.origin.x = .zero
+				self.monthClipView.widthAnchor.constraint(equalTo: self.calendarView.widthAnchor).isActive = true
+				self.monthClipView.heightAnchor.constraint(equalTo: self.calendarView.heightAnchor).isActive = true
+				self.updateSelection()
+				self.isAnimating = false
+				self.window?.recalculateKeyViewLoop()
+			}
 		})
 	}
+
+	/// Holds the incoming `CalendarView` across the paging animation, so it does not have to be captured
+	/// by the `@Sendable` completion handler.
+	private var pendingCalendarView: CalendarView?
 
 	private enum AnimationDirection {
 		case left
@@ -400,13 +419,19 @@ extension DatePickerView: CalendarHeaderViewDelegate {
 
 	/// Completes the ongoing paging animation and executes the given completion handler.
 	/// - Parameter completionHandler: The closure to be called after the current animation completes.
-	private func completePagingAnimation(completionHandler: @escaping () -> Void) {
+	private func completePagingAnimation(completionHandler: @escaping @MainActor () -> Void) {
 		// Using a 0-duration animation to cancel the in-flight property animation.
 		// See NSAnimatablePropertyContainer docs for details.
-		NSAnimationContext.runAnimationGroup({ context in
+		NSAnimationContext.runAnimationGroup({ [weak self] context in
 			context.duration = 0.0
-			monthClipView.animator().bounds.origin = .zero
-		}, completionHandler: completionHandler)
+			MainActor.assumeIsolated {
+				self?.monthClipView.animator().bounds.origin = .zero
+			}
+		}, completionHandler: {
+			MainActor.assumeIsolated {
+				completionHandler()
+			}
+		})
 	}
 }
 

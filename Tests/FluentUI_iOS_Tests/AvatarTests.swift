@@ -6,6 +6,7 @@
 import XCTest
 @testable import FluentUI_ios
 
+@MainActor
 class AvatarTests: XCTestCase {
 
     /// Validates that the background and foreground colors for a given index in both arrays (textCalculatedBackgroundColors and textCalculatedForegroundColors tokens) match comparing:

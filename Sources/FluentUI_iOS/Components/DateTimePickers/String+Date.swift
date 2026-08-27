@@ -11,7 +11,7 @@ import Foundation
  * Defines the string format of the date (time not included) of a Date
  */
 @objc(MSFDateStringCompactness)
-public enum DateStringCompactness: Int {
+nonisolated public enum DateStringCompactness: Int {
     case longDaynameDayMonth = 1                        // ex: Thursday, December 12
     case longDaynameDayMonthYear                        // ex: Thursday, December 12, 2015
     case shortDayname                                   // ex: Wed
@@ -35,7 +35,7 @@ public enum DateStringCompactness: Int {
  * Defines the string format of the time of a Date
  */
 @objc(MSFTimeStringCompactness)
-public enum TimeStringCompactness: Int {
+nonisolated public enum TimeStringCompactness: Int {
     case hoursColumnsMinutes = 1  // ex: 2:15 AM
     case hours                    // ex: 2 AM
 }
@@ -46,14 +46,32 @@ private enum DurationUnitInSeconds: Int {
     case day = 86400 // 24h, when using this, keep in mind that a day is not necessarily 24h long.
 }
 
+/// A main actor-isolated cache of formatters.
+///
+/// The caches are deliberately *not* made `Sendable`: `NSCache`'s `Sendable` conformance is explicitly
+/// unavailable in the SDK, so sharing one across isolation domains would require an unchecked escape
+/// hatch. Keeping the cache on the main actor and hopping to it instead is fully checked.
 private struct DateFormatterCache {
     static let shared = DateFormatterCache()
-    static let currentLocaleObserver = NotificationCenter.default.addObserver(forName: NSLocale.currentLocaleDidChangeNotification, object: nil, queue: nil) { _ in
-        shared.removeAll()
-    }
 
-    private var dateFormattersCache = NSCache<AnyObject, AnyObject>()
+    private let dateFormattersCache = NSCache<AnyObject, AnyObject>()
     private let dateComponentsFormattersCache = NSCache<AnyObject, AnyObject>()
+
+    private init() {
+        // Registered here rather than from a separate `static let` observer property: an unreferenced
+        // `static let` is never initialized, so that observer never actually registered and the cache
+        // was never flushed on a locale change. `shared` is referenced, so this initializer does run.
+        //
+        // The `@Sendable` block captures nothing and hops to the main actor to reach the cache, so it is
+        // safe regardless of which thread posted the notification.
+        NotificationCenter.default.addObserver(forName: NSLocale.currentLocaleDidChangeNotification,
+                                               object: nil,
+                                               queue: nil) { _ in
+            Task { @MainActor in
+                DateFormatterCache.shared.removeAll()
+            }
+        }
+    }
 
     func dateFormatter(timeZone: TimeZone) -> DateFormatter {
         let hashKey = "relativeDayStringFormatter_" + timeZone.identifier

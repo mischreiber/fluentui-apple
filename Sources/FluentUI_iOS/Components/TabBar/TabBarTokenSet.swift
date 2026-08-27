@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum TabBarToken: Int, TokenSetKey {
+nonisolated public enum TabBarToken: Int, TokenSetKey {
     /// Defines the background color of the `TabBarItem` when selected.
     case tabBarItemSelectedColor
 

@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum SearchBarToken: Int, TokenSetKey {
+nonisolated public enum SearchBarToken: Int, TokenSetKey {
     /// The background color of the SearchBar
     case backgroundColor
 

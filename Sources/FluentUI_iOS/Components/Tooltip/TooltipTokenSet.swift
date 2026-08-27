@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum TooltipToken: Int, TokenSetKey {
+nonisolated public enum TooltipToken: Int, TokenSetKey {
     /// The color of the body of the tooltip.
     case tooltipColor
 

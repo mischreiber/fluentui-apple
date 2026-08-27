@@ -10,7 +10,7 @@ import UIKit
 
 /// Shimmer style can be either concealing or revealing.
 /// The style affects the default shimmer alpha value and the default shimmer tint color.
-@objc public enum MSFShimmerStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFShimmerStyle: Int, CaseIterable {
     /// Concealing shimmer: the gradient conceals parts of the subviews as it moves leaving most parts of the subviews unblocked.
     case concealing
 
@@ -18,7 +18,7 @@ import UIKit
     case revealing
 }
 
-public enum ShimmerToken: Int, TokenSetKey {
+nonisolated public enum ShimmerToken: Int, TokenSetKey {
     /// The alpha value of the center of the gradient in the animation if shimmer is revealing shimmer.
     /// The alpha value of the view other than the gradient if shimmer is concealing shimmer.
     case shimmerAlpha

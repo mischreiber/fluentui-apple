@@ -139,18 +139,17 @@ class HUDDemoController: DemoTableViewController {
         HUD.shared.show(from: self,
                         with: HUDParams(caption: "Downloading..."))
 
-        var time: TimeInterval = 0
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            time += timer.timeInterval
-            if time < 4 {
-                HUD.shared.update(with: "Downloading \(Int(time))")
-            } else {
-                timer.invalidate()
-                HUD.shared.update(with: "Download complete!")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    HUD.shared.hide()
-                }
+        // A `Task` is used rather than `Timer.scheduledTimer(withTimeInterval:repeats:block:)` because
+        // that block is `@Sendable` and so cannot touch the main actor-isolated `HUD.shared`.
+        Task { @MainActor in
+            for second in 1...3 {
+                try? await Task.sleep(for: .seconds(1))
+                HUD.shared.update(with: "Downloading \(second)")
             }
+            try? await Task.sleep(for: .seconds(1))
+            HUD.shared.update(with: "Download complete!")
+            try? await Task.sleep(for: .seconds(1))
+            HUD.shared.hide()
         }
     }
 

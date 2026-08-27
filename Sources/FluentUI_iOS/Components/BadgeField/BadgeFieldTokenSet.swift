@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum BadgeFieldToken: Int, TokenSetKey {
+nonisolated public enum BadgeFieldToken: Int, TokenSetKey {
     /// The background color of the BadgeField.
     case backgroundColor
 

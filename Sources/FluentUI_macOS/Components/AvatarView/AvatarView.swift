@@ -558,11 +558,17 @@ open class AvatarView: NSView {
 			appearanceObserver = nil
 			return
 		}
-		appearanceObserver = window.observe(\.effectiveAppearance) { [weak self] (window, _) in
-			guard let strongSelf = self else {
-				return
+		// The KVO change handler is `@Sendable`, so neither the observed `NSWindow` nor the non-`Sendable`
+		// `NSAppearance` is allowed to cross into it. Instead nothing is captured but `self` (a main
+		// actor-isolated, and therefore `Sendable`, class), and the appearance is re-read on the main
+		// actor. `effectiveAppearance` changes are always delivered on the main thread for AppKit views.
+		appearanceObserver = window.observe(\.effectiveAppearance) { [weak self] _, _ in
+			MainActor.assumeIsolated {
+				guard let strongSelf = self else {
+					return
+				}
+				strongSelf.updateAppearance(strongSelf.window?.effectiveAppearance)
 			}
-			strongSelf.updateAppearance(window.effectiveAppearance)
 		}
 	}
 }
