@@ -8,8 +8,8 @@ import XCTest
 class NotificationViewTestSwiftUI: BaseTest {
     override var controlName: String { "NotificationView" }
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         app.buttons["Show"].firstMatch.tap()
     }
 

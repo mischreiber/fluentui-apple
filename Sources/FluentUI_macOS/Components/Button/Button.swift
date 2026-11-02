@@ -118,11 +118,14 @@ open class Button: NSButton {
 			setSizeParameters(size.parameters)
 		}
 
-		NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,
-														  object: nil,
-														  queue: nil) {[weak self] _ in
-			self?.increaseContrastEnabled = NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
-		}
+		NSWorkspace.shared.notificationCenter.addObserver(self,
+														  selector: #selector(accessibilityDisplayOptionsDidChange(_:)),
+														  name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,
+														  object: nil)
+	}
+
+	@objc private func accessibilityDisplayOptionsDidChange(_ notification: Notification) {
+		increaseContrastEnabled = NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
 	}
 
 	/// Controls Fluent drawing and layout. System-bezel subclasses return `false`.
@@ -362,30 +365,28 @@ open class Button: NSButton {
 
 		// Remove any previous Notification Observers if we're moving away from a window (in which case `viewDidMoveToWindow` is called and `window == nil`)
 		// Or, remove any Notification Observers from the old window if we're moving directly into a new window
-		if let resignMainWindowObserver = resignMainWindowObserver {
-			NotificationCenter.default.removeObserver(resignMainWindowObserver)
-			self.resignMainWindowObserver = nil
-		}
-
-		if let becomeMainWindowObserver = becomeMainWindowObserver {
-			NotificationCenter.default.removeObserver(becomeMainWindowObserver)
-			self.becomeMainWindowObserver = nil
-		}
+		NotificationCenter.default.removeObserver(self, name: NSWindow.didResignMainNotification, object: nil)
+		NotificationCenter.default.removeObserver(self, name: NSWindow.didBecomeMainNotification, object: nil)
 
 		if window != nil {
-			// Hook in Notification Handles to capture the Window's active and inactive states
-			resignMainWindowObserver = NotificationCenter.default.addObserver(forName: NSWindow.didResignMainNotification,
-												   object: window,
-												   queue: nil) {[weak self] _ in
-				self?.isWindowInactive = true
-			}
+			NotificationCenter.default.addObserver(self,
+												   selector: #selector(windowDidResignMain(_:)),
+												   name: NSWindow.didResignMainNotification,
+												   object: window)
 
-			becomeMainWindowObserver = NotificationCenter.default.addObserver(forName: NSWindow.didBecomeMainNotification,
-												   object: window,
-												   queue: nil) {[weak self] _ in
-				self?.isWindowInactive = false
-			}
+			NotificationCenter.default.addObserver(self,
+												   selector: #selector(windowDidBecomeMain(_:)),
+												   name: NSWindow.didBecomeMainNotification,
+												   object: window)
 		}
+	}
+
+	@objc private func windowDidResignMain(_ notification: Notification) {
+		isWindowInactive = true
+	}
+
+	@objc private func windowDidBecomeMain(_ notification: Notification) {
+		isWindowInactive = false
 	}
 
 	open override func viewDidChangeBackingProperties() {
@@ -414,10 +415,6 @@ open class Button: NSButton {
 			self.size = newValue.size
 		}
 	}
-
-	/// Stored Observers for NSWindow  Notifications, to be able to remove them from NotificationCenter when not needed
-	private var resignMainWindowObserver: NSObjectProtocol?
-	private var becomeMainWindowObserver: NSObjectProtocol?
 
 	/// State-specific colors for foreground, background and border
 	struct ButtonColorSet {
@@ -911,7 +908,7 @@ public enum ButtonSize: Int, CaseIterable {
 
 /// Indicates what style our button is drawn as
 @objc(MSFButtonStyle)
-public enum ButtonStyle: Int, CaseIterable {
+nonisolated public enum ButtonStyle: Int, CaseIterable {
 	/// Accent color fill, white text/image.
 	case primary
 

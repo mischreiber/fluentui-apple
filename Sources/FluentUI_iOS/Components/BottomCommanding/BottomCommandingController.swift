@@ -45,7 +45,7 @@ public protocol BottomCommandingControllerDelegate: AnyObject {
 }
 
 /// Interactions that can trigger a state change.
-@objc public enum BottomCommandingInteraction: Int {
+@objc nonisolated public enum BottomCommandingInteraction: Int {
     case noUserAction // No user action, used for events not triggered by users
     case otherUserAction // Any other user action not listed below
     case sheetInteraction // General sheet interaction

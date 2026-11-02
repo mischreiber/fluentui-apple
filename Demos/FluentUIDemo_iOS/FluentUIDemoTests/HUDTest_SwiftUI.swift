@@ -10,8 +10,8 @@ class HUDTestSwiftUI: BaseTest {
 
     let sleepSeconds: UInt32 = 5
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         app.staticTexts["SwiftUI Demo"].tap()
         app.buttons["Present HUD for 3 seconds"].tap()
         // sleeps to wait for presented HUD to disappear

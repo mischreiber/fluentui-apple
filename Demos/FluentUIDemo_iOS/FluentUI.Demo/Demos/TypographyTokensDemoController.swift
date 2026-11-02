@@ -47,7 +47,7 @@ class TypographyTokensDemoController: DemoTableViewController {
 // MARK: - Private extensions
 
 extension FluentTheme.TypographyToken: @retroactive CaseIterable {
-    public static var allCases: [FluentTheme.TypographyToken] = [
+    public static let allCases: [FluentTheme.TypographyToken] = [
         .display,
         .largeTitle,
         .title1,

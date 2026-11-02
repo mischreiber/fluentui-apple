@@ -10,7 +10,7 @@ import UIKit
 
 // Supported vertical alignment for accessory views in `TableViewCell`
 @objc(MSFTableViewCellAccessoryViewVerticalAlignment)
-public enum TableViewCellAccessoryViewVerticalAlignment: Int {
+nonisolated public enum TableViewCellAccessoryViewVerticalAlignment: Int {
     // Accessory view is vertically aligned with the top of its corresponding label
     case top
     // Accessory view is vertically centered with its corresponding label
@@ -39,7 +39,7 @@ NOTE: This cell implements its own custom separator. Make sure to remove the UIT
 @objc(MSFTableViewCell)
 open class TableViewCell: UITableViewCell, TokenizedControl {
     @objc(MSFTableViewCellSeparatorType)
-    public enum SeparatorType: Int {
+    nonisolated public enum SeparatorType: Int {
         case none
         case inset
         case full

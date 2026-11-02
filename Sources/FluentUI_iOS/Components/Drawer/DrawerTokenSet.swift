@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum DrawerToken: Int, TokenSetKey {
+nonisolated public enum DrawerToken: Int, TokenSetKey {
     /// Corner radius for the popover style `Drawer` control.
     case cornerRadius
 

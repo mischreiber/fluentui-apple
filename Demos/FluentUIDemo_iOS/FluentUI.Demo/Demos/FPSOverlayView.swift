@@ -93,7 +93,7 @@ class FPSOverlayView: UIView {
         textLabel.text = lines.isEmpty ? "—" : lines.joined(separator: "\n")
     }
 
-    deinit {
+    isolated deinit {
         refreshLink?.invalidate()
     }
 }

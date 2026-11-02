@@ -11,7 +11,7 @@ import UIKit
 // MARK: - SeparatorOrientation
 
 @objc(MSFSeparatorOrientation)
-public enum SeparatorOrientation: Int {
+nonisolated public enum SeparatorOrientation: Int {
     case horizontal
     case vertical
 }

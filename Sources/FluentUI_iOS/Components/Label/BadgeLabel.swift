@@ -65,7 +65,7 @@ class BadgeLabel: UILabel, TokenizedControl {
 
 /// Style used to set the colors of the `BadgeLabel`.
 @objc(MSFBadgeLabelStyle)
-public enum BadgeLabelStyle: Int {
+nonisolated public enum BadgeLabelStyle: Int {
     case onPrimary
     case system
     case brand

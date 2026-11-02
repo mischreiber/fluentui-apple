@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.2
 
 import PackageDescription
 
@@ -6,12 +6,7 @@ let iOSPlatforms: [Platform] = [.iOS, .visionOS, .macCatalyst]
 let macOSPlatforms: [Platform] = [.macOS]
 
 let swiftSettings: [SwiftSetting] = [
-    .unsafeFlags([
-        // Per https://forums.swift.org/t/warnings-as-errors-in-sub-packages/70810
-        // Having this flag enabled in a sub-package causes conflicts with the
-        // automatic "-suppress-warnings" flag added by Xcode.
-        //"-warnings-as-errors"
-    ])
+    .defaultIsolation(MainActor.self)
 ]
 
 let targets: [Target] = [
@@ -55,16 +50,14 @@ let testTargets: [Target] = [
         dependencies: [
             .target(name: "FluentUI_ios", condition: .when(platforms: iOSPlatforms)),
         ],
-        path: "Tests/FluentUI_iOS_Tests",
-        swiftSettings: swiftSettings
+        path: "Tests/FluentUI_iOS_Tests"
     ),
     .testTarget(
         name: "FluentUI_macOS_Tests",
         dependencies: [
             .target(name: "FluentUI_macos", condition: .when(platforms: macOSPlatforms))
         ],
-        path: "Tests/FluentUI_macOS_Tests",
-        swiftSettings: swiftSettings
+        path: "Tests/FluentUI_macOS_Tests"
     )
 ]
 
@@ -85,5 +78,6 @@ let package = Package(
             ]
         )
     ],
-    targets: targets + testTargets
+    targets: targets + testTargets,
+    swiftLanguageModes: [.v6]
 )

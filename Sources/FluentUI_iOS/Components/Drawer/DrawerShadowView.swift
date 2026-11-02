@@ -88,19 +88,27 @@ class DrawerShadowView: UIView, Shadowable {
         updateFrame()
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if let owner = owner {
-            if object as? UIView == owner && (keyPath == #keyPath(frame) || keyPath == #keyPath(bounds)) {
-                updateFrame()
-                return
+    // The observed view and layer properties are mutated only on the main actor.
+    nonisolated override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        let objectIdentifier = object.map { ObjectIdentifier($0 as AnyObject) }
+        let didHandleChange = MainActor.assumeIsolated { () -> Bool in
+            guard let owner = owner else {
+                return false
             }
-            if object as? CALayer == owner.layer && keyPath == #keyPath(CALayer.mask) {
+            if objectIdentifier == ObjectIdentifier(owner) && (keyPath == #keyPath(frame) || keyPath == #keyPath(bounds)) {
+                updateFrame()
+                return true
+            }
+            if objectIdentifier == ObjectIdentifier(owner.layer) && keyPath == #keyPath(CALayer.mask) {
                 updateShadowPath(ambientShadow)
                 updateShadowPath(keyShadow)
-                return
+                return true
             }
+            return false
         }
-        super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        if !didHandleChange {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
     }
 
     private func updateFrame() {

@@ -228,8 +228,10 @@ open class PeoplePicker: BadgeField {
     @objc open func showPersonaSuggestions() {
         personaListView.contentOffset = .zero
         window?.addSubview(personaSuggestionsView)
-        containingViewBoundsObservation = window?.observe(\.bounds) { [unowned self] (_, _) in
-            self.layoutPersonaSuggestions()
+        containingViewBoundsObservation = window?.observe(\.bounds) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                self?.layoutPersonaSuggestions()
+            }
         }
 
         personaListView.searchDirectoryState = .idle

@@ -324,14 +324,10 @@ class DatePickerView: NSView {
 		nextCalendarView.update(with: dataSource.paddedDays)
 		monthClipView.addSubview(nextCalendarView)
 
-		NSAnimationContext.runAnimationGroup({ context in
-			if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-				context.duration = 0.0
-			} else {
-				context.duration = Constants.pageScrollAnimationDuration
+		let finishAnimation: @MainActor () -> Void = { [weak self] in
+			guard let self else {
+				return
 			}
-			monthClipView.animator().bounds.origin.x += scrollOffset
-		}, completionHandler: {
 			self.monthClipView.bounds.origin = .zero
 			self.calendarView.removeFromSuperview()
 			self.calendarView = nextCalendarView
@@ -341,6 +337,21 @@ class DatePickerView: NSView {
 			self.updateSelection()
 			self.isAnimating = false
 			self.window?.recalculateKeyViewLoop()
+		}
+
+		NSAnimationContext.runAnimationGroup({ [weak self] context in
+			if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+				context.duration = 0.0
+			} else {
+				context.duration = Constants.pageScrollAnimationDuration
+			}
+			MainActor.assumeIsolated {
+				self?.monthClipView.animator().bounds.origin.x += scrollOffset
+			}
+		}, completionHandler: {
+			MainActor.assumeIsolated {
+				finishAnimation()
+			}
 		})
 	}
 
@@ -400,13 +411,19 @@ extension DatePickerView: CalendarHeaderViewDelegate {
 
 	/// Completes the ongoing paging animation and executes the given completion handler.
 	/// - Parameter completionHandler: The closure to be called after the current animation completes.
-	private func completePagingAnimation(completionHandler: @escaping () -> Void) {
+	private func completePagingAnimation(completionHandler: @escaping @MainActor () -> Void) {
 		// Using a 0-duration animation to cancel the in-flight property animation.
 		// See NSAnimatablePropertyContainer docs for details.
-		NSAnimationContext.runAnimationGroup({ context in
+		NSAnimationContext.runAnimationGroup({ [weak self] context in
 			context.duration = 0.0
-			monthClipView.animator().bounds.origin = .zero
-		}, completionHandler: completionHandler)
+			MainActor.assumeIsolated {
+				self?.monthClipView.animator().bounds.origin = .zero
+			}
+		}, completionHandler: {
+			MainActor.assumeIsolated {
+				completionHandler()
+			}
+		})
 	}
 }
 

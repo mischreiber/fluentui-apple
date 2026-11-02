@@ -10,6 +10,7 @@ import SwiftUI
 #endif
 @testable import FluentUI_ios
 
+@MainActor
 class ColorTests: XCTestCase {
 
     func testUIColorHexValue() {

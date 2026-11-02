@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum NavigationBarToken: Int, TokenSetKey {
+nonisolated public enum NavigationBarToken: Int, TokenSetKey {
     /// Describes the background color for the navigation bar.
     case backgroundColor
 

@@ -569,9 +569,18 @@ class RootViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let size = tabBarView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         tableView.contentInset.bottom = size.height
 
-        navigationBarFrameObservation = navigationController?.navigationBar.observe(\.frame, options: [.old, .new]) { [unowned self] navigationBar, change in
-            if change.newValue?.width != change.oldValue?.width && self.navigationItem.fluentConfiguration.navigationBarStyle == .custom {
-                self.navigationItem.fluentConfiguration.customNavigationBarColor = CustomGradient.getCustomBackgroundColor(width: navigationBar.frame.width)
+        navigationBarFrameObservation = navigationController?.navigationBar.observe(\.frame, options: [.old, .new]) { [weak self] _, change in
+            let newWidth = change.newValue?.width
+            let oldWidth = change.oldValue?.width
+            MainActor.assumeIsolated {
+                guard let self,
+                      newWidth != oldWidth,
+                      let newWidth,
+                      self.navigationItem.fluentConfiguration.navigationBarStyle == .custom
+                else {
+                    return
+                }
+                self.navigationItem.fluentConfiguration.customNavigationBarColor = CustomGradient.getCustomBackgroundColor(width: newWidth)
             }
         }
     }

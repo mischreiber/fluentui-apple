@@ -514,8 +514,13 @@ public struct FluentNotification: View, TokenizedControlView {
             let showDismissAndActionButton = isShowingActionButton && state.showActionButtonAndDismissButton
             let showOnlyDefaultDismissButton = !isShowingActionButton
             if showDismissAndActionButton || showOnlyDefaultDismissButton {
-                return state.defaultDismissButtonAction
-                    ?? (shouldSelfPresent ? dismissAnimated : nil)
+                if let defaultDismissButtonAction = state.defaultDismissButtonAction {
+                    return defaultDismissButtonAction
+                }
+                if shouldSelfPresent {
+                    return dismissAnimated
+                }
+                return nil
             }
         }
 

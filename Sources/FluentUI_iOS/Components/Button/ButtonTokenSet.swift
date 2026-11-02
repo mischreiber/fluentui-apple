@@ -11,9 +11,9 @@ import UIKit
 // MARK: ButtonStyle
 
 @objc(MSFButtonStyle)
-public enum ButtonStyle: Int, CaseIterable {
+nonisolated public enum ButtonStyle: Int, CaseIterable, Sendable {
     // Added while we have deprecated styles. Can be removed once deprecated styles are removed.
-    public static var allCases: [ButtonStyle] = [accent,
+    public static let allCases: [ButtonStyle] = [accent,
                                                  outlineAccent,
                                                  outlineNeutral,
                                                  subtle,
@@ -71,13 +71,13 @@ public enum ButtonStyle: Int, CaseIterable {
 // MARK: ButtonSizeCategory
 
 @objc(MSFButtonSizeCategory)
-public enum ButtonSizeCategory: Int, CaseIterable {
+nonisolated public enum ButtonSizeCategory: Int, CaseIterable {
     case large
     case medium
     case small
 }
 
-public enum ButtonToken: Int, TokenSetKey {
+nonisolated public enum ButtonToken: Int, TokenSetKey {
     /// Defines the background color of the button
     case backgroundColor
 

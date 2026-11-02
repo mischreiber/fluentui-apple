@@ -29,7 +29,7 @@ class PeoplePickerSampleData {
         }
     }
 
-    static let variants: [Variant] = [
+    @MainActor static let variants: [Variant] = [
         Variant(description: "Standard implementation with one line of picked personas", numberOfLines: 1, pickedPersonas: [samplePersonas[0], samplePersonas[4], samplePersonas[11], samplePersonas[14]]),
         Variant(description: "Doesn't allow picked personas to appear as suggested", pickedPersonas: [samplePersonas[0], samplePersonas[8]], allowsPickedPersonasToAppearAsSuggested: false),
         Variant(description: "Showcases persona's avatar", pickedPersonas: [samplePersonas[0], samplePersonas[1]], allowsPickedPersonasToAppearAsSuggested: false, showsAvatar: true),
@@ -47,7 +47,8 @@ final class AsyncImageDemoPersona: PersonaData {
 
     public func fetchImage(completion: @escaping (UIImage?) -> Void) {
         // for demo purposes, the "fetched" image is not being cached. The image will be "re-fetched" every time the cell appears on the screen.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(1))
             let avatarImageName = "avatar_\(self.name.lowercased().replacingOccurrences(of: " ", with: "_"))"
             let image = UIImage(named: avatarImageName)
             completion(image)

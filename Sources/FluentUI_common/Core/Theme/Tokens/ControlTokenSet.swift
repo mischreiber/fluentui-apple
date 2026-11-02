@@ -10,6 +10,7 @@ import UIKit
 #endif // os(iOS) || os(visionOS)
 
 /// Base class for all Fluent control tokenization.
+@MainActor
 open class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// Allows us to index into this token set using square brackets.
     ///
@@ -71,21 +72,25 @@ open class ControlTokenSet<T: TokenSetKey>: ObservableObject {
         self.defaults = defaults
     }
 
-    deinit {
-        deregisterOnUpdate()
+    // Avoid a Swift 6.3.1 optimizer crash in generic isolated deinitializers.
+    nonisolated deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .didChangeTheme,
+                                                  object: nil)
     }
 
     /// Removes all `onUpdate`-based observing. Useful if you are re-registering the same tokenSet
     /// for a new instance of a control (see `Tooltip` for an example).
     public func deregisterOnUpdate() {
-        if let notificationObserver {
-            NotificationCenter.default.removeObserver(notificationObserver,
+        if isObservingThemeChanges {
+            NotificationCenter.default.removeObserver(self,
                                                       name: .didChangeTheme,
                                                       object: nil)
+            isObservingThemeChanges = false
         }
         changeSink = nil
-        notificationObserver = nil
         onUpdate = nil
+        registeredControl = nil
     }
 
     /// Prepares this token set by installing the current `FluentTheme` if it has changed.
@@ -141,11 +146,12 @@ open class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     public func registerOnUpdate(for control: FluentThemeable, onUpdate: @escaping (() -> Void)) {
         guard self.onUpdate == nil,
               changeSink == nil,
-              notificationObserver == nil else {
+              !isObservingThemeChanges else {
             assertionFailure("Attempting to double-register for tokenSet updates!")
             return
         }
         self.onUpdate = onUpdate
+        self.registeredControl = control
 
         changeSink = self.objectWillChange.sink { [weak self] in
             // Values will be updated on the next run loop iteration.
@@ -154,18 +160,21 @@ open class ControlTokenSet<T: TokenSetKey>: ObservableObject {
             }
         }
 
-        // Register for notifications in order to call update() when the theme changes.
-        notificationObserver = NotificationCenter.default.addObserver(forName: .didChangeTheme,
-                                                                      object: nil,
-                                                                      queue: nil) { [weak self, weak control] notification in
-            guard let strongSelf = self,
-                  let control,
-                  control.isApplicableThemeChange(notification)
-            else {
-                return
-            }
-            strongSelf.update(control.fluentTheme)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(themeDidChange(_:)),
+                                               name: .didChangeTheme,
+                                               object: nil)
+        isObservingThemeChanges = true
+    }
+
+    // Theme changes are posted synchronously from the main actor.
+    @objc private func themeDidChange(_ notification: Notification) {
+        guard let control = registeredControl,
+              control.isApplicableThemeChange(notification)
+        else {
+            return
         }
+        update(control.fluentTheme)
     }
 
     /// The current `FluentTheme` associated with this `ControlTokenSet`.
@@ -187,8 +196,9 @@ open class ControlTokenSet<T: TokenSetKey>: ObservableObject {
     /// Holds the sink for any changes to the control token set.
     private var changeSink: AnyCancellable?
 
-    /// Stores the notification handler for .didChangeTheme notifications.
-    private var notificationObserver: NSObjectProtocol?
+    private var isObservingThemeChanges: Bool = false
+
+    private weak var registeredControl: (any FluentThemeable)?
 
     /// A callback to be invoked after the token set has completed updating.
     private var onUpdate: (() -> Void)?

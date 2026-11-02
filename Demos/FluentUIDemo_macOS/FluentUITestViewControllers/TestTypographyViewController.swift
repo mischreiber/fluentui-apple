@@ -22,10 +22,10 @@ class TestTypographyViewController: NSViewController {
 }
 
 // MARK: - Private extensions
-private let fluentTheme = FluentTheme()
+@MainActor private let fluentTheme = FluentTheme()
 
 extension FluentTheme.TypographyToken: @retroactive CaseIterable {
-	public static var allCases: [FluentTheme.TypographyToken] = [
+	public static let allCases: [FluentTheme.TypographyToken] = [
 		.display,
 		.largeTitle,
 		.title1,

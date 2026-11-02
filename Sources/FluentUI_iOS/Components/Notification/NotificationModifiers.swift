@@ -48,7 +48,7 @@ public extension FluentNotification {
 }
 
 /// Custom shape that is the edge(s) of a view
-private struct EdgeBorder: Shape {
+nonisolated private struct EdgeBorder: Shape {
     var width: CGFloat
     var edges: [Edge]
 

@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum BadgeLabelToken: Int, TokenSetKey {
+nonisolated public enum BadgeLabelToken: Int, TokenSetKey {
     /// The background color of the BadgeLabel.
     case backgroundColor
 

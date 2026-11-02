@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-public enum MessageBarToken: Int, TokenSetKey {
+nonisolated public enum MessageBarToken: Int, TokenSetKey {
 	/// The background color of the `MessageBar`.
 	case backgroundColor
 

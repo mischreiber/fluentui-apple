@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum TableViewCellToken: Int, TokenSetKey {
+nonisolated public enum TableViewCellToken: Int, TokenSetKey {
     /// The background color of the TableView.
     case backgroundColor
 
@@ -300,7 +300,7 @@ extension TableViewCellTokenSet {
 }
 
 /// Pre-defined sizes of the customView size.
-@objc public enum MSFTableViewCellCustomViewSize: Int, CaseIterable {
+@objc nonisolated public enum MSFTableViewCellCustomViewSize: Int, CaseIterable {
     case `default`
     case zero
     case small

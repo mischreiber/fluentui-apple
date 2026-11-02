@@ -7,6 +7,7 @@ import AppKit
 import XCTest
 @testable import FluentUI_macos
 
+@MainActor
 class GlassButtonTests: XCTestCase {
 	func testIconOnlySystemButtonUsesCompactPadding() throws {
 		guard #available(macOS 26.0, *) else {

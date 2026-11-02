@@ -49,7 +49,7 @@ import UIKit
 /// Enumeration of the styles used by the AvatarGroup.
 /// The stack style presents Avatars laid on top of each other.
 /// The pile style presents Avatars side by side.
-@objc public enum MSFAvatarGroupStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFAvatarGroupStyle: Int, CaseIterable {
     case stack
     case pile
 }

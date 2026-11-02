@@ -35,4 +35,7 @@ public final class PillButtonViewModel<Selection: Hashable>: Identifiable {
         self.leadingImage = leadingImage
         self.isUnread = isUnread
     }
+
+    // Avoid a Swift 6.3.1 optimizer crash in generic isolated deinitializers.
+    nonisolated deinit {}
 }

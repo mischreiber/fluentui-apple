@@ -10,7 +10,7 @@ import UIKit
 
 /// Internal design token set for the `TabBarItem`.
 class TabBarItemTokenSet: ControlTokenSet<TabBarItemTokenSet.Tokens> {
-    enum Tokens: TokenSetKey {
+    nonisolated enum Tokens: TokenSetKey {
         /// The width of the `BadgeLabel` border.
         case badgeBorderWidth
 
@@ -172,7 +172,7 @@ extension TabBarItemTokenSet {
 }
 
 // MARK: - TabBarItemStyle
-public enum TabBarItemStyle: Int {
+nonisolated public enum TabBarItemStyle: Int {
     /// The default style referring to a TabBarItem being presented on an opaque background
     case primary
 

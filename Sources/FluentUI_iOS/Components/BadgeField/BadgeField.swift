@@ -231,7 +231,7 @@ open class BadgeField: UIView, TokenizedControl {
     }
 
 #if os(iOS)
-    deinit {
+    isolated deinit {
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
     }
 #endif // os(iOS)

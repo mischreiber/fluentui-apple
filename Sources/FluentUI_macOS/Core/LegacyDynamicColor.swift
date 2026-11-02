@@ -37,7 +37,7 @@ public class LegacyDynamicColor: NSObject {
 		return appearance.isDarkMode ? self.dark : self.light
 	}
 
-	public override func isEqual(_ object: Any?) -> Bool {
+	nonisolated public override func isEqual(_ object: Any?) -> Bool {
 		guard let dynamicColor = object as? LegacyDynamicColor else {
 			return false
 		}

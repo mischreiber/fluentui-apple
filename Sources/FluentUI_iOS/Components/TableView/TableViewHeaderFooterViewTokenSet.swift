@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum TableViewHeaderFooterViewToken: Int, TokenSetKey {
+nonisolated public enum TableViewHeaderFooterViewToken: Int, TokenSetKey {
     /// The background color in plain mode.
     case backgroundColorPlain
 

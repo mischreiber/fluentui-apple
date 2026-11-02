@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import SwiftUI
 
-public enum BottomCommandingToken: Int, TokenSetKey {
+nonisolated public enum BottomCommandingToken: Int, TokenSetKey {
     /// Defines the color of the background of the `BottomCommandingController`.
     case backgroundColor
 

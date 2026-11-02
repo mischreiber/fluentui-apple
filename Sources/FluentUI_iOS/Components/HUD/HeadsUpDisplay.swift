@@ -12,7 +12,7 @@ import SwiftUI
 /// The `.activity` value will make the HUD display an Activity Indicator.
 /// The `.success` and `.failure` values will make the HUD display its default images for the cases.
 /// The `.custom` value allows a UIImage to be passed as a parameter for the HUD to display.
-public enum HUDType: Equatable, Hashable {
+nonisolated public enum HUDType: Equatable, Hashable {
     case activity
     case custom(image: UIImage)
     case failure

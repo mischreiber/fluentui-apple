@@ -7,6 +7,8 @@ import FluentUI
 import UIKit
 
 class TableViewSampleData {
+    init() {}
+
     struct Section {
         let title: String
         var item: Item { return items[0] }

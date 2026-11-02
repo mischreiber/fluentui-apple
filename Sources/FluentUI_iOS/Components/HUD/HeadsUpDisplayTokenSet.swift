@@ -11,7 +11,7 @@ import UIKit
 
 /// Design token set for the `HeadsUpDisplay` control.
 public class HeadsUpDisplayTokenSet: ControlTokenSet<HeadsUpDisplayTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// The color of the squared background of the Heads-up display.
         case backgroundColor
 

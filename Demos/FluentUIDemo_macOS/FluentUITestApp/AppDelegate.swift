@@ -10,7 +10,7 @@ private struct Constants {
 	static let initialWindowHeight: CGFloat = 600
 }
 
-@NSApplicationMain
+@main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillFinishLaunching(_ notification: Notification) {

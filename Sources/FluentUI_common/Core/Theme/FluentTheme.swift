@@ -139,7 +139,7 @@ public class FluentTheme: NSObject, ObservableObject {
     func isApplicableThemeChange(_ notification: Notification) -> Bool
 }
 
-public extension Notification.Name {
+nonisolated public extension Notification.Name {
     /// The notification that will fire when a new `FluentTheme` is set on a view.
     ///
     /// The `object` for the fired `Notification` will be the `UIView` whose `fluentTheme` has changed.

@@ -12,7 +12,7 @@ class TableViewCellSampleData: TableViewSampleData {
     static let numberOfItemsInSection: Int = 5
     static let numberOfItemsInSectionForShimmer: Int = 3
 
-    static let sections: [Section] = [
+    @MainActor static let sections: [Section] = [
         Section(
             title: "Single line cell",
             items: [
@@ -108,6 +108,7 @@ class TableViewCellSampleData: TableViewSampleData {
         return indexPath.row == 4
     }
 
+    @MainActor
     static func hasFullLengthLabelAccessoryView(at indexPath: IndexPath) -> Bool {
         let section = sections[indexPath.section]
         return section.hasFullLengthLabelAccessoryView && hasLabelAccessoryViews(at: indexPath)
@@ -165,6 +166,7 @@ class TableViewCellSampleData: TableViewSampleData {
         return labelAccessoryView(accessories: [progressView], spacing: 0, alignment: .fill)
     }
 
+    @MainActor
     static func createTextAccessoryView(text: String, withBorder: Bool = false) -> UIView {
         let stackView = UIStackView()
         stackView.alignment = .center

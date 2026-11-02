@@ -15,8 +15,8 @@ import UIKit
 @objc(MSFCommandingItem)
 open class CommandingItem: NSObject {
 
-    /// A closure that's called when the command is triggered
-    @objc open var action: ((CommandingItem) -> Void)?
+    /// A closure that's called when the command is triggered.
+    @preconcurrency @objc open var action: (@MainActor (CommandingItem) -> Void)?
 
     /// The title of the command item.
     @objc open var title: String? {
@@ -103,7 +103,7 @@ open class CommandingItem: NSObject {
     /// Indicates whether `isOn` should be toggled automatically before `action` is called.
     @objc public let isToggleable: Bool
 
-    @objc public init(title: String, image: UIImage, action: @escaping (CommandingItem) -> Void, isToggleable: Bool = false) {
+    @preconcurrency @objc public init(title: String, image: UIImage, action: @escaping @MainActor (CommandingItem) -> Void, isToggleable: Bool = false) {
         self.title = title
         self.image = image
         self.action = action

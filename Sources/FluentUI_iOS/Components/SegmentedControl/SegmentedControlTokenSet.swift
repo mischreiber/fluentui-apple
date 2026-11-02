@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum SegmentedControlToken: Int, TokenSetKey {
+nonisolated public enum SegmentedControlToken: Int, TokenSetKey {
     /// Defines the background color of the unselected segments of the `SegmentedControl`.
     case restTabColor
 
@@ -222,7 +222,7 @@ extension SegmentedControlTokenSet {
 }
 
 @objc(MSFSegmentedControlStyle)
-public enum SegmentedControlStyle: Int {
+nonisolated public enum SegmentedControlStyle: Int {
     /// Segments are shown as labels inside a pill for use with a neutral or white background. Selection is indicated by a thumb under the selected label.
     @available(*, deprecated, message: "primaryPill is now deprecated. Please use neutralOverNavBarPill.")
     case primaryPill

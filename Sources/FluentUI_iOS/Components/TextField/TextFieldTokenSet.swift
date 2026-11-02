@@ -9,13 +9,13 @@ import FluentUI_common
 import SwiftUI
 
 /// The predefined states of the `FluentTextField`.
-public enum FluentTextFieldState: Int, CaseIterable {
+nonisolated public enum FluentTextFieldState: Int, CaseIterable {
     case unfocused
     case focused
     case error
 }
 
-public enum TextFieldToken: Int, TokenSetKey {
+nonisolated public enum TextFieldToken: Int, TokenSetKey {
     /// Defines the color of the text in the bottom label.
     case assistiveTextColor
 

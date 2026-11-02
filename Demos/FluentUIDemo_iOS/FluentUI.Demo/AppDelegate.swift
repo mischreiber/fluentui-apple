@@ -17,7 +17,7 @@ import UIKit
 private let appCenterSecret = app_center_secret_to_be_supplied_before_building
 #endif
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: UIApplicationDelegate

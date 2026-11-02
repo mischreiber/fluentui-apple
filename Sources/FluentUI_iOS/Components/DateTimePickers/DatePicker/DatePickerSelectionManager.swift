@@ -10,7 +10,7 @@ import Foundation
 /// Manages the selected date range based on the selectionMode
 class DatePickerSelectionManager {
     /// The selection mode of the picker to indicate whether the start or end date of the selected range is updated on cell selection.
-    public enum SelectionMode {
+    nonisolated public enum SelectionMode {
         case start, end
     }
 

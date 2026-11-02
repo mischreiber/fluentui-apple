@@ -6,7 +6,7 @@
 import AppKit
 
 @objc(MSFSeparatorOrientation)
-public enum SeparatorOrientation: Int {
+nonisolated public enum SeparatorOrientation: Int {
     case horizontal // Separator with no intrinic width
     case vertical // Separator with no intrinic height
 }

@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 /// Pre-defined sizes of the Activity Indicator.
-@objc public enum MSFActivityIndicatorSize: Int, CaseIterable {
+@objc nonisolated public enum MSFActivityIndicatorSize: Int, CaseIterable {
     case xSmall
     case small
     case medium
@@ -18,7 +18,7 @@ import UIKit
     case xLarge
 }
 
-public enum ActivityIndicatorToken: Int, TokenSetKey {
+nonisolated public enum ActivityIndicatorToken: Int, TokenSetKey {
     /// The default color of the Activity Indicator.
     case defaultColor
 

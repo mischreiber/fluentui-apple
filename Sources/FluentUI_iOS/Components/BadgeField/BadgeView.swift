@@ -212,9 +212,8 @@ open class BadgeView: UIView, TokenizedControl {
             self?.updateFonts()
         }
 
-        defer {
-            self.dataSource = dataSource
-        }
+        self.dataSource = dataSource
+        reload()
     }
 
     public required init?(coder aDecoder: NSCoder) {

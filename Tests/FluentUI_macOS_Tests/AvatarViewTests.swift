@@ -6,6 +6,7 @@
 import XCTest
 @testable import FluentUI_macos
 
+@MainActor
 class AvatarViewTests: XCTestCase {
 	func testValidInitialsCharacter () {
 		XCTAssertTrue(Character("A").isValidInitialsCharacter)

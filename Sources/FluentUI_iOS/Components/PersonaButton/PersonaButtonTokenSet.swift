@@ -9,7 +9,7 @@ import FluentUI_common
 import UIKit
 
 /// Pre-defined sizes of the persona button
-@objc public enum MSFPersonaButtonSize: Int, CaseIterable {
+@objc nonisolated public enum MSFPersonaButtonSize: Int, CaseIterable {
     case small
     case large
 
@@ -34,7 +34,7 @@ import UIKit
 
 /// Design token set for the `PersonaButton` control.
 public class PersonaButtonTokenSet: ControlTokenSet<PersonaButtonTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// The background color for the `PersonaButton`.
         case backgroundColor
 

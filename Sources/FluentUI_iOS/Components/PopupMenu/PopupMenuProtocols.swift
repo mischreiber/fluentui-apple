@@ -10,7 +10,7 @@ import UIKit
 
 /// Defines the timing for the call of the onSelected closure/block
 @objc(MSFPopupMenuItemExecutionMode)
-public enum ExecutionMode: Int {
+nonisolated public enum ExecutionMode: Int {
     /// `onSelected` is called right after item is tapped, before popup menu dismissal
     case onSelection
     /// `onSelected` is called right after item is tapped, but prevent popup menu dismissal

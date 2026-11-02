@@ -5,6 +5,8 @@
 
 #include "FluentUI_common.xcconfig"
 
+SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated
+
 PRODUCT_NAME = FluentUIUnitTests
 INFOPLIST_FILE = ../FluentUIUnitTest/FluentUIUnitTest-Info.plist
 

@@ -8,8 +8,8 @@ import XCTest
 class AvatarTestSwiftUI: BaseTest {
     override var controlName: String { "Avatar" }
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         app.staticTexts["SwiftUI Demo"].tap()
     }
 

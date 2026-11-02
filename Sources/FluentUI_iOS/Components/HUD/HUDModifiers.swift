@@ -51,12 +51,9 @@ struct SquareShapedViewModifier: ViewModifier {
         let modifiedContent = HStack {
             content
                 .alignmentGuide(HorizontalAlignment.center) { (viewDimensions) -> CGFloat in
+                    let longerSide = max(viewDimensions.height,
+                                         viewDimensions.width)
                     DispatchQueue.main.async {
-                        // Calculates the size the view with the
-                        // longer side (width or height).
-                        let longerSide = max(viewDimensions.height,
-                                             viewDimensions.width)
-
                         // Don't let the size be smaller than
                         // the minimum defined by the caller.
                         let minimumCalculatedSize = max(minSize,

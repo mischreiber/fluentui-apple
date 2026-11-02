@@ -9,7 +9,7 @@ import FluentUI_common
 import UIKit
 
 /// Pre-defined styles of the notification
-@objc public enum MSFNotificationStyle: Int, CaseIterable {
+@objc nonisolated public enum MSFNotificationStyle: Int, CaseIterable {
     /// Floating notification with brand colored text and background.
     case primaryToast
 
@@ -73,7 +73,7 @@ import UIKit
 
 /// Design token set for the `Notification` control.
 public class NotificationTokenSet: ControlTokenSet<NotificationTokenSet.Tokens> {
-    public enum Tokens: TokenSetKey {
+    nonisolated public enum Tokens: TokenSetKey {
         /// The background color of the notification
         case backgroundColor
 

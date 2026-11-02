@@ -11,7 +11,7 @@ import UIKit
 // MARK: PersonaListViewSelectionDirection
 
 @objc(MSFPersonaListViewSelectionDirection)
-public enum PersonaListViewSelectionDirection: Int {
+nonisolated public enum PersonaListViewSelectionDirection: Int {
     case next = 1
     case prev = -1
 }
@@ -28,7 +28,7 @@ public protocol PersonaListViewSearchDirectoryDelegate {
 @objc(MSFPersonaListView)
 open class PersonaListView: UITableView {
     /// SearchDirectory button state enum
-    public enum SearchDirectoryState {
+    nonisolated public enum SearchDirectoryState {
         case idle
         case searching
         case displayingSearchResults

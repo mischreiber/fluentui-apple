@@ -558,11 +558,14 @@ open class AvatarView: NSView {
 			appearanceObserver = nil
 			return
 		}
-		appearanceObserver = window.observe(\.effectiveAppearance) { [weak self] (window, _) in
-			guard let strongSelf = self else {
-				return
+		// AppKit delivers appearance changes on the main thread.
+		appearanceObserver = window.observe(\.effectiveAppearance) { [weak self] _, _ in
+			MainActor.assumeIsolated {
+				guard let strongSelf = self else {
+					return
+				}
+				strongSelf.updateAppearance(strongSelf.window?.effectiveAppearance)
 			}
-			strongSelf.updateAppearance(window.effectiveAppearance)
 		}
 	}
 }

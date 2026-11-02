@@ -8,7 +8,7 @@ import FluentUI_common
 #endif
 import UIKit
 
-public enum TwoLineTitleViewToken: Int, TokenSetKey {
+nonisolated public enum TwoLineTitleViewToken: Int, TokenSetKey {
     /// Describes the color of the subtitle.
     case subtitleColor
 

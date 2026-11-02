@@ -7,13 +7,13 @@ import SwiftUI
 
 public extension FluentTheme {
     @objc(MSFGradientToken)
-    enum GradientToken: Int, TokenSetKey {
+    nonisolated enum GradientToken: Int, TokenSetKey {
         case flair
         case tint
     }
 
     @objc(MSFColorToken)
-    enum ColorToken: Int, TokenSetKey {
+    nonisolated enum ColorToken: Int, TokenSetKey {
         // Neutral colors - Background
         case background1
 
@@ -173,7 +173,7 @@ public extension FluentTheme {
     }
 
     @objc(MSFShadowToken)
-    enum ShadowToken: Int, TokenSetKey {
+    nonisolated enum ShadowToken: Int, TokenSetKey {
         case clear
         case shadow02
         case shadow04
@@ -184,7 +184,7 @@ public extension FluentTheme {
     }
 
     @objc(MSFTypographyToken)
-    enum TypographyToken: Int, TokenSetKey {
+    nonisolated enum TypographyToken: Int, TokenSetKey {
         case display
         case largeTitle
         case title1

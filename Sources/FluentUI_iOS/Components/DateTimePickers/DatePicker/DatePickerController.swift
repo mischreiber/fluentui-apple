@@ -124,17 +124,11 @@ class DatePickerController: UIViewController, GenericDateTimePicker {
 
         super.init(nibName: nil, bundle: nil)
 
-        defer {
-            self.startDate = startDate
-            self.endDate = endDate
-        }
-
         calendarViewDataSource = CalendarViewDataSource(styleDataSource: self, calendarConfiguration: self.calendarConfiguration)
 
-        let startDate = startDate.startOfDay
         selectionManager = DatePickerSelectionManager(
             dataSource: calendarViewDataSource,
-            startDate: startDate,
+            startDate: startDate.startOfDay,
             endDate: endDate,
             selectionMode: selectionMode
         )
@@ -149,6 +143,14 @@ class DatePickerController: UIViewController, GenericDateTimePicker {
                                                selector: #selector(themeDidChange),
                                                name: .didChangeTheme,
                                                object: nil)
+
+        initializeDates(startDate: startDate, endDate: endDate)
+    }
+
+    // Use the setters so initialization also runs the property observers.
+    private func initializeDates(startDate: Date, endDate: Date) {
+        self.startDate = startDate
+        self.endDate = endDate
     }
 
     @objc private func themeDidChange(_ notification: Notification) {

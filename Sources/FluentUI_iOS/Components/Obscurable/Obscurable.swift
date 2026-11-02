@@ -15,7 +15,7 @@ protocol Obscurable: AnyObject {
 }
 
 @objc(MSFObscureStyle)
-public enum ObscureStyle: Int {
+nonisolated public enum ObscureStyle: Int {
     case blur
     case dim
 }

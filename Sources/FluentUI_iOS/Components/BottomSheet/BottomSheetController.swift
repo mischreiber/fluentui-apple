@@ -45,7 +45,7 @@ public protocol BottomSheetControllerDelegate: AnyObject {
 }
 
 /// Interactions that can trigger a state change.
-@objc public enum BottomSheetInteraction: Int {
+@objc nonisolated public enum BottomSheetInteraction: Int {
     case noUserAction // No user action, used for events not triggered by users
     case swipe // Swipe on the sheet view
     case resizingHandleTap // Tap on the sheet resizing handle
@@ -53,7 +53,7 @@ public protocol BottomSheetControllerDelegate: AnyObject {
 }
 
 /// Defines the position the sheet is currently in
-@objc public enum BottomSheetExpansionState: Int {
+@objc nonisolated public enum BottomSheetExpansionState: Int {
     case expanded // Sheet is fully expanded
     case partial // Sheet is partially expanded
     case collapsed // Sheet is collapsed
@@ -62,7 +62,7 @@ public protocol BottomSheetControllerDelegate: AnyObject {
 }
 
 /// Defines where the sheet should be postionioned relative to the screen space
-@objc(MSFBottomSheetAnchorEdge) public enum BottomSheetAnchorEdge: Int {
+@objc(MSFBottomSheetAnchorEdge) nonisolated public enum BottomSheetAnchorEdge: Int {
     case center // Sheet is centered on the screen
     case leading // Sheet is constrained to the leading edge
     case trailing // Sheet is constrained to the trailing edge
